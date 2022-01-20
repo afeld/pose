@@ -1,25 +1,32 @@
 import "@tensorflow/tfjs";
 import * as bodyPix from "@tensorflow-models/body-pix";
 
-const img = document.getElementById("image") as HTMLImageElement;
 const video = document.getElementById("video") as HTMLVideoElement;
 
 async function loadAndPredict() {
   const net = await bodyPix.load();
 
-  const segmentation = await net.segmentPerson(img);
+  const segmentation = await net.segmentPerson(video);
   console.log(segmentation);
+
+  // loop
+  requestAnimationFrame(loadAndPredict);
 }
-loadAndPredict();
 
 const setUpWebcam = async () => {
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: false,
     video: {
+      // try to match output resolution
       width: video.clientWidth,
       height: video.clientHeight,
     },
   });
   video.srcObject = stream;
 };
+
+video.addEventListener("loadeddata", () => {
+  requestAnimationFrame(loadAndPredict);
+});
+
 setUpWebcam();
