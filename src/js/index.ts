@@ -13,7 +13,13 @@ async function loadAndPredict() {
 loadAndPredict();
 
 const setUpWebcam = async () => {
-  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+  const stream = await navigator.mediaDevices.getUserMedia({
+    audio: false,
+    video: {
+      width: video.clientWidth,
+      height: video.clientHeight,
+    },
+  });
   video.srcObject = stream;
 };
 setUpWebcam();
