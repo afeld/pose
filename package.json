@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "parcel": "^2.2.1"
+  },
+  "scripts": {
+    "start": "parcel serve --open firefox src/index.html"
   }
 }
