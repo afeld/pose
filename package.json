@@ -4,5 +4,9 @@
   },
   "scripts": {
     "start": "parcel serve --open firefox src/index.html"
+  },
+  "dependencies": {
+    "@tensorflow-models/body-pix": "^2.2.0",
+    "@tensorflow/tfjs": "^3.13.0"
   }
 }
