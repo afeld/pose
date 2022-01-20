@@ -10,13 +10,32 @@ const showFPS = (stats: Stats) => {
   document.body.appendChild(stats.dom);
 };
 
+const drawMask = (segmentation: bodyPix.SemanticPersonSegmentation) => {
+  const coloredPartImage = bodyPix.toMask(segmentation);
+  const opacity = 0.7;
+  const flipHorizontal = false;
+  const maskBlurAmount = 0;
+  const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+  // Draw the mask image on top of the original image onto a canvas.
+  // The colored part image will be drawn semi-transparent, with an opacity of
+  // 0.7, allowing for the original image to be visible under.
+  bodyPix.drawMask(
+    canvas,
+    video,
+    coloredPartImage,
+    opacity,
+    maskBlurAmount,
+    flipHorizontal
+  );
+};
+
 const loadAndPredict = async () => {
   stats.begin();
 
   const net = await bodyPix.load();
 
   const segmentation = await net.segmentPerson(video);
-  console.log(segmentation);
+  drawMask(segmentation);
 
   stats.end();
 

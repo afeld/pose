@@ -2,7 +2,22 @@ body {
   margin: 0;
 }
 
+#container {
+  display: grid;
+  width: 100vw;
+  height: 100vh;
+}
+
+#container * {
+  grid-column: 1;
+  grid-row: 1;
+}
+
 video {
+  display: none;
+}
+
+canvas {
   -webkit-transform: scaleX(-1);
   transform: scaleX(-1);
 }
