@@ -3,6 +3,7 @@ import * as bodyPix from "@tensorflow-models/body-pix";
 import Stats from "stats.js";
 
 const video = document.getElementById("video") as HTMLVideoElement;
+const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const stats = new Stats();
 
 const showFPS = (stats: Stats) => {
@@ -15,7 +16,6 @@ const drawMask = (segmentation: bodyPix.SemanticPersonSegmentation) => {
   const opacity = 0.7;
   const flipHorizontal = false;
   const maskBlurAmount = 0;
-  const canvas = document.getElementById("canvas") as HTMLCanvasElement;
   // Draw the mask image on top of the original image onto a canvas.
   // The colored part image will be drawn semi-transparent, with an opacity of
   // 0.7, allowing for the original image to be visible under.
@@ -48,8 +48,8 @@ const setUpWebcam = async (video: HTMLVideoElement) => {
     audio: false,
     video: {
       // try to match output resolution
-      width: video.clientWidth,
-      height: video.clientHeight,
+      width: canvas.clientWidth,
+      height: canvas.clientHeight,
     },
   });
   video.srcObject = stream;
