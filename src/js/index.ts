@@ -3,7 +3,7 @@ import * as bodyPix from "@tensorflow-models/body-pix";
 
 const video = document.getElementById("video") as HTMLVideoElement;
 
-async function loadAndPredict() {
+const loadAndPredict = async () => {
   const net = await bodyPix.load();
 
   const segmentation = await net.segmentPerson(video);
@@ -11,7 +11,7 @@ async function loadAndPredict() {
 
   // loop
   requestAnimationFrame(loadAndPredict);
-}
+};
 
 const setUpWebcam = async () => {
   const stream = await navigator.mediaDevices.getUserMedia({
