@@ -3,6 +3,7 @@ import * as bodyPix from "@tensorflow-models/body-pix";
 import Stats from "stats.js";
 
 const video = document.getElementById("video") as HTMLVideoElement;
+let videoLoaded = false;
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const stats = new Stats();
 
@@ -45,11 +46,9 @@ const loadAndPredict = async () => {
 
 const onAnimationFrame = async () => {
   stats.begin();
-
-  if (!document.hidden) {
+  if (videoLoaded) {
     await loadAndPredict();
   }
-
   stats.end();
   // loop
   requestAnimationFrame(onAnimationFrame);
@@ -67,24 +66,32 @@ const setUpWebcam = async (video: HTMLVideoElement) => {
   video.srcObject = stream;
 };
 
-const turnOffWebcam = () => {
+const turnOffWebcam = (video: HTMLVideoElement) => {
+  videoLoaded = false;
+
   const stream = video.srcObject as MediaStream;
   stream.getTracks().forEach((track) => track.stop());
+
+  video.srcObject = null;
 };
 
 const toggleWebcam = () => {
   if (document.hidden) {
-    turnOffWebcam();
+    turnOffWebcam(video);
   } else {
     setUpWebcam(video);
   }
 };
 
+// based on https://github.com/tensorflow/tfjs-models/blob/af59ff3eb3350986173ac8c8ae504806b02dad39/body-pix/demo/index.js/#L135-L137
+video.addEventListener("loadedmetadata", () => {
+  video.width = video.videoWidth;
+  video.height = video.videoHeight;
+  videoLoaded = true;
+});
+
 toggleWebcam();
 document.addEventListener("visibilitychange", toggleWebcam, false);
 
-video.addEventListener("loadeddata", () =>
-  requestAnimationFrame(onAnimationFrame)
-);
-
 showFPS(stats);
+onAnimationFrame();
