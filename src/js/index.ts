@@ -101,14 +101,17 @@ const toggleWebcam = (video: Video, canvas: Canvas) => {
   }
 };
 
-const setup = async () => {
-  const canvasEl = document.getElementById("canvas") as HTMLCanvasElement;
-
-  const loadingIndicator = document.getElementById("loading");
-  if (!loadingIndicator) {
-    throw new Error("Loading indicator not found");
+const getElementById = (selector: string) => {
+  const el = document.getElementById(selector);
+  if (!el) {
+    throw new Error(`Element '${el}' not found`);
   }
+  return el;
+};
 
+const setup = async () => {
+  const canvasEl = getElementById("canvas") as HTMLCanvasElement;
+  const loadingIndicator = getElementById("loading");
   const canvas = new Canvas(canvasEl, loadingIndicator);
   const video = Video.matchCanvas(canvas);
   const stats = new Stats();
