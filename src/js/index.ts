@@ -102,8 +102,8 @@ const toggleWebcam = (video: Video, canvas: HTMLCanvasElement) => {
 };
 
 const setup = async () => {
-  const video = new Video(document.getElementById("video") as HTMLVideoElement);
   const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+  const video = Video.matchCanvas(canvas);
   const stats = new Stats();
 
   const model = await bodyPix.load({

@@ -2,11 +2,6 @@ body {
   margin: 0;
 }
 
-#video {
-  /* video is displayed in the canvas */
-  display: none;
-}
-
 #canvas {
   /* shrink to improve performance
   width: 100%;

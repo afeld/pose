@@ -48,4 +48,13 @@ export default class Video {
   isLoaded() {
     return this.metadataLoaded && this.dataLoaded;
   }
+
+  // creates a Video instance with a "virtual" element (outside of the DOM) matching the size of the provided canvas
+  static matchCanvas(canvas: HTMLCanvasElement) {
+    const videoEl = document.createElement("video");
+    videoEl.autoplay = true;
+    videoEl.width = canvas.clientWidth;
+    videoEl.height = canvas.clientHeight;
+    return new Video(videoEl);
+  }
 }
