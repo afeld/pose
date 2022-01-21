@@ -9,7 +9,7 @@ const state = {
   video: new Video(document.getElementById("video") as HTMLVideoElement),
   canvas: document.getElementById("canvas") as HTMLCanvasElement,
   stats: new Stats(),
-  net: null as bodyPix.BodyPix | null,
+  model: null as bodyPix.BodyPix | null,
 };
 
 const EMPTY_BACKGROUND = new Image(
@@ -62,11 +62,11 @@ const drawSkeleton = (segmentation: bodyPix.SemanticPersonSegmentation) => {
 };
 
 const loadAndPredict = async () => {
-  if (!state.net) {
+  if (!state.model) {
     return;
   }
 
-  const segmentation = await state.net.segmentPerson(state.video.el, {
+  const segmentation = await state.model.segmentPerson(state.video.el, {
     internalResolution: "medium",
     maxDetections: 1,
   });
@@ -75,6 +75,7 @@ const loadAndPredict = async () => {
   drawSkeleton(segmentation);
 };
 
+// the "game loop"
 const onAnimationFrame = async () => {
   state.stats.begin();
   if (state.video.isLoaded()) {
@@ -98,12 +99,13 @@ const toggleWebcam = () => {
 };
 
 const setup = async () => {
-  state.net = await bodyPix.load({
+  state.model = await bodyPix.load({
     architecture: "MobileNetV1",
     outputStride: 16,
     multiplier: 0.5,
   });
 
+  // only use the webcam when the window is visible
   toggleWebcam();
   document.addEventListener("visibilitychange", toggleWebcam, false);
 
