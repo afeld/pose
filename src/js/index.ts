@@ -81,15 +81,22 @@ const onAnimationFrame = async (
   stats: Stats,
   model: bodyPix.BodyPix,
   video: Video,
-  canvas: HTMLCanvasElement
+  canvas: HTMLCanvasElement,
+  loadingIndicator: HTMLElement
 ) => {
   stats.begin();
+
   if (video.isLoaded()) {
     await loadAndPredict(model, video, canvas);
+    loadingIndicator.remove();
   }
+
   stats.end();
+
   // loop
-  requestAnimationFrame(() => onAnimationFrame(stats, model, video, canvas));
+  requestAnimationFrame(() =>
+    onAnimationFrame(stats, model, video, canvas, loadingIndicator)
+  );
 };
 
 const toggleWebcam = (video: Video, canvas: HTMLCanvasElement) => {
@@ -112,6 +119,11 @@ const setup = async () => {
     multiplier: 0.5,
   });
 
+  const loadingIndicator = document.getElementById("loading");
+  if (!loadingIndicator) {
+    throw new Error("Loading indicator not found");
+  }
+
   // only use the webcam when the window is visible
   toggleWebcam(video, canvas);
   document.addEventListener(
@@ -121,7 +133,7 @@ const setup = async () => {
   );
 
   showFPS(stats);
-  onAnimationFrame(stats, model, video, canvas);
+  onAnimationFrame(stats, model, video, canvas, loadingIndicator);
 };
 
 setup();
