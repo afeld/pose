@@ -30,6 +30,10 @@ const drawMask = (segmentation: bodyPix.SemanticPersonSegmentation) => {
 };
 
 const loadAndPredict = async () => {
+  if (document.hidden) {
+    return;
+  }
+
   stats.begin();
 
   const net = await bodyPix.load({
@@ -62,9 +66,24 @@ const setUpWebcam = async (video: HTMLVideoElement) => {
   video.srcObject = stream;
 };
 
+const turnOffWebcam = () => {
+  const stream = video.srcObject as MediaStream;
+  stream.getTracks().forEach((track) => track.stop());
+};
+
+const toggleWebcam = () => {
+  if (document.hidden) {
+    turnOffWebcam();
+  } else {
+    setUpWebcam(video);
+  }
+};
+
+toggleWebcam();
+document.addEventListener("visibilitychange", toggleWebcam, false);
+
 video.addEventListener("loadeddata", () => {
   requestAnimationFrame(loadAndPredict);
 });
-setUpWebcam(video);
 
 showFPS(stats);
