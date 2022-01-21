@@ -12,10 +12,6 @@ const state = {
   model: null as bodyPix.BodyPix | null,
 };
 
-const EMPTY_BACKGROUND = new Image(
-  state.canvas.clientWidth,
-  state.canvas.clientHeight
-);
 const COLOR_CLEAR = { r: 0, g: 0, b: 0, a: 0 } as Color;
 const COLOR_RED = { r: 255, g: 0, b: 0, a: 255 } as Color;
 
@@ -38,6 +34,12 @@ const getMask = (segmentation: bodyPix.SemanticPersonSegmentation) => {
 };
 
 const drawMask = (segmentation: bodyPix.SemanticPersonSegmentation) => {
+  // TODO move up to be a constant. Moved here because the size wasn't correct when at the top of the file.
+  const EMPTY_BACKGROUND = new Image(
+    state.canvas.clientWidth,
+    state.canvas.clientHeight
+  );
+
   const coloredPartImage = getMask(segmentation);
   const opacity = 1;
   const flipHorizontal = true;
