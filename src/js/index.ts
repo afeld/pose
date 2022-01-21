@@ -24,18 +24,21 @@ const showFPS = (stats: Stats) => {
   document.body.appendChild(stats.dom);
 };
 
-const drawMask = (segmentation: bodyPix.SemanticPersonSegmentation) => {
+const getMask = (segmentation: bodyPix.SemanticPersonSegmentation) => {
   const foregroundColor = COLOR_RED;
   const backgroundColor = COLOR_CLEAR;
   const drawContour = true;
 
-  const coloredPartImage = bodyPix.toMask(
+  return bodyPix.toMask(
     segmentation,
     foregroundColor,
     backgroundColor,
     drawContour
   );
+};
 
+const drawMask = (segmentation: bodyPix.SemanticPersonSegmentation) => {
+  const coloredPartImage = getMask(segmentation);
   const opacity = 1;
   const flipHorizontal = true;
   const maskBlurAmount = 0;
