@@ -2,10 +2,12 @@ import "@tensorflow/tfjs";
 import * as bodyPix from "@tensorflow-models/body-pix";
 import Stats from "stats.js";
 
-const video = document.getElementById("video") as HTMLVideoElement;
-let videoLoaded = false;
-const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-const stats = new Stats();
+const state = {
+  video: document.getElementById("video") as HTMLVideoElement,
+  videoLoaded: false,
+  canvas: document.getElementById("canvas") as HTMLCanvasElement,
+  stats: new Stats(),
+};
 
 const showFPS = (stats: Stats) => {
   stats.showPanel(0);
@@ -21,8 +23,8 @@ const drawMask = (segmentation: bodyPix.SemanticPersonSegmentation) => {
   // The colored part image will be drawn semi-transparent, with an opacity of
   // 0.7, allowing for the original image to be visible under.
   bodyPix.drawMask(
-    canvas,
-    video,
+    state.canvas,
+    state.video,
     coloredPartImage,
     opacity,
     maskBlurAmount,
@@ -37,7 +39,7 @@ const loadAndPredict = async () => {
     multiplier: 0.5,
   });
 
-  const segmentation = await net.segmentPerson(video, {
+  const segmentation = await net.segmentPerson(state.video, {
     internalResolution: "low",
     maxDetections: 1,
   });
@@ -45,53 +47,56 @@ const loadAndPredict = async () => {
 };
 
 const onAnimationFrame = async () => {
-  stats.begin();
-  if (videoLoaded) {
+  state.stats.begin();
+  if (state.videoLoaded) {
     await loadAndPredict();
   }
-  stats.end();
+  state.stats.end();
   // loop
   requestAnimationFrame(onAnimationFrame);
 };
 
-const setUpWebcam = async (video: HTMLVideoElement) => {
+const setUpWebcam = async () => {
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: false,
     video: {
       // try to match output resolution
-      width: canvas.clientWidth,
-      height: canvas.clientHeight,
+      width: state.canvas.clientWidth,
+      height: state.canvas.clientHeight,
     },
   });
-  video.srcObject = stream;
+  state.video.srcObject = stream;
 };
 
-const turnOffWebcam = (video: HTMLVideoElement) => {
-  videoLoaded = false;
+const turnOffWebcam = () => {
+  state.videoLoaded = false;
 
-  const stream = video.srcObject as MediaStream;
+  const stream = state.video.srcObject as MediaStream;
   stream.getTracks().forEach((track) => track.stop());
 
-  video.srcObject = null;
+  state.video.srcObject = null;
 };
 
 const toggleWebcam = () => {
   if (document.hidden) {
-    turnOffWebcam(video);
+    turnOffWebcam();
   } else {
-    setUpWebcam(video);
+    setUpWebcam();
   }
 };
 
 // based on https://github.com/tensorflow/tfjs-models/blob/af59ff3eb3350986173ac8c8ae504806b02dad39/body-pix/demo/index.js/#L135-L137
-video.addEventListener("loadedmetadata", () => {
-  video.width = video.videoWidth;
-  video.height = video.videoHeight;
-  videoLoaded = true;
+state.video.addEventListener("loadedmetadata", () => {
+  state.video.width = state.video.videoWidth;
+  state.video.height = state.video.videoHeight;
+});
+
+state.video.addEventListener("loadeddata", () => {
+  state.videoLoaded = true;
 });
 
 toggleWebcam();
 document.addEventListener("visibilitychange", toggleWebcam, false);
 
-showFPS(stats);
+showFPS(state.stats);
 onAnimationFrame();
