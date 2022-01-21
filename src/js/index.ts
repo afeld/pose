@@ -9,6 +9,7 @@ const state = {
   video: new Video(document.getElementById("video") as HTMLVideoElement),
   canvas: document.getElementById("canvas") as HTMLCanvasElement,
   stats: new Stats(),
+  net: null as bodyPix.BodyPix | null,
 };
 
 const EMPTY_BACKGROUND = new Image(
@@ -24,11 +25,15 @@ const showFPS = (stats: Stats) => {
 };
 
 const drawMask = (segmentation: bodyPix.SemanticPersonSegmentation) => {
+  const foregroundColor = COLOR_RED;
+  const backgroundColor = COLOR_CLEAR;
+  const drawContour = true;
+
   const coloredPartImage = bodyPix.toMask(
     segmentation,
-    COLOR_RED,
-    COLOR_CLEAR,
-    true
+    foregroundColor,
+    backgroundColor,
+    drawContour
   );
 
   const opacity = 1;
@@ -57,14 +62,12 @@ const drawSkeleton = (segmentation: bodyPix.SemanticPersonSegmentation) => {
 };
 
 const loadAndPredict = async () => {
-  const net = await bodyPix.load({
-    architecture: "MobileNetV1",
-    outputStride: 16,
-    multiplier: 0.5,
-  });
+  if (!state.net) {
+    return;
+  }
 
-  const segmentation = await net.segmentPerson(state.video.el, {
-    internalResolution: "low",
+  const segmentation = await state.net.segmentPerson(state.video.el, {
+    internalResolution: "medium",
     maxDetections: 1,
   });
 
@@ -94,8 +97,18 @@ const toggleWebcam = () => {
   }
 };
 
-toggleWebcam();
-document.addEventListener("visibilitychange", toggleWebcam, false);
+const setup = async () => {
+  state.net = await bodyPix.load({
+    architecture: "MobileNetV1",
+    outputStride: 16,
+    multiplier: 0.5,
+  });
 
-showFPS(state.stats);
-onAnimationFrame();
+  toggleWebcam();
+  document.addEventListener("visibilitychange", toggleWebcam, false);
+
+  showFPS(state.stats);
+  onAnimationFrame();
+};
+
+setup();
