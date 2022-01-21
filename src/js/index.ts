@@ -30,12 +30,6 @@ const drawMask = (segmentation: bodyPix.SemanticPersonSegmentation) => {
 };
 
 const loadAndPredict = async () => {
-  if (document.hidden) {
-    return;
-  }
-
-  stats.begin();
-
   const net = await bodyPix.load({
     architecture: "MobileNetV1",
     outputStride: 16,
@@ -47,11 +41,18 @@ const loadAndPredict = async () => {
     maxDetections: 1,
   });
   drawMask(segmentation);
+};
+
+const onAnimationFrame = async () => {
+  stats.begin();
+
+  if (!document.hidden) {
+    await loadAndPredict();
+  }
 
   stats.end();
-
   // loop
-  requestAnimationFrame(loadAndPredict);
+  requestAnimationFrame(onAnimationFrame);
 };
 
 const setUpWebcam = async (video: HTMLVideoElement) => {
@@ -82,8 +83,8 @@ const toggleWebcam = () => {
 toggleWebcam();
 document.addEventListener("visibilitychange", toggleWebcam, false);
 
-video.addEventListener("loadeddata", () => {
-  requestAnimationFrame(loadAndPredict);
-});
+video.addEventListener("loadeddata", () =>
+  requestAnimationFrame(onAnimationFrame)
+);
 
 showFPS(stats);
