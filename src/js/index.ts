@@ -5,6 +5,7 @@ import Skeleton from "./skeleton";
 import Video from "./video";
 import { Color } from "@tensorflow-models/body-pix/dist/types";
 import Canvas from "./canvas";
+import Detector from "./detector";
 
 const COLOR_CLEAR = { r: 0, g: 0, b: 0, a: 0 } as Color;
 const COLOR_RED = { r: 255, g: 0, b: 0, a: 255 } as Color;
@@ -64,15 +65,10 @@ const drawSkeleton = (
 };
 
 const loadAndPredict = async (
-  model: bodyPix.BodyPix,
-  video: Video,
+  detector: Detector,
   canvas: HTMLCanvasElement
 ) => {
-  const segmentation = await model.segmentPerson(video.el, {
-    internalResolution: "medium",
-    maxDetections: 1,
-  });
-
+  const segmentation = await detector.detect();
   drawMask(segmentation, canvas);
   drawSkeleton(segmentation, canvas);
 };
@@ -80,21 +76,20 @@ const loadAndPredict = async (
 // the "game loop"
 const onAnimationFrame = async (
   stats: Stats,
-  model: bodyPix.BodyPix,
-  video: Video,
+  detector: Detector,
   canvas: Canvas
 ) => {
   stats.begin();
 
-  if (video.isLoaded()) {
-    await loadAndPredict(model, video, canvas.el);
+  if (detector.isReady()) {
+    await loadAndPredict(detector, canvas.el);
     canvas.loaded();
   }
 
   stats.end();
 
   // loop
-  requestAnimationFrame(() => onAnimationFrame(stats, model, video, canvas));
+  requestAnimationFrame(() => onAnimationFrame(stats, detector, canvas));
 };
 
 const toggleWebcam = (video: Video, canvas: Canvas) => {
@@ -108,21 +103,16 @@ const toggleWebcam = (video: Video, canvas: Canvas) => {
 
 const setup = async () => {
   const canvasEl = document.getElementById("canvas") as HTMLCanvasElement;
+
   const loadingIndicator = document.getElementById("loading");
   if (!loadingIndicator) {
     throw new Error("Loading indicator not found");
   }
 
   const canvas = new Canvas(canvasEl, loadingIndicator);
-
   const video = Video.matchCanvas(canvas);
   const stats = new Stats();
-
-  const model = await bodyPix.load({
-    architecture: "MobileNetV1",
-    outputStride: 16,
-    multiplier: 0.5,
-  });
+  const detector = new Detector(video);
 
   // only use the webcam when the window is visible
   toggleWebcam(video, canvas);
@@ -133,7 +123,7 @@ const setup = async () => {
   );
 
   showFPS(stats);
-  onAnimationFrame(stats, model, video, canvas);
+  onAnimationFrame(stats, detector, canvas);
 };
 
 setup();
