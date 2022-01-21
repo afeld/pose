@@ -17,7 +17,7 @@ const showFPS = (stats: Stats) => {
 
 const drawMask = (segmentation: bodyPix.SemanticPersonSegmentation) => {
   const coloredPartImage = bodyPix.toMask(segmentation);
-  const opacity = 0.7;
+  const opacity = 1;
   const flipHorizontal = true;
   const maskBlurAmount = 0;
   // Draw the mask image on top of the original image onto a canvas.
