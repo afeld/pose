@@ -4,7 +4,8 @@
     "parcel": "^2.2.1"
   },
   "scripts": {
-    "start": "parcel serve --open firefox src/index.html"
+    "start": "parcel serve --open firefox src/index.html",
+    "build": "parcel build src/index.html"
   },
   "dependencies": {
     "@tensorflow-models/body-pix": "^2.2.0",
