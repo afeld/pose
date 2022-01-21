@@ -1,3 +1,5 @@
+import Canvas from "./canvas";
+
 export default class Video {
   el: HTMLVideoElement;
   metadataLoaded: boolean;
@@ -50,11 +52,11 @@ export default class Video {
   }
 
   // creates a Video instance with a "virtual" element (outside of the DOM) matching the size of the provided canvas
-  static matchCanvas(canvas: HTMLCanvasElement) {
+  static matchCanvas(canvas: Canvas) {
     const videoEl = document.createElement("video");
     videoEl.autoplay = true;
-    videoEl.width = canvas.clientWidth;
-    videoEl.height = canvas.clientHeight;
+    videoEl.width = canvas.width();
+    videoEl.height = canvas.height();
     return new Video(videoEl);
   }
 }

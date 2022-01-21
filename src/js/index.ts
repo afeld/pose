@@ -4,6 +4,7 @@ import Stats from "stats.js";
 import Skeleton from "./skeleton";
 import Video from "./video";
 import { Color } from "@tensorflow-models/body-pix/dist/types";
+import Canvas from "./canvas";
 
 const COLOR_CLEAR = { r: 0, g: 0, b: 0, a: 0 } as Color;
 const COLOR_RED = { r: 255, g: 0, b: 0, a: 255 } as Color;
@@ -81,35 +82,39 @@ const onAnimationFrame = async (
   stats: Stats,
   model: bodyPix.BodyPix,
   video: Video,
-  canvas: HTMLCanvasElement,
-  loadingIndicator: HTMLElement
+  canvas: Canvas
 ) => {
   stats.begin();
 
   if (video.isLoaded()) {
-    await loadAndPredict(model, video, canvas);
-    loadingIndicator.remove();
+    await loadAndPredict(model, video, canvas.el);
+    canvas.loaded();
   }
 
   stats.end();
 
   // loop
-  requestAnimationFrame(() =>
-    onAnimationFrame(stats, model, video, canvas, loadingIndicator)
-  );
+  requestAnimationFrame(() => onAnimationFrame(stats, model, video, canvas));
 };
 
-const toggleWebcam = (video: Video, canvas: HTMLCanvasElement) => {
+const toggleWebcam = (video: Video, canvas: Canvas) => {
   if (document.hidden) {
     video.turnOffWebcam();
   } else {
     // try to match output resolution
-    video.setUpWebcam(canvas.clientWidth, canvas.clientHeight);
+    video.setUpWebcam(canvas.width(), canvas.height());
   }
 };
 
 const setup = async () => {
-  const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+  const canvasEl = document.getElementById("canvas") as HTMLCanvasElement;
+  const loadingIndicator = document.getElementById("loading");
+  if (!loadingIndicator) {
+    throw new Error("Loading indicator not found");
+  }
+
+  const canvas = new Canvas(canvasEl, loadingIndicator);
+
   const video = Video.matchCanvas(canvas);
   const stats = new Stats();
 
@@ -118,11 +123,6 @@ const setup = async () => {
     outputStride: 16,
     multiplier: 0.5,
   });
-
-  const loadingIndicator = document.getElementById("loading");
-  if (!loadingIndicator) {
-    throw new Error("Loading indicator not found");
-  }
 
   // only use the webcam when the window is visible
   toggleWebcam(video, canvas);
@@ -133,7 +133,7 @@ const setup = async () => {
   );
 
   showFPS(stats);
-  onAnimationFrame(stats, model, video, canvas, loadingIndicator);
+  onAnimationFrame(stats, model, video, canvas);
 };
 
 setup();
