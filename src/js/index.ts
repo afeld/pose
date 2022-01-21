@@ -1,6 +1,7 @@
 import "@tensorflow/tfjs";
 import * as bodyPix from "@tensorflow-models/body-pix";
 import Stats from "stats.js";
+import Skeleton from "./skeleton";
 import Video from "./video";
 
 const state = {
@@ -32,6 +33,16 @@ const drawMask = (segmentation: bodyPix.SemanticPersonSegmentation) => {
   );
 };
 
+const drawSkeleton = (segmentation: bodyPix.SemanticPersonSegmentation) => {
+  let pose = segmentation.allPoses[0];
+  if (!pose) {
+    return;
+  }
+  pose = bodyPix.flipPoseHorizontal(pose, segmentation.width);
+  const skeleton = new Skeleton(pose);
+  skeleton.draw(state.canvas);
+};
+
 const loadAndPredict = async () => {
   const net = await bodyPix.load({
     architecture: "MobileNetV1",
@@ -43,7 +54,9 @@ const loadAndPredict = async () => {
     internalResolution: "low",
     maxDetections: 1,
   });
+
   drawMask(segmentation);
+  drawSkeleton(segmentation);
 };
 
 const onAnimationFrame = async () => {
