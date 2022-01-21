@@ -5,13 +5,6 @@ import Skeleton from "./skeleton";
 import Video from "./video";
 import { Color } from "@tensorflow-models/body-pix/dist/types";
 
-const state = {
-  video: new Video(document.getElementById("video") as HTMLVideoElement),
-  canvas: document.getElementById("canvas") as HTMLCanvasElement,
-  stats: new Stats(),
-  model: null as bodyPix.BodyPix | null,
-};
-
 const COLOR_CLEAR = { r: 0, g: 0, b: 0, a: 0 } as Color;
 const COLOR_RED = { r: 255, g: 0, b: 0, a: 255 } as Color;
 
@@ -33,12 +26,12 @@ const getMask = (segmentation: bodyPix.SemanticPersonSegmentation) => {
   );
 };
 
-const drawMask = (segmentation: bodyPix.SemanticPersonSegmentation) => {
+const drawMask = (
+  segmentation: bodyPix.SemanticPersonSegmentation,
+  canvas: HTMLCanvasElement
+) => {
   // TODO move up to be a constant. Moved here because the size wasn't correct when at the top of the file.
-  const EMPTY_BACKGROUND = new Image(
-    state.canvas.clientWidth,
-    state.canvas.clientHeight
-  );
+  const EMPTY_BACKGROUND = new Image(canvas.clientWidth, canvas.clientHeight);
 
   const coloredPartImage = getMask(segmentation);
   const opacity = 1;
@@ -46,7 +39,7 @@ const drawMask = (segmentation: bodyPix.SemanticPersonSegmentation) => {
   const maskBlurAmount = 0;
 
   bodyPix.drawMask(
-    state.canvas,
+    canvas,
     EMPTY_BACKGROUND,
     coloredPartImage,
     opacity,
@@ -55,7 +48,10 @@ const drawMask = (segmentation: bodyPix.SemanticPersonSegmentation) => {
   );
 };
 
-const drawSkeleton = (segmentation: bodyPix.SemanticPersonSegmentation) => {
+const drawSkeleton = (
+  segmentation: bodyPix.SemanticPersonSegmentation,
+  canvas: HTMLCanvasElement
+) => {
   let pose = segmentation.allPoses[0];
   if (!pose) {
     // no people found
@@ -63,59 +59,69 @@ const drawSkeleton = (segmentation: bodyPix.SemanticPersonSegmentation) => {
   }
   pose = bodyPix.flipPoseHorizontal(pose, segmentation.width);
   const skeleton = new Skeleton(pose);
-  skeleton.draw(state.canvas);
+  skeleton.draw(canvas);
 };
 
-const loadAndPredict = async () => {
-  if (!state.model) {
-    return;
-  }
-
-  const segmentation = await state.model.segmentPerson(state.video.el, {
+const loadAndPredict = async (
+  model: bodyPix.BodyPix,
+  video: Video,
+  canvas: HTMLCanvasElement
+) => {
+  const segmentation = await model.segmentPerson(video.el, {
     internalResolution: "medium",
     maxDetections: 1,
   });
 
-  drawMask(segmentation);
-  drawSkeleton(segmentation);
+  drawMask(segmentation, canvas);
+  drawSkeleton(segmentation, canvas);
 };
 
 // the "game loop"
-const onAnimationFrame = async () => {
-  state.stats.begin();
-  if (state.video.isLoaded()) {
-    await loadAndPredict();
+const onAnimationFrame = async (
+  stats: Stats,
+  model: bodyPix.BodyPix,
+  video: Video,
+  canvas: HTMLCanvasElement
+) => {
+  stats.begin();
+  if (video.isLoaded()) {
+    await loadAndPredict(model, video, canvas);
   }
-  state.stats.end();
+  stats.end();
   // loop
-  requestAnimationFrame(onAnimationFrame);
+  requestAnimationFrame(() => onAnimationFrame(stats, model, video, canvas));
 };
 
-const toggleWebcam = () => {
+const toggleWebcam = (video: Video, canvas: HTMLCanvasElement) => {
   if (document.hidden) {
-    state.video.turnOffWebcam();
+    video.turnOffWebcam();
   } else {
     // try to match output resolution
-    state.video.setUpWebcam(
-      state.canvas.clientWidth,
-      state.canvas.clientHeight
-    );
+    video.setUpWebcam(canvas.clientWidth, canvas.clientHeight);
   }
 };
 
 const setup = async () => {
-  state.model = await bodyPix.load({
+  const video = new Video(document.getElementById("video") as HTMLVideoElement);
+  const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+  const stats = new Stats();
+
+  const model = await bodyPix.load({
     architecture: "MobileNetV1",
     outputStride: 16,
     multiplier: 0.5,
   });
 
   // only use the webcam when the window is visible
-  toggleWebcam();
-  document.addEventListener("visibilitychange", toggleWebcam, false);
+  toggleWebcam(video, canvas);
+  document.addEventListener(
+    "visibilitychange",
+    () => toggleWebcam(video, canvas),
+    false
+  );
 
-  showFPS(state.stats);
-  onAnimationFrame();
+  showFPS(stats);
+  onAnimationFrame(stats, model, video, canvas);
 };
 
 setup();
