@@ -1,10 +1,10 @@
 import "@tensorflow/tfjs";
 import * as bodyPix from "@tensorflow-models/body-pix";
 import Stats from "stats.js";
+import Video from "./video";
 
 const state = {
-  video: document.getElementById("video") as HTMLVideoElement,
-  videoLoaded: false,
+  video: new Video(document.getElementById("video") as HTMLVideoElement),
   canvas: document.getElementById("canvas") as HTMLCanvasElement,
   stats: new Stats(),
 };
@@ -24,7 +24,7 @@ const drawMask = (segmentation: bodyPix.SemanticPersonSegmentation) => {
   // 0.7, allowing for the original image to be visible under.
   bodyPix.drawMask(
     state.canvas,
-    state.video,
+    state.video.el,
     coloredPartImage,
     opacity,
     maskBlurAmount,
@@ -39,7 +39,7 @@ const loadAndPredict = async () => {
     multiplier: 0.5,
   });
 
-  const segmentation = await net.segmentPerson(state.video, {
+  const segmentation = await net.segmentPerson(state.video.el, {
     internalResolution: "low",
     maxDetections: 1,
   });
@@ -48,7 +48,7 @@ const loadAndPredict = async () => {
 
 const onAnimationFrame = async () => {
   state.stats.begin();
-  if (state.videoLoaded) {
+  if (state.video.isLoaded()) {
     await loadAndPredict();
   }
   state.stats.end();
@@ -56,44 +56,17 @@ const onAnimationFrame = async () => {
   requestAnimationFrame(onAnimationFrame);
 };
 
-const setUpWebcam = async () => {
-  const stream = await navigator.mediaDevices.getUserMedia({
-    audio: false,
-    video: {
-      // try to match output resolution
-      width: state.canvas.clientWidth,
-      height: state.canvas.clientHeight,
-    },
-  });
-  state.video.srcObject = stream;
-};
-
-const turnOffWebcam = () => {
-  state.videoLoaded = false;
-
-  const stream = state.video.srcObject as MediaStream;
-  stream.getTracks().forEach((track) => track.stop());
-
-  state.video.srcObject = null;
-};
-
 const toggleWebcam = () => {
   if (document.hidden) {
-    turnOffWebcam();
+    state.video.turnOffWebcam();
   } else {
-    setUpWebcam();
+    // try to match output resolution
+    state.video.setUpWebcam(
+      state.canvas.clientWidth,
+      state.canvas.clientHeight
+    );
   }
 };
-
-// based on https://github.com/tensorflow/tfjs-models/blob/af59ff3eb3350986173ac8c8ae504806b02dad39/body-pix/demo/index.js/#L135-L137
-state.video.addEventListener("loadedmetadata", () => {
-  state.video.width = state.video.videoWidth;
-  state.video.height = state.video.videoHeight;
-});
-
-state.video.addEventListener("loadeddata", () => {
-  state.videoLoaded = true;
-});
 
 toggleWebcam();
 document.addEventListener("visibilitychange", toggleWebcam, false);
