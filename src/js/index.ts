@@ -9,33 +9,32 @@ import Detector from "./detector";
 
 const COLOR_CLEAR = { r: 0, g: 0, b: 0, a: 0 } as Color;
 const COLOR_RED = { r: 255, g: 0, b: 0, a: 255 } as Color;
+const COLOR_GREEN = { r: 0, g: 255, b: 0, a: 255 } as Color;
 
 const showFPS = (stats: Stats) => {
   stats.showPanel(0);
   document.body.appendChild(stats.dom);
 };
 
-const getMask = (segmentation: bodyPix.SemanticPersonSegmentation) => {
-  const foregroundColor = COLOR_RED;
+const getMask = (
+  segmentation: bodyPix.SemanticPersonSegmentation,
+  color = COLOR_RED
+) => {
   const backgroundColor = COLOR_CLEAR;
   const drawContour = true;
 
-  return bodyPix.toMask(
-    segmentation,
-    foregroundColor,
-    backgroundColor,
-    drawContour
-  );
+  return bodyPix.toMask(segmentation, color, backgroundColor, drawContour);
 };
 
 const drawMask = (
   segmentation: bodyPix.SemanticPersonSegmentation,
-  canvas: HTMLCanvasElement
+  canvas: HTMLCanvasElement,
+  color = COLOR_RED
 ) => {
   // TODO move up to be a constant. Moved here because the size wasn't correct when at the top of the file.
   const EMPTY_BACKGROUND = new Image(canvas.clientWidth, canvas.clientHeight);
 
-  const coloredPartImage = getMask(segmentation);
+  const coloredPartImage = getMask(segmentation, color);
   const opacity = 1;
   const flipHorizontal = true;
   const maskBlurAmount = 0;
@@ -70,7 +69,7 @@ const loadAndPredict = async (
 ) => {
   const segmentation = await detector.detect();
   drawMask(segmentation, canvas);
-  drawSkeleton(segmentation, canvas);
+  // drawSkeleton(segmentation, canvas);
 };
 
 // the "game loop"
