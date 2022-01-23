@@ -12,6 +12,8 @@ const COLOR_CLEAR = { r: 0, g: 0, b: 0, a: 0 } as Color;
 const COLOR_RED = { r: 255, g: 0, b: 0, a: 255 } as Color;
 const COLOR_GREEN = { r: 0, g: 255, b: 0, a: 255 } as Color;
 
+let freezeFrame: bodyPix.SemanticPersonSegmentation | undefined;
+
 const showFPS = (stats: Stats) => {
   stats.showPanel(0);
   document.body.appendChild(stats.dom);
@@ -52,7 +54,7 @@ const drawMask = (
 
 const drawSkeleton = (
   segmentation: bodyPix.SemanticPersonSegmentation,
-  canvas: HTMLCanvasElement
+  canvas: Canvas
 ) => {
   let pose = segmentation.allPoses[0];
   if (!pose) {
@@ -84,6 +86,10 @@ const onAnimationFrame = async (
   if (detector.isReady()) {
     await loadAndPredict(detector, canvas.el);
     canvas.loaded();
+  }
+
+  if (freezeFrame) {
+    drawSkeleton(freezeFrame, canvas);
   }
 
   stats.end();
@@ -119,6 +125,15 @@ const setup = async () => {
 
   showFPS(stats);
   onAnimationFrame(stats, detector, canvas);
+
+  document.addEventListener("keypress", async (event) => {
+    if (event.code === "Space" && detector.isReady()) {
+      freezeFrame = await detector.detect();
+      setTimeout(() => {
+        freezeFrame = undefined;
+      }, 1000);
+    }
+  });
 };
 
 setup();

@@ -30,4 +30,12 @@ export default class Canvas {
   loaded() {
     this.loadingIndicator.remove();
   }
+
+  context() {
+    const ctx = this.el.getContext("2d");
+    if (!ctx) {
+      throw new Error("context couldn't be retrieved");
+    }
+    return ctx;
+  }
 }

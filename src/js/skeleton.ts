@@ -1,6 +1,7 @@
 import { Pose, Keypoint } from "@tensorflow-models/body-pix/dist/types";
 import * as posenet from "@tensorflow-models/posenet";
 import { Vector2D } from "@tensorflow-models/posenet/dist/types";
+import Canvas from "./canvas";
 
 const COLOR = "aqua";
 const LINE_WIDTH = 2;
@@ -62,11 +63,8 @@ export default class Skeleton {
     this.keypoints = pose.keypoints;
   }
 
-  draw(canvas: HTMLCanvasElement) {
-    const ctx = canvas.getContext("2d");
-    if (!ctx) {
-      throw new Error("unable to get canvas context");
-    }
+  draw(canvas: Canvas) {
+    const ctx = canvas.context();
     drawSkeleton(this.keypoints, 0.1, ctx);
   }
 }
