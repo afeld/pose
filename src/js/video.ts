@@ -41,8 +41,8 @@ export default class Video {
     this.metadataLoaded = false;
     this.dataLoaded = false;
 
-    const stream = this.el.srcObject as MediaStream;
-    stream.getTracks().forEach((track) => track.stop());
+    const stream = this.el.srcObject as MediaStream | null;
+    stream?.getTracks().forEach((track) => track.stop());
 
     this.el.srcObject = null;
   }
