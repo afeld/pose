@@ -6,6 +6,7 @@ import Video from "./video";
 import { Color } from "@tensorflow-models/body-pix/dist/types";
 import Canvas from "./canvas";
 import Detector from "./detector";
+import { getElementById } from "./dom_helpers";
 
 const COLOR_CLEAR = { r: 0, g: 0, b: 0, a: 0 } as Color;
 const COLOR_RED = { r: 255, g: 0, b: 0, a: 255 } as Color;
@@ -98,14 +99,6 @@ const toggleWebcam = (video: Video, canvas: Canvas) => {
     // try to match output resolution
     video.setUpWebcam(canvas.width(), canvas.height());
   }
-};
-
-const getElementById = (selector: string) => {
-  const el = document.getElementById(selector);
-  if (!el) {
-    throw new Error(`Element '${el}' not found`);
-  }
-  return el;
 };
 
 const setup = async () => {

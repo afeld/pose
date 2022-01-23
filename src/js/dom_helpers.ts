@@ -1,3 +1,11 @@
+export const getElementById = (selector: string) => {
+  const el = document.getElementById(selector);
+  if (!el) {
+    throw new Error(`Element '${el}' not found`);
+  }
+  return el;
+};
+
 export const getSize = (element: HTMLElement) => {
   // https://stackoverflow.com/a/38929456
   const cs = getComputedStyle(element);
