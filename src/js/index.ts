@@ -75,6 +75,7 @@ const setup = async () => {
   const canvasEl = getElementById("canvas") as HTMLCanvasElement;
   const loadingIndicator = getElementById("loading");
   const canvas = new Canvas(canvasEl, loadingIndicator);
+
   const video = Video.matchCanvas(canvas);
   const stats = new Stats();
   const detector = new Detector(video);
@@ -96,6 +97,68 @@ const setup = async () => {
 
   showFPS(stats);
   onAnimationFrame(stats, detector, canvas, effects);
+
+  // https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API#chrome_support
+  const iSpeechRecognition =
+    window.SpeechRecognition || webkitSpeechRecognition;
+  const iSpeechGrammarList =
+    window.SpeechGrammarList || webkitSpeechGrammarList;
+
+  const recognition = new iSpeechRecognition();
+  const speechRecognitionList = new iSpeechGrammarList();
+  const colors = [
+    "aqua",
+    "azure",
+    "beige",
+    "bisque",
+    "black",
+    "blue",
+    "brown",
+    "chocolate",
+    "coral",
+  ];
+  const grammar =
+    "#JSGF V1.0; grammar colors; public <color> = " + colors.join(" | ") + " ;";
+  speechRecognitionList.addFromString(grammar, 1);
+  recognition.grammars = speechRecognitionList;
+
+  recognition.continuous = true;
+  recognition.lang = "en-US";
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.start();
+  recognition.addEventListener("result", (event) => {
+    // const color = event.results[0][0].transcript;
+    // console.log(color);
+    console.log(event.results);
+    const lastCommand = event.results[event.results.length - 1][0].transcript;
+    console.log(lastCommand);
+  });
+  recognition.addEventListener("nomatch", () => {
+    console.log("no match for voice command");
+  });
+
+  let autoRestart = true;
+  recognition.addEventListener("error", (event) => {
+    console.log("error in speec recognition:", event.error);
+
+    switch (event.error) {
+      case "not-allowed":
+      case "service-not-allowed":
+        autoRestart = false;
+    }
+  });
+  recognition.addEventListener("speechend", () => {
+    console.log("speech ended");
+
+    setTimeout(() => {
+      // https://stackoverflow.com/questions/29996350/speech-recognition-run-continuously
+      if (autoRestart) {
+        recognition.start();
+      }
+    }, 1000);
+  });
 };
 
 setup();
