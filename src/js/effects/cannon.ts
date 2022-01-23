@@ -1,8 +1,9 @@
 import * as bodyPix from "@tensorflow-models/body-pix";
 import Canvas from "../canvas";
 import { drawSkeleton } from "../segment_helpers";
+import Effect from "./effect";
 
-export default class Cannon {
+export default class Cannon implements Effect {
   segmentations: bodyPix.SemanticPersonSegmentation[];
 
   // in seconds

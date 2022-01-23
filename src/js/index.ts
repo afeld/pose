@@ -1,15 +1,13 @@
 import "@tensorflow/tfjs";
-import * as bodyPix from "@tensorflow-models/body-pix";
 import Stats from "stats.js";
 import Video from "./video";
 import Canvas from "./canvas";
 import Detector from "./detector";
 import { getElementById } from "./dom_helpers";
-import { drawMask, drawSkeleton } from "./segment_helpers";
+import { drawMask } from "./segment_helpers";
 import Cannon from "./effects/cannon";
-
-// effects
-let freezeFrame: bodyPix.SemanticPersonSegmentation | undefined;
+import Freeze from "./effects/freeze";
+import Effect from "./effects/effect";
 
 const showFPS = (stats: Stats) => {
   stats.showPanel(0);
@@ -30,7 +28,7 @@ const onAnimationFrame = async (
   stats: Stats,
   detector: Detector,
   canvas: Canvas,
-  cannon: Cannon
+  effects: Effect[]
 ) => {
   stats.begin();
 
@@ -38,18 +36,14 @@ const onAnimationFrame = async (
     const segmentation = await loadAndPredict(detector, canvas.el);
     canvas.loaded();
 
-    cannon.onAnimationFrame(segmentation, canvas);
-  }
-
-  if (freezeFrame) {
-    drawSkeleton(freezeFrame, canvas);
+    effects.forEach((effect) => effect.onAnimationFrame(segmentation, canvas));
   }
 
   stats.end();
 
   // loop
   requestAnimationFrame(() =>
-    onAnimationFrame(stats, detector, canvas, cannon)
+    onAnimationFrame(stats, detector, canvas, effects)
   );
 };
 
@@ -69,7 +63,7 @@ const setup = async () => {
   const video = Video.matchCanvas(canvas);
   const stats = new Stats();
   const detector = new Detector(video);
-  const cannon = new Cannon();
+  const effects = [new Cannon(), new Freeze()];
 
   // only use the webcam when the window is visible
   toggleWebcam(video, canvas);
@@ -80,16 +74,7 @@ const setup = async () => {
   );
 
   showFPS(stats);
-  onAnimationFrame(stats, detector, canvas, cannon);
-
-  document.addEventListener("keypress", async (event) => {
-    if (event.code === "Space" && detector.isReady()) {
-      freezeFrame = await detector.detect();
-      setTimeout(() => {
-        freezeFrame = undefined;
-      }, 1000);
-    }
-  });
+  onAnimationFrame(stats, detector, canvas, effects);
 };
 
 setup();
