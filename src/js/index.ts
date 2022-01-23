@@ -12,7 +12,9 @@ const COLOR_CLEAR = { r: 0, g: 0, b: 0, a: 0 } as Color;
 const COLOR_RED = { r: 255, g: 0, b: 0, a: 255 } as Color;
 const COLOR_GREEN = { r: 0, g: 255, b: 0, a: 255 } as Color;
 
+// effects
 let freezeFrame: bodyPix.SemanticPersonSegmentation | undefined;
+const cannon = [] as bodyPix.SemanticPersonSegmentation[];
 
 const showFPS = (stats: Stats) => {
   stats.showPanel(0);
@@ -72,7 +74,7 @@ const loadAndPredict = async (
 ) => {
   const segmentation = await detector.detect();
   drawMask(segmentation, canvas);
-  // drawSkeleton(segmentation, canvas);
+  return segmentation;
 };
 
 // the "game loop"
@@ -84,12 +86,25 @@ const onAnimationFrame = async (
   stats.begin();
 
   if (detector.isReady()) {
-    await loadAndPredict(detector, canvas.el);
+    const segmentation = await loadAndPredict(detector, canvas.el);
     canvas.loaded();
+    cannon.push(segmentation);
   }
 
   if (freezeFrame) {
     drawSkeleton(freezeFrame, canvas);
+  }
+
+  // in seconds
+  const DELAY_TIME = 1;
+  // there isn't a way to retrieve from Stats, so hard code
+  const FRAMES_PER_SECOND = 17;
+
+  if (cannon.length > DELAY_TIME * FRAMES_PER_SECOND) {
+    const oldSeg = cannon.shift();
+    if (oldSeg) {
+      drawSkeleton(oldSeg, canvas);
+    }
   }
 
   stats.end();
