@@ -40,10 +40,6 @@ export default class Listener {
     this.recognition.interimResults = false;
     this.recognition.maxAlternatives = 1;
 
-    this.recognition.addEventListener("result", (event) => {
-      const lastCommand = event.results[event.results.length - 1][0].transcript;
-      console.log(lastCommand);
-    });
     this.recognition.addEventListener("nomatch", () => {
       console.log("no match for voice command");
     });
@@ -52,7 +48,7 @@ export default class Listener {
     // https://stackoverflow.com/questions/29996350/speech-recognition-run-continuously
     let autoRestart = true;
     this.recognition.addEventListener("error", (event) => {
-      console.log("error in speech recognition:", event.error);
+      console.error("error in speech recognition:", event.error);
 
       switch (event.error) {
         case "not-allowed":
@@ -61,13 +57,23 @@ export default class Listener {
       }
     });
     this.recognition.addEventListener("speechend", () => {
-      console.log("speech ended");
-
       setTimeout(() => {
         if (autoRestart) {
           this.recognition.start();
         }
-      }, 1000);
+      }, 100);
+    });
+  }
+
+  onCommand(callback: (command: string) => void) {
+    this.recognition.addEventListener("result", (event) => {
+      const lastCommand = event.results[event.results.length - 1][0].transcript;
+      const cleanCommand = lastCommand.toLowerCase().trim();
+      if (this.commands.includes(cleanCommand)) {
+        callback(cleanCommand);
+      } else {
+        console.warn("unknown command:", cleanCommand);
+      }
     });
   }
 

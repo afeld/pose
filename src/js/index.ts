@@ -92,6 +92,7 @@ const setup = async () => {
   });
 
   const listener = new Listener();
+  listener.onCommand((command) => console.log("command:", command));
 
   // only use the webcam when the window is visible
   toggleWebcam(video, canvas, listener);
