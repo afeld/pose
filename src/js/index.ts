@@ -48,12 +48,15 @@ const onAnimationFrame = async (
   );
 };
 
-const toggleWebcam = (video: Video, canvas: Canvas) => {
+const toggleWebcam = (video: Video, canvas: Canvas, listener: Listener) => {
   if (document.hidden) {
     video.turnOffWebcam();
+    listener.stop();
   } else {
     // try to match output resolution
     video.setUpWebcam(canvas.width(), canvas.height());
+
+    listener.start();
   }
 };
 
@@ -88,20 +91,18 @@ const setup = async () => {
     }
   });
 
+  const listener = new Listener();
+
   // only use the webcam when the window is visible
-  toggleWebcam(video, canvas);
+  toggleWebcam(video, canvas, listener);
   document.addEventListener(
     "visibilitychange",
-    () => toggleWebcam(video, canvas),
+    () => toggleWebcam(video, canvas, listener),
     false
   );
 
   showFPS(stats);
   onAnimationFrame(stats, detector, canvas, effects);
-
-  const listener = new Listener();
-  // TODO only enable when tab visible
-  // listener.start();
 };
 
 setup();

@@ -74,4 +74,8 @@ export default class Listener {
   start() {
     this.recognition.start();
   }
+
+  stop() {
+    this.recognition.stop();
+  }
 }
