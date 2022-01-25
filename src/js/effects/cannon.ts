@@ -4,14 +4,15 @@ import { drawSkeleton } from "../segment_helpers";
 import Effect from "./effect";
 
 export default class Cannon implements Effect {
+  delay: number;
   segmentations: bodyPix.SemanticPersonSegmentation[];
 
-  // in seconds
-  DELAY_TIME = 1;
   // there isn't a way to retrieve from Stats, so hard code
   FRAMES_PER_SECOND = 17;
 
-  constructor() {
+  /** @param delay - the amount of time to wait, in seconds */
+  constructor(delay = 1) {
+    this.delay = delay;
     this.segmentations = [];
   }
 
@@ -21,10 +22,17 @@ export default class Cannon implements Effect {
   ) {
     this.segmentations.push(segmentation);
 
-    if (this.segmentations.length > this.DELAY_TIME * this.FRAMES_PER_SECOND) {
-      const oldSeg = this.segmentations.shift();
-      if (oldSeg) {
-        drawSkeleton(oldSeg, canvas);
+    const numSegmentations = this.segmentations.length;
+    const framesToKeep = this.delay * this.FRAMES_PER_SECOND;
+    if (numSegmentations > 0) {
+      // display the oldest saved frame
+      const oldSeg = this.segmentations[0];
+      drawSkeleton(oldSeg, canvas);
+
+      if (numSegmentations > framesToKeep) {
+        // shorten to most recent frames
+        const numToShift = numSegmentations - framesToKeep;
+        this.segmentations = this.segmentations.slice(numToShift);
       }
     }
   }
