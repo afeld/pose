@@ -1,13 +1,12 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API#chrome_support
+// https://github.com/mdn/content/pull/12412
 const iSpeechRecognition = window.SpeechRecognition || webkitSpeechRecognition;
 const iSpeechGrammarList = window.SpeechGrammarList || webkitSpeechGrammarList;
 
 const createGrammar = (commands: string[]) => {
   const speechRecognitionList = new iSpeechGrammarList();
-  const grammar =
-    "#JSGF V1.0; grammar commands; public <command> = " +
-    commands.join(" | ") +
-    " ;";
+  const commandStr = commands.join(" | ");
+  const grammar = `#JSGF V1.0; grammar commands; public <command> = ${commandStr} ;`;
   speechRecognitionList.addFromString(grammar, 1);
   return speechRecognitionList;
 };
