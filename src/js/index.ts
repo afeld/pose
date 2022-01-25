@@ -5,28 +5,10 @@ import Canvas from "./canvas";
 import Detector from "./detector";
 import { getElementById } from "./dom_helpers";
 import { drawMask } from "./segment_helpers";
-import Cannon from "./effects/cannon";
 import Freeze from "./effects/freeze";
 import Effect from "./effects/effect";
 import Listener from "./listener";
-
-const actions = [
-  {
-    keycode: "KeyC",
-    // handle both spellings
-    commands: [
-      "cannon",
-      "canon",
-      "start cannon",
-      "start canon",
-      "add cannon",
-      "add canon",
-    ],
-    callback: (effects: Effect[]) => {
-      addCannon(effects);
-    },
-  },
-];
+import actions from "./actions";
 
 const showFPS = (stats: Stats) => {
   stats.showPanel(0);
@@ -81,21 +63,6 @@ const onVisibilityChange = (
 
     listener.start();
   }
-};
-
-/**
- * Adds a Cannon to the list of effects, delaying by one more second each time.
- * @param effects - gets modified
- */
-const addCannon = (effects: Effect[]) => {
-  // increase the delay by one for each added
-  const numCannons = effects.reduce(
-    (prev, effect) => (effect instanceof Cannon ? prev + 1 : prev),
-    0
-  );
-  const delay = numCannons + 1;
-  const effect = new Cannon(delay);
-  effects.push(effect);
 };
 
 const onVoiceCommand = (effects: Effect[], command: string) => {
