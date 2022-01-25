@@ -22,7 +22,8 @@ export default class Cannon implements Effect {
   ) {
     this.segmentations.push(segmentation);
 
-    if (this.segmentations.length > this.delay * this.FRAMES_PER_SECOND) {
+    const framesToWait = this.delay * this.FRAMES_PER_SECOND;
+    if (this.segmentations.length > framesToWait) {
       const oldSeg = this.segmentations.shift();
       if (oldSeg) {
         drawSkeleton(oldSeg, canvas);

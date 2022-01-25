@@ -56,6 +56,21 @@ const toggleWebcam = (video: Video, canvas: Canvas) => {
   }
 };
 
+/**
+ * Adds a Cannon to the list of effects, delaying by one more second each time.
+ * @param effects - gets modified
+ */
+const addCannon = (effects: Effect[]) => {
+  // increase the delay by one for each added
+  const numCannons = effects.reduce(
+    (prev, effect) => (effect instanceof Cannon ? prev + 1 : prev),
+    0
+  );
+  const delay = numCannons + 1;
+  const effect = new Cannon(delay);
+  effects.push(effect);
+};
+
 const setup = async () => {
   const canvasEl = getElementById("canvas") as HTMLCanvasElement;
   const loadingIndicator = getElementById("loading");
@@ -63,7 +78,13 @@ const setup = async () => {
   const video = Video.matchCanvas(canvas);
   const stats = new Stats();
   const detector = new Detector(video);
-  const effects = [new Cannon(), new Freeze()];
+  const effects = [new Freeze()];
+
+  document.addEventListener("keypress", (event) => {
+    if (event.code === "KeyC") {
+      addCannon(effects);
+    }
+  });
 
   // only use the webcam when the window is visible
   toggleWebcam(video, canvas);

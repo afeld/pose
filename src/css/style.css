@@ -28,3 +28,8 @@ body {
   margin-right: -50%;
   transform: translate(-50%, -50%);
 }
+
+p {
+  padding-left: 2em;
+  padding-right: 2em;
+}
