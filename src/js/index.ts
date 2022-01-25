@@ -48,7 +48,12 @@ const onAnimationFrame = async (
   );
 };
 
-const toggleWebcam = (video: Video, canvas: Canvas, listener: Listener) => {
+// avoid being creepy by only watching+listening when the window is visible
+const onVisibilityChange = (
+  video: Video,
+  canvas: Canvas,
+  listener: Listener
+) => {
   if (document.hidden) {
     video.turnOffWebcam();
     listener.stop();
@@ -95,10 +100,10 @@ const setup = async () => {
   listener.onCommand((command) => console.log("command:", command));
 
   // only use the webcam when the window is visible
-  toggleWebcam(video, canvas, listener);
+  onVisibilityChange(video, canvas, listener);
   document.addEventListener(
     "visibilitychange",
-    () => toggleWebcam(video, canvas, listener),
+    () => onVisibilityChange(video, canvas, listener),
     false
   );
 

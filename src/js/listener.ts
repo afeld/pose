@@ -11,6 +11,19 @@ const createGrammar = (commands: string[]) => {
   return speechRecognitionList;
 };
 
+const createRecognizer = (commands: string[]) => {
+  const recognition = new iSpeechRecognition();
+  recognition.continuous = true;
+  recognition.lang = "en-US";
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  const speechRecognitionList = createGrammar(commands);
+  recognition.grammars = speechRecognitionList;
+
+  return recognition;
+};
+
 export default class Listener {
   recognition: SpeechRecognition;
   commands = [
@@ -26,19 +39,11 @@ export default class Listener {
   ];
 
   constructor() {
-    this.recognition = new iSpeechRecognition();
-    this.setup();
+    this.recognition = createRecognizer(this.commands);
+    this.setupListeners();
   }
 
-  setup() {
-    const speechRecognitionList = createGrammar(this.commands);
-    this.recognition.grammars = speechRecognitionList;
-
-    this.recognition.continuous = true;
-    this.recognition.lang = "en-US";
-    this.recognition.interimResults = false;
-    this.recognition.maxAlternatives = 1;
-
+  setupListeners() {
     this.recognition.addEventListener("nomatch", () => {
       console.log("no match for voice command");
     });
