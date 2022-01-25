@@ -30,7 +30,9 @@ export default class Cannon implements Effect {
       drawSkeleton(oldSeg, canvas);
 
       if (numSegmentations > framesToKeep) {
-        this.segmentations.shift();
+        // shorten to most recent frames
+        const numToShift = numSegmentations - framesToKeep;
+        this.segmentations = this.segmentations.slice(numToShift);
       }
     }
   }
