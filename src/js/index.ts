@@ -10,6 +10,24 @@ import Freeze from "./effects/freeze";
 import Effect from "./effects/effect";
 import Listener from "./listener";
 
+const actions = [
+  {
+    keycode: "KeyC",
+    // handle both spellings
+    commands: [
+      "cannon",
+      "canon",
+      "start cannon",
+      "start canon",
+      "add cannon",
+      "add canon",
+    ],
+    callback: (effects: Effect[]) => {
+      addCannon(effects);
+    },
+  },
+];
+
 const showFPS = (stats: Stats) => {
   stats.showPanel(0);
   document.body.appendChild(stats.dom);
@@ -80,6 +98,17 @@ const addCannon = (effects: Effect[]) => {
   effects.push(effect);
 };
 
+const onVoiceCommand = (effects: Effect[], command: string) => {
+  console.log("command:", command);
+
+  const action = actions.find((action) => action.commands.includes(command));
+  if (!action) {
+    console.warn(`command "${command}" not found`);
+    return;
+  }
+  action.callback(effects);
+};
+
 const setup = async () => {
   const canvasEl = getElementById("canvas") as HTMLCanvasElement;
   const loadingIndicator = getElementById("loading");
@@ -91,13 +120,18 @@ const setup = async () => {
   const effects = [new Freeze()];
 
   document.addEventListener("keypress", (event) => {
-    if (event.code === "KeyC") {
-      addCannon(effects);
+    const action = actions.find((action) => action.keycode === event.code);
+    if (!action) {
+      console.warn(`no action for key "${event.code}"`);
+      return;
     }
+
+    action.callback(effects);
   });
 
-  const listener = new Listener();
-  listener.onCommand((command) => console.log("command:", command));
+  const allCommands = actions.map((action) => action.commands).flat();
+  const listener = new Listener(allCommands);
+  listener.onCommand((command) => onVoiceCommand(effects, command));
 
   // only use the webcam when the window is visible
   onVisibilityChange(video, canvas, listener);

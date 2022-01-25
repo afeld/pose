@@ -25,20 +25,12 @@ const createRecognizer = (commands: string[]) => {
 };
 
 export default class Listener {
+  commands: string[];
   recognition: SpeechRecognition;
-  commands = [
-    "aqua",
-    "azure",
-    "beige",
-    "bisque",
-    "black",
-    "blue",
-    "brown",
-    "chocolate",
-    "coral",
-  ];
 
-  constructor() {
+  constructor(commands: string[]) {
+    this.commands = commands;
+
     this.recognition = createRecognizer(this.commands);
     this.setupListeners();
   }
