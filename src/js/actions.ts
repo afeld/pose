@@ -4,7 +4,7 @@ import Effect from "./effects/effect";
 const actions = [
   {
     keycode: "KeyC",
-    // handle both spellings
+    // handle variants
     commands: [
       "cannon",
       "canon",
@@ -12,6 +12,8 @@ const actions = [
       "start canon",
       "add cannon",
       "add canon",
+      "at cannon",
+      "at canon",
     ],
     callback: (effects: Effect[]) => {
       Cannon.addTo(effects);
