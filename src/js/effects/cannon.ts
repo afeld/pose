@@ -22,11 +22,15 @@ export default class Cannon implements Effect {
   ) {
     this.segmentations.push(segmentation);
 
-    const framesToWait = this.delay * this.FRAMES_PER_SECOND;
-    if (this.segmentations.length > framesToWait) {
-      const oldSeg = this.segmentations.shift();
-      if (oldSeg) {
-        drawSkeleton(oldSeg, canvas);
+    const numSegmentations = this.segmentations.length;
+    const framesToKeep = this.delay * this.FRAMES_PER_SECOND;
+    if (numSegmentations > 0) {
+      // display the oldest saved frame
+      const oldSeg = this.segmentations[0];
+      drawSkeleton(oldSeg, canvas);
+
+      if (numSegmentations > framesToKeep) {
+        this.segmentations.shift();
       }
     }
   }
