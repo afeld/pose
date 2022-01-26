@@ -1,5 +1,6 @@
 import Cannon from "./effects/cannon";
 import Effect from "./effects/effect";
+import Freeze from "./effects/freeze";
 
 const actions = [
   {
@@ -27,6 +28,16 @@ const actions = [
     ],
     callback: (effects: Effect[]) => {
       Cannon.addTo(effects);
+    },
+  },
+  {
+    description: "Freeze",
+    keycode: "KeyF",
+    // handle variants
+    commands: ["freeze", "frieze"],
+    callback: (effects: Effect[]) => {
+      const freeze = new Freeze();
+      effects.push(freeze);
     },
   },
 ];

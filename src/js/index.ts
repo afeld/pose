@@ -5,7 +5,6 @@ import Canvas from "./canvas";
 import Detector from "./detector";
 import { getElementById, querySelector } from "./dom_helpers";
 import { drawMask } from "./segment_helpers";
-import Freeze from "./effects/freeze";
 import Effect from "./effects/effect";
 import actions, { generateActionHelp } from "./actions";
 import ListenerController from "./listener_controller";

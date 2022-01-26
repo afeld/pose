@@ -3,36 +3,17 @@ import Canvas from "../canvas";
 import { drawSkeleton } from "../segment_helpers";
 import Effect from "./effect";
 
-// TODO fix
 export default class Freeze implements Effect {
   frame: bodyPix.SemanticPersonSegmentation | undefined;
-  DURATION = 1000; // in milliseconds
-  awaitingCapture = false;
-
-  constructor() {
-    document.addEventListener("keypress", (event) => {
-      if (event.code === "Space") {
-        this.awaitingCapture = true;
-      }
-    });
-  }
 
   onAnimationFrame(
     segmentation: bodyPix.SemanticPersonSegmentation,
     canvas: Canvas
   ) {
-    if (this.awaitingCapture) {
+    if (!this.frame) {
       this.frame = segmentation;
-
-      setTimeout(() => {
-        this.frame = undefined;
-      }, this.DURATION);
-
-      this.awaitingCapture = false;
     }
 
-    if (this.frame) {
-      drawSkeleton(this.frame, canvas);
-    }
+    drawSkeleton(this.frame, canvas);
   }
 }
