@@ -1,15 +1,12 @@
-import * as bodyPix from "@tensorflow-models/body-pix";
+import { SemanticPersonSegmentation } from "@tensorflow-models/body-pix";
 import Canvas from "../canvas";
 import { drawSkeleton } from "../segment_helpers";
 import Effect from "./effect";
 
 export default class Freeze implements Effect {
-  frame: bodyPix.SemanticPersonSegmentation | undefined;
+  frame: SemanticPersonSegmentation | undefined;
 
-  onAnimationFrame(
-    segmentation: bodyPix.SemanticPersonSegmentation,
-    canvas: Canvas
-  ) {
+  onAnimationFrame(segmentation: SemanticPersonSegmentation, canvas: Canvas) {
     if (!this.frame) {
       this.frame = segmentation;
     }

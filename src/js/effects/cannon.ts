@@ -1,11 +1,11 @@
-import * as bodyPix from "@tensorflow-models/body-pix";
+import { SemanticPersonSegmentation } from "@tensorflow-models/body-pix";
 import Canvas from "../canvas";
 import { drawSkeleton } from "../segment_helpers";
 import Effect from "./effect";
 
 export default class Cannon implements Effect {
   delay: number;
-  segmentations: bodyPix.SemanticPersonSegmentation[];
+  segmentations: SemanticPersonSegmentation[];
 
   // there isn't a way to retrieve from Stats, so hard code
   FRAMES_PER_SECOND = 17;
@@ -16,10 +16,7 @@ export default class Cannon implements Effect {
     this.segmentations = [];
   }
 
-  onAnimationFrame(
-    segmentation: bodyPix.SemanticPersonSegmentation,
-    canvas: Canvas
-  ) {
+  onAnimationFrame(segmentation: SemanticPersonSegmentation, canvas: Canvas) {
     this.segmentations.push(segmentation);
 
     const numSegmentations = this.segmentations.length;
