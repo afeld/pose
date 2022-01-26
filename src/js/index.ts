@@ -66,17 +66,6 @@ const onVisibilityChange = (
   }
 };
 
-const onVoiceCommand = (effects: Effect[], command: string) => {
-  console.log("command:", command);
-
-  const action = actions.find((action) => action.commands.includes(command));
-  if (!action) {
-    console.warn(`command "${command}" not found`);
-    return;
-  }
-  action.callback(effects);
-};
-
 const setup = async () => {
   const canvasEl = getElementById("canvas") as HTMLCanvasElement;
   const loadingIndicator = getElementById("loading");
@@ -97,10 +86,7 @@ const setup = async () => {
     action.callback(effects);
   });
 
-  const allCommands = actions.map((action) => action.commands).flat();
-  const listener = new Listener(allCommands);
-  listener.onCommand((command) => onVoiceCommand(effects, command));
-  const listenerController = new ListenerController(listener);
+  const listenerController = new ListenerController(effects);
 
   // only use the webcam when the window is visible
   onVisibilityChange(video, canvas, listenerController);
