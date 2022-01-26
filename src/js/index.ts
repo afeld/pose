@@ -103,12 +103,12 @@ const setup = async () => {
   const detector = new Detector(video);
   const effects = [] as Effect[];
 
-  document.addEventListener("keypress", (event) => onKeyPress(event, effects));
-
-  handleVisibilityChanges(video, canvas, effects);
-
-  showFPS(stats);
+  // kick off the video display
   onAnimationFrame(stats, detector, canvas, effects);
+
+  document.addEventListener("keypress", (event) => onKeyPress(event, effects));
+  handleVisibilityChanges(video, canvas, effects);
+  showFPS(stats);
 
   const actionsTable = querySelector(
     "#actions tbody"
