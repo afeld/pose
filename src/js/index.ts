@@ -14,7 +14,7 @@ const showFPS = (stats: Stats) => {
   document.body.appendChild(stats.dom);
 };
 
-const loadAndPredict = async (
+const drawLivePerson = async (
   detector: Detector,
   canvas: HTMLCanvasElement
 ) => {
@@ -33,7 +33,7 @@ const onAnimationFrame = async (
   stats.begin();
 
   if (detector.isReady()) {
-    const segmentation = await loadAndPredict(detector, canvas.el);
+    const segmentation = await drawLivePerson(detector, canvas.el);
     canvas.loaded();
 
     effects.forEach((effect) => effect.onAnimationFrame(segmentation, canvas));
@@ -64,35 +64,48 @@ const onVisibilityChange = (
   }
 };
 
-const setup = async () => {
-  const canvasEl = getElementById("canvas") as HTMLCanvasElement;
-  const loadingIndicator = getElementById("loading");
-  const canvas = new Canvas(canvasEl, loadingIndicator);
-
-  const video = Video.matchCanvas(canvas);
-  const stats = new Stats();
-  const detector = new Detector(video);
-  const effects = [] as Effect[];
-
-  document.addEventListener("keypress", (event) => {
-    const action = actions.find((action) => action.keycode === event.code);
-    if (!action) {
-      console.warn(`no action for key "${event.code}"`);
-      return;
-    }
-
-    action.callback(effects);
-  });
-
+// only use the webcam when the window is visible
+const handleVisibilityChanges = (
+  video: Video,
+  canvas: Canvas,
+  effects: Effect[]
+) => {
   const listenerController = new ListenerController(effects);
 
-  // only use the webcam when the window is visible
   onVisibilityChange(video, canvas, listenerController);
   document.addEventListener(
     "visibilitychange",
     () => onVisibilityChange(video, canvas, listenerController),
     false
   );
+};
+
+const onKeyPress = (event: KeyboardEvent, effects: Effect[]) => {
+  const action = actions.find((action) => action.keycode === event.code);
+  if (!action) {
+    console.warn(`no action for key "${event.code}"`);
+    return;
+  }
+
+  action.callback(effects);
+};
+
+const createCanvas = () => {
+  const canvasEl = getElementById("canvas") as HTMLCanvasElement;
+  const loadingIndicator = getElementById("loading");
+  return new Canvas(canvasEl, loadingIndicator);
+};
+
+const setup = async () => {
+  const canvas = createCanvas();
+  const video = Video.matchCanvas(canvas);
+  const stats = new Stats();
+  const detector = new Detector(video);
+  const effects = [] as Effect[];
+
+  document.addEventListener("keypress", (event) => onKeyPress(event, effects));
+
+  handleVisibilityChanges(video, canvas, effects);
 
   showFPS(stats);
   onAnimationFrame(stats, detector, canvas, effects);
