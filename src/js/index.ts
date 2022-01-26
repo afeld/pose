@@ -3,12 +3,13 @@ import Stats from "stats.js";
 import Video from "./video";
 import Canvas from "./canvas";
 import Detector from "./detector";
-import { getElementById } from "./dom_helpers";
+import { getElementById, querySelector } from "./dom_helpers";
 import { drawMask } from "./segment_helpers";
 import Freeze from "./effects/freeze";
 import Effect from "./effects/effect";
 import Listener from "./listener";
 import actions, { generateActionHelp } from "./actions";
+import ListenerController from "./listener_controller";
 
 const showFPS = (stats: Stats) => {
   stats.showPanel(0);
@@ -52,16 +53,16 @@ const onAnimationFrame = async (
 const onVisibilityChange = (
   video: Video,
   canvas: Canvas,
-  listener: Listener
+  listenerController: ListenerController
 ) => {
   if (document.hidden) {
     video.turnOffWebcam();
-    listener.stop();
+    listenerController.stop();
   } else {
     // try to match output resolution
     video.setUpWebcam(canvas.width(), canvas.height());
 
-    listener.start();
+    listenerController.startIfAllowed();
   }
 };
 
@@ -99,24 +100,22 @@ const setup = async () => {
   const allCommands = actions.map((action) => action.commands).flat();
   const listener = new Listener(allCommands);
   listener.onCommand((command) => onVoiceCommand(effects, command));
+  const listenerController = new ListenerController(listener);
 
   // only use the webcam when the window is visible
-  onVisibilityChange(video, canvas, listener);
+  onVisibilityChange(video, canvas, listenerController);
   document.addEventListener(
     "visibilitychange",
-    () => onVisibilityChange(video, canvas, listener),
+    () => onVisibilityChange(video, canvas, listenerController),
     false
   );
 
   showFPS(stats);
   onAnimationFrame(stats, detector, canvas, effects);
 
-  const actionsTable = document.querySelector(
+  const actionsTable = querySelector(
     "#actions tbody"
-  ) as HTMLTableSectionElement | null;
-  if (!actionsTable) {
-    throw new Error("Can't find help table");
-  }
+  ) as HTMLTableSectionElement;
   generateActionHelp(actionsTable);
 };
 
