@@ -29,7 +29,22 @@ body {
   transform: translate(-50%, -50%);
 }
 
-p {
-  padding-left: 2em;
-  padding-right: 2em;
+.content {
+  padding: 2em;
+}
+
+.table {
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.table,
+.table th,
+.table td {
+  border: 1px solid black;
+}
+
+.table th,
+.table td {
+  padding: 0.5em;
 }

@@ -36,4 +36,19 @@ export default class Cannon implements Effect {
       }
     }
   }
+
+  /**
+   * Adds a Cannon to the list of effects, delaying by one more second each time.
+   * @param effects - gets modified
+   */
+  static addTo(effects: Effect[]) {
+    // increase the delay by one for each added
+    const numCannons = effects.reduce(
+      (prev, effect) => (effect instanceof Cannon ? prev + 1 : prev),
+      0
+    );
+    const delay = numCannons + 1;
+    const effect = new Cannon(delay);
+    effects.push(effect);
+  }
 }

@@ -6,6 +6,14 @@ export const getElementById = (selector: string) => {
   return el;
 };
 
+export const querySelector = (selector: string) => {
+  const el = document.querySelector(selector);
+  if (!el) {
+    throw new Error(`Element '${el}' not found`);
+  }
+  return el;
+};
+
 export const getSize = (element: HTMLElement) => {
   // https://stackoverflow.com/a/38929456
   const cs = getComputedStyle(element);

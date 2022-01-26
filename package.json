@@ -1,10 +1,11 @@
 {
   "devDependencies": {
+    "@types/dom-speech-recognition": "^0.0.0",
     "@types/stats.js": "^0.17.0",
     "parcel": "^2.2.1"
   },
   "scripts": {
-    "start": "parcel serve --open firefox src/index.html",
+    "start": "parcel serve --open chrome src/index.html",
     "build": "parcel build src/index.html"
   },
   "dependencies": {

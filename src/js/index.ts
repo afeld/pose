@@ -3,11 +3,12 @@ import Stats from "stats.js";
 import Video from "./video";
 import Canvas from "./canvas";
 import Detector from "./detector";
-import { getElementById } from "./dom_helpers";
+import { getElementById, querySelector } from "./dom_helpers";
 import { drawMask } from "./segment_helpers";
-import Cannon from "./effects/cannon";
 import Freeze from "./effects/freeze";
 import Effect from "./effects/effect";
+import actions, { generateActionHelp } from "./actions";
+import ListenerController from "./listener_controller";
 
 const showFPS = (stats: Stats) => {
   stats.showPanel(0);
@@ -47,55 +48,60 @@ const onAnimationFrame = async (
   );
 };
 
-const toggleWebcam = (video: Video, canvas: Canvas) => {
+// avoid being creepy by only watching+listening when the window is visible
+const onVisibilityChange = (
+  video: Video,
+  canvas: Canvas,
+  listenerController: ListenerController
+) => {
   if (document.hidden) {
     video.turnOffWebcam();
+    listenerController.stop();
   } else {
     // try to match output resolution
     video.setUpWebcam(canvas.width(), canvas.height());
-  }
-};
 
-/**
- * Adds a Cannon to the list of effects, delaying by one more second each time.
- * @param effects - gets modified
- */
-const addCannon = (effects: Effect[]) => {
-  // increase the delay by one for each added
-  const numCannons = effects.reduce(
-    (prev, effect) => (effect instanceof Cannon ? prev + 1 : prev),
-    0
-  );
-  const delay = numCannons + 1;
-  const effect = new Cannon(delay);
-  effects.push(effect);
+    listenerController.startIfAllowed();
+  }
 };
 
 const setup = async () => {
   const canvasEl = getElementById("canvas") as HTMLCanvasElement;
   const loadingIndicator = getElementById("loading");
   const canvas = new Canvas(canvasEl, loadingIndicator);
+
   const video = Video.matchCanvas(canvas);
   const stats = new Stats();
   const detector = new Detector(video);
   const effects = [new Freeze()];
 
   document.addEventListener("keypress", (event) => {
-    if (event.code === "KeyC") {
-      addCannon(effects);
+    const action = actions.find((action) => action.keycode === event.code);
+    if (!action) {
+      console.warn(`no action for key "${event.code}"`);
+      return;
     }
+
+    action.callback(effects);
   });
 
+  const listenerController = new ListenerController(effects);
+
   // only use the webcam when the window is visible
-  toggleWebcam(video, canvas);
+  onVisibilityChange(video, canvas, listenerController);
   document.addEventListener(
     "visibilitychange",
-    () => toggleWebcam(video, canvas),
+    () => onVisibilityChange(video, canvas, listenerController),
     false
   );
 
   showFPS(stats);
   onAnimationFrame(stats, detector, canvas, effects);
+
+  const actionsTable = querySelector(
+    "#actions tbody"
+  ) as HTMLTableSectionElement;
+  generateActionHelp(actionsTable);
 };
 
 setup();

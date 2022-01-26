@@ -10,7 +10,22 @@
       <canvas id="canvas"></canvas>
       <div id="loading">Loading…</div>
     </div>
-    <p>Press <code>c</code> to start a cannon.</p>
+    <div class="content">
+      <label for="enable-speech">Enable voice commands?</label>
+      <input id="enable-speech" type="checkbox" />
+    </div>
+    <div class="content">
+      <table id="actions" class="table">
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>Voice command</th>
+            <th>Keyboard shortcut</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
     <script src="js/index.ts" type="module"></script>
   </body>
 </html>
