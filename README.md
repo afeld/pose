@@ -1,4 +1,4 @@
-# Duet
+# Pose
 
 Experiment using [Tensorflow.js's BodyPix model](https://github.com/tensorflow/tfjs-models/tree/master/body-pix#readme) and the [Web Speech API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API).
 
