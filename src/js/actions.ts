@@ -22,6 +22,12 @@ const actions = [
   },
 ];
 
+export const allCommands = () =>
+  actions.map((action) => action.commands).flat();
+
+export const actionForCommand = (command: string) =>
+  actions.find((action) => action.commands.includes(command));
+
 export const generateActionHelp = (table: HTMLTableSectionElement) => {
   actions.forEach((action) => {
     const row = document.createElement("tr");

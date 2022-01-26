@@ -1,4 +1,4 @@
-import actions from "./actions";
+import { actionForCommand, allCommands } from "./actions";
 import { getElementById } from "./dom_helpers";
 import Effect from "./effects/effect";
 import Listener from "./listener";
@@ -9,8 +9,8 @@ export default class ListenerController {
   effects: Effect[];
 
   constructor(effects: Effect[]) {
-    const allCommands = actions.map((action) => action.commands).flat();
-    this.listener = new Listener(allCommands);
+    const commands = allCommands();
+    this.listener = new Listener(commands);
     this.effects = effects;
     this.listener.onCommand(this.onVoiceCommand);
 
@@ -21,7 +21,7 @@ export default class ListenerController {
   onVoiceCommand = (command: string) => {
     console.log("command:", command);
 
-    const action = actions.find((action) => action.commands.includes(command));
+    const action = actionForCommand(command);
     if (!action) {
       console.warn(`command "${command}" not found`);
       return;
