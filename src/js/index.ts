@@ -8,7 +8,7 @@ import { drawMask } from "./segment_helpers";
 import Freeze from "./effects/freeze";
 import Effect from "./effects/effect";
 import Listener from "./listener";
-import actions from "./actions";
+import actions, { generateActionHelp } from "./actions";
 
 const showFPS = (stats: Stats) => {
   stats.showPanel(0);
@@ -110,6 +110,14 @@ const setup = async () => {
 
   showFPS(stats);
   onAnimationFrame(stats, detector, canvas, effects);
+
+  const actionsTable = document.querySelector(
+    "#actions tbody"
+  ) as HTMLTableSectionElement | null;
+  if (!actionsTable) {
+    throw new Error("Can't find help table");
+  }
+  generateActionHelp(actionsTable);
 };
 
 setup();
