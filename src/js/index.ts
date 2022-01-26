@@ -73,7 +73,7 @@ const setup = async () => {
   const video = Video.matchCanvas(canvas);
   const stats = new Stats();
   const detector = new Detector(video);
-  const effects = [new Freeze()];
+  const effects = [] as Effect[];
 
   document.addEventListener("keypress", (event) => {
     const action = actions.find((action) => action.keycode === event.code);

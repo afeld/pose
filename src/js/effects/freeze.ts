@@ -3,6 +3,7 @@ import Canvas from "../canvas";
 import { drawSkeleton } from "../segment_helpers";
 import Effect from "./effect";
 
+// TODO fix
 export default class Freeze implements Effect {
   frame: bodyPix.SemanticPersonSegmentation | undefined;
   DURATION = 1000; // in milliseconds

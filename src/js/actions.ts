@@ -3,6 +3,15 @@ import Effect from "./effects/effect";
 
 const actions = [
   {
+    description: "Reset effects",
+    keycode: "KeyR",
+    commands: ["reset"],
+    callback: (effects: Effect[]) => {
+      effects.splice(0);
+      // TODO detach handlers?
+    },
+  },
+  {
     description: "Start cannon",
     keycode: "KeyC",
     // handle variants
