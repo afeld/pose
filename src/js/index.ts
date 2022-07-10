@@ -4,7 +4,6 @@ import Video from "./video";
 import Canvas from "./canvas";
 import Detector from "./detector";
 import { getElementById, querySelector } from "./dom_helpers";
-import { drawMask } from "./segment_helpers";
 import Effect from "./effects/effect";
 import actions, { generateActionHelp } from "./actions";
 import ListenerController from "./listener_controller";
@@ -12,15 +11,6 @@ import ListenerController from "./listener_controller";
 const showFPS = (stats: Stats) => {
   stats.showPanel(0);
   document.body.appendChild(stats.dom);
-};
-
-const drawLivePerson = async (
-  detector: Detector,
-  canvas: HTMLCanvasElement
-) => {
-  const segmentation = await detector.detect();
-  drawMask(segmentation, canvas);
-  return segmentation;
 };
 
 // the "game loop"
@@ -33,7 +23,7 @@ const onAnimationFrame = async (
   stats.begin();
 
   if (detector.isReady()) {
-    const segmentation = await drawLivePerson(detector, canvas.el);
+    const segmentation = await detector.detect();
     canvas.loaded();
 
     effects.forEach((effect) => effect.onAnimationFrame(segmentation, canvas));

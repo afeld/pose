@@ -1,6 +1,7 @@
 import Cannon from "./effects/cannon";
 import Effect from "./effects/effect";
 import Freeze from "./effects/freeze";
+import Live from "./effects/live";
 
 const actions = [
   {
@@ -10,6 +11,15 @@ const actions = [
     callback: (effects: Effect[]) => {
       effects.splice(0);
       // TODO detach handlers?
+    },
+  },
+  {
+    description: "Start live display",
+    keycode: "KeyL",
+    commands: ["go live", "live"],
+    callback: (effects: Effect[]) => {
+      const live = new Live();
+      effects.push(live);
     },
   },
   {
