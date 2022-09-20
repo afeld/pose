@@ -3,7 +3,7 @@
     "@types/dom-speech-recognition": "^0.0.1",
     "@types/stats.js": "^0.17.0",
     "buffer": "^6.0.3",
-    "parcel": "^2.6.2",
+    "parcel": "^2.7.0",
     "process": "^0.11.10"
   },
   "scripts": {
@@ -13,7 +13,7 @@
   "dependencies": {
     "@tensorflow-models/body-pix": "^2.2.0",
     "@tensorflow-models/posenet": "^2.2.2",
-    "@tensorflow/tfjs": "^3.18.0",
+    "@tensorflow/tfjs": "^3.20.0",
     "stats.js": "^0.17.0"
   }
 }
