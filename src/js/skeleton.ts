@@ -3,8 +3,8 @@ import * as posenet from "@tensorflow-models/posenet";
 import { Vector2D } from "@tensorflow-models/posenet/dist/types";
 import Canvas from "./canvas";
 
-const COLOR = "aqua";
-const LINE_WIDTH = 2;
+const COLOR = "black";
+const LINE_WIDTH = 6;
 
 // based on
 // https://github.com/tensorflow/tfjs-models/blob/af59ff3eb3350986173ac8c8ae504806b02dad39/body-pix/demo/demo_util.js/#L81-L109
