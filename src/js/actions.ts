@@ -34,7 +34,7 @@ const actions = [
     description: "Freeze",
     keycode: "KeyF",
     // handle variants
-    commands: ["freeze", "frieze"],
+    commands: ["freeze", "frieze", "fries"],
     callback: (effects: Effect[]) => {
       const freeze = new Freeze();
       effects.push(freeze);
