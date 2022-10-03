@@ -1,6 +1,10 @@
 import Skeleton from "./skeleton";
-import { Color } from "@tensorflow-models/body-pix/dist/types";
-import * as bodyPix from "@tensorflow-models/body-pix";
+import * as bodySegmentation from "@tensorflow-models/body-segmentation";
+import { toMask } from "@tensorflow-models/body-segmentation/dist/body_pix/impl";
+import {
+  Color,
+  SemanticPersonSegmentation,
+} from "@tensorflow-models/body-segmentation/dist/body_pix/impl/types";
 import Canvas from "./canvas";
 
 const COLOR_CLEAR = { r: 0, g: 0, b: 0, a: 0 } as Color;
@@ -8,17 +12,17 @@ const COLOR_RED = { r: 255, g: 0, b: 0, a: 255 } as Color;
 const COLOR_GREEN = { r: 0, g: 255, b: 0, a: 255 } as Color;
 
 const getMask = (
-  segmentation: bodyPix.SemanticPersonSegmentation,
+  segmentation: SemanticPersonSegmentation,
   color = COLOR_RED
 ) => {
   const backgroundColor = COLOR_CLEAR;
   const drawContour = true;
 
-  return bodyPix.toMask(segmentation, color, backgroundColor, drawContour);
+  return toMask(segmentation, color, backgroundColor, drawContour);
 };
 
 export const drawMask = (
-  segmentation: bodyPix.SemanticPersonSegmentation,
+  segmentation: SemanticPersonSegmentation,
   canvas: HTMLCanvasElement,
   color = COLOR_RED
 ) => {
@@ -30,7 +34,7 @@ export const drawMask = (
   const flipHorizontal = true;
   const maskBlurAmount = 0;
 
-  bodyPix.drawMask(
+  bodySegmentation.drawMask(
     canvas,
     EMPTY_BACKGROUND,
     coloredPartImage,
@@ -41,7 +45,7 @@ export const drawMask = (
 };
 
 export const drawSkeleton = (
-  segmentation: bodyPix.SemanticPersonSegmentation,
+  segmentation: SemanticPersonSegmentation,
   canvas: Canvas
 ) => {
   let pose = segmentation.allPoses[0];
@@ -49,7 +53,8 @@ export const drawSkeleton = (
     // no people found
     return;
   }
-  pose = bodyPix.flipPoseHorizontal(pose, segmentation.width);
+  // TODO replace
+  // pose = bodySegmentation.flipPoseHorizontal(pose, segmentation.width);
   const skeleton = new Skeleton(pose);
   skeleton.draw(canvas);
 };

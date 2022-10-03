@@ -1,4 +1,4 @@
-import { SemanticPersonSegmentation } from "@tensorflow-models/body-pix";
+import { SemanticPersonSegmentation } from "@tensorflow-models/body-segmentation/dist/body_pix/impl/types";
 import Canvas from "../canvas";
 import { drawSkeleton } from "../segment_helpers";
 import Effect from "./effect";

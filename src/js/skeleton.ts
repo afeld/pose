@@ -1,34 +1,29 @@
-import { Pose, Keypoint } from "@tensorflow-models/body-pix/dist/types";
-import * as posenet from "@tensorflow-models/posenet";
-import { Vector2D } from "@tensorflow-models/posenet/dist/types";
+import {
+  Pose,
+  Keypoint,
+} from "@tensorflow-models/body-segmentation/dist/body_pix/impl/types";
+import * as posedetection from "@tensorflow-models/pose-detection";
 import Canvas from "./canvas";
 
 const COLOR = "black";
 const LINE_WIDTH = 6;
 
 // based on
-// https://github.com/tensorflow/tfjs-models/blob/af59ff3eb3350986173ac8c8ae504806b02dad39/body-pix/demo/demo_util.js/#L81-L109
+// https://github.com/tensorflow/tfjs-models/blob/a345f0c58522af25d80153ec27c6e999e45fdd42/pose-detection/demos/live_video/src/camera.js#L216-L233
 
-/**
- * Draws a line on a canvas, i.e. a joint
- */
 function drawSegment(
-  [ay, ax]: number[],
-  [by, bx]: number[],
+  kp1: Keypoint,
+  kp2: Keypoint,
   color: string,
   scale: number,
   ctx: CanvasRenderingContext2D
 ) {
   ctx.beginPath();
-  ctx.moveTo(ax * scale, ay * scale);
-  ctx.lineTo(bx * scale, by * scale);
+  ctx.moveTo(kp1.position.x * scale, kp1.position.y * scale);
+  ctx.lineTo(kp2.position.x * scale, kp2.position.y * scale);
   ctx.lineWidth = LINE_WIDTH;
   ctx.strokeStyle = color;
   ctx.stroke();
-}
-
-function toTuple({ y, x }: Vector2D) {
-  return [y, x];
 }
 
 /**
@@ -36,23 +31,23 @@ function toTuple({ y, x }: Vector2D) {
  */
 function drawSkeleton(
   keypoints: Keypoint[],
-  minConfidence: number,
+  scoreThreshold: number,
   ctx: CanvasRenderingContext2D,
   scale = 1
 ) {
-  const adjacentKeyPoints = posenet.getAdjacentKeyPoints(
-    keypoints,
-    minConfidence
-  );
+  // TODO pull model from Detector
+  const model = posedetection.SupportedModels.MoveNet;
+  posedetection.util.getAdjacentPairs(model).forEach(([i, j]) => {
+    const kp1 = keypoints[i];
+    const kp2 = keypoints[j];
 
-  adjacentKeyPoints.forEach((keypoints) => {
-    drawSegment(
-      toTuple(keypoints[0].position),
-      toTuple(keypoints[1].position),
-      COLOR,
-      scale,
-      ctx
-    );
+    // If score is null, just show the keypoint.
+    const score1 = kp1.score != null ? kp1.score : 1;
+    const score2 = kp2.score != null ? kp2.score : 1;
+
+    if (score1 >= scoreThreshold && score2 >= scoreThreshold) {
+      drawSegment(kp1, kp2, COLOR, scale, ctx);
+    }
   });
 }
 
