@@ -3,9 +3,11 @@ import { Color } from "@tensorflow-models/body-pix/dist/types";
 import * as bodyPix from "@tensorflow-models/body-pix";
 import Canvas from "./canvas";
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const COLOR_CLEAR = { r: 0, g: 0, b: 0, a: 0 } as Color;
 const COLOR_RED = { r: 255, g: 0, b: 0, a: 255 } as Color;
 const COLOR_GREEN = { r: 0, g: 255, b: 0, a: 255 } as Color;
+/* eslint-enable @typescript-eslint/no-unused-vars */
 
 const getMask = (
   segmentation: bodyPix.SemanticPersonSegmentation,
