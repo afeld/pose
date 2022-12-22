@@ -36,7 +36,7 @@ const onAnimationFrame = async (
     const segmentation = await drawLivePerson(detector, canvas.el);
     canvas.loaded();
 
-    effects.forEach((effect) => effect.onAnimationFrame(segmentation, canvas));
+    // effects.forEach((effect) => effect.onAnimationFrame(segmentation, canvas));
   }
 
   stats.end();

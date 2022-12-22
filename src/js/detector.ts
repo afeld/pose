@@ -1,25 +1,28 @@
-import * as bodyPix from "@tensorflow-models/body-pix";
+// https://github.com/tensorflow/tfjs-models/tree/master/body-segmentation/src/body_pix#usage
+
+import * as bodySegmentation from "@tensorflow-models/body-segmentation";
 import Video from "./video";
 
 export default class Detector {
-  _model: bodyPix.BodyPix | undefined;
+  _segmenter: bodySegmentation.BodySegmenter | undefined;
   video: Video;
 
   constructor(video: Video) {
-    this.getModel();
+    this.getSegmenter();
     this.video = video;
   }
 
-  async getModel() {
-    if (!this._model) {
-      this._model = await bodyPix.load({
+  async getSegmenter() {
+    if (!this._segmenter) {
+      const model = bodySegmentation.SupportedModels.BodyPix;
+      this._segmenter = await bodySegmentation.createSegmenter(model, {
         architecture: "MobileNetV1",
         outputStride: 16,
         multiplier: 0.5,
       });
     }
 
-    return this._model;
+    return this._segmenter;
   }
 
   isReady() {
@@ -27,10 +30,12 @@ export default class Detector {
   }
 
   async detect() {
-    const model = await this.getModel();
-    return await model.segmentPerson(this.video.el, {
-      internalResolution: "medium",
-      maxDetections: 1,
+    const segmenter = await this.getSegmenter();
+    const people = await segmenter.segmentPeople(this.video.el, {
+      multiSegmentation: false,
+      segmentBodyParts: false,
     });
+
+    return people[0];
   }
 }
