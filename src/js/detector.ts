@@ -3,6 +3,8 @@
 import * as poseDetection from "@tensorflow-models/pose-detection";
 import Video from "./video";
 
+export const MODEL = poseDetection.SupportedModels.BlazePose;
+
 export default class Detector {
   _detector: poseDetection.PoseDetector | undefined;
   video: Video;
@@ -14,8 +16,7 @@ export default class Detector {
 
   async getDetector() {
     if (!this._detector) {
-      const model = poseDetection.SupportedModels.BlazePose;
-      this._detector = await poseDetection.createDetector(model, {
+      this._detector = await poseDetection.createDetector(MODEL, {
         runtime: "mediapipe",
         solutionPath: "https://cdn.jsdelivr.net/npm/@mediapipe/pose",
         enableSegmentation: true,

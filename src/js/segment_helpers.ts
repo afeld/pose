@@ -1,6 +1,6 @@
 import Skeleton from "./skeleton";
-import * as bodyPix from "@tensorflow-models/body-pix";
 import * as bodySegmentation from "@tensorflow-models/body-segmentation";
+import { Pose } from "@tensorflow-models/pose-detection";
 import {
   Color,
   Segmentation,
@@ -51,16 +51,7 @@ export const drawMask = async (
   );
 };
 
-export const drawSkeleton = (
-  segmentation: bodyPix.SemanticPersonSegmentation,
-  canvas: Canvas
-) => {
-  let pose = segmentation.allPoses[0];
-  if (!pose) {
-    // no people found
-    return;
-  }
-  pose = bodyPix.flipPoseHorizontal(pose, segmentation.width);
+export const drawSkeleton = (pose: Pose, canvas: Canvas) => {
   const skeleton = new Skeleton(pose);
   skeleton.draw(canvas);
 };

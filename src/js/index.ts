@@ -19,15 +19,10 @@ const drawLivePerson = async (
   canvas: HTMLCanvasElement
 ) => {
   const pose = await detector.detect();
-  if (!pose) {
-    return undefined;
+  if (pose && pose.segmentation) {
+    drawMask(pose.segmentation, canvas);
   }
-
-  const segmentation = pose.segmentation;
-  if (segmentation) {
-    drawMask(segmentation, canvas);
-  }
-  return segmentation;
+  return pose;
 };
 
 // the "game loop"
@@ -40,10 +35,12 @@ const onAnimationFrame = async (
   stats.begin();
 
   if (detector.isReady()) {
-    const segmentation = await drawLivePerson(detector, canvas.el);
+    const pose = await drawLivePerson(detector, canvas.el);
     canvas.loaded();
 
-    // effects.forEach((effect) => effect.onAnimationFrame(segmentation, canvas));
+    if (pose) {
+      effects.forEach((effect) => effect.onAnimationFrame(pose, canvas));
+    }
   }
 
   stats.end();
