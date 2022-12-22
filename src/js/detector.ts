@@ -1,28 +1,28 @@
-// https://github.com/tensorflow/tfjs-models/tree/master/body-segmentation/src/body_pix#usage
+// https://github.com/tensorflow/tfjs-models/tree/master/pose-detection/src/blazepose_mediapipe#usage
 
-import * as bodySegmentation from "@tensorflow-models/body-segmentation";
+import * as poseDetection from "@tensorflow-models/pose-detection";
 import Video from "./video";
 
 export default class Detector {
-  _segmenter: bodySegmentation.BodySegmenter | undefined;
+  _detector: poseDetection.PoseDetector | undefined;
   video: Video;
 
   constructor(video: Video) {
-    this.getSegmenter();
+    this.getDetector();
     this.video = video;
   }
 
-  async getSegmenter() {
-    if (!this._segmenter) {
-      const model = bodySegmentation.SupportedModels.BodyPix;
-      this._segmenter = await bodySegmentation.createSegmenter(model, {
-        architecture: "MobileNetV1",
-        outputStride: 16,
-        multiplier: 0.5,
+  async getDetector() {
+    if (!this._detector) {
+      const model = poseDetection.SupportedModels.BlazePose;
+      this._detector = await poseDetection.createDetector(model, {
+        runtime: "mediapipe",
+        solutionPath: "https://cdn.jsdelivr.net/npm/@mediapipe/pose",
+        enableSegmentation: true,
       });
     }
 
-    return this._segmenter;
+    return this._detector;
   }
 
   isReady() {
@@ -30,12 +30,10 @@ export default class Detector {
   }
 
   async detect() {
-    const segmenter = await this.getSegmenter();
-    const people = await segmenter.segmentPeople(this.video.el, {
-      multiSegmentation: false,
-      segmentBodyParts: false,
-    });
-
-    return people[0];
+    const detector = await this.getDetector();
+    const poses = await detector.estimatePoses(this.video.el);
+    // their type signature is wrong
+    const pose: poseDetection.Pose | undefined = poses[0];
+    return pose;
   }
 }

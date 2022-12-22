@@ -4,7 +4,7 @@ import * as bodySegmentation from "@tensorflow-models/body-segmentation";
 import {
   Color,
   Segmentation,
-} from "@tensorflow-models/body-segmentation/dist/shared/calculators/interfaces/common_interfaces";
+} from "@tensorflow-models/pose-detection/dist/shared/calculators/interfaces/common_interfaces";
 import Canvas from "./canvas";
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
