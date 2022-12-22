@@ -11,10 +11,7 @@ const COLOR_CLEAR = { r: 0, g: 0, b: 0, a: 0 } as Color;
 const COLOR_RED = { r: 255, g: 0, b: 0, a: 255 } as Color;
 const COLOR_GREEN = { r: 0, g: 255, b: 0, a: 255 } as Color;
 
-const getMask = (
-  segmentation: SemanticPersonSegmentation,
-  color = COLOR_RED
-) => {
+const getMask = (segmentation: Segmentation, color = COLOR_RED) => {
   const backgroundColor = COLOR_CLEAR;
   const drawContour = true;
 
@@ -22,7 +19,7 @@ const getMask = (
 };
 
 export const drawMask = (
-  segmentation: SemanticPersonSegmentation,
+  segmentation: Segmentation,
   canvas: HTMLCanvasElement,
   color = COLOR_RED
 ) => {
