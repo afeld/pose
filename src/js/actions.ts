@@ -50,7 +50,7 @@ const actions: Action[] = [
   {
     description: "Freeze",
     keycode: "KeyF",
-    commands: ["freeze", "frieze", "fries"],
+    commands: ["freeze", "frieze", "fries", "priest", "prince"],
     callback: (effects: Effect[]) => Freeze.addTo(effects),
   },
 ];

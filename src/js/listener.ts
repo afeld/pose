@@ -96,6 +96,7 @@ export default class Listener {
   }
 
   start() {
+    this.autoRestart = true;
     try {
       this.recognition.start();
     } catch (DomException) {
@@ -104,6 +105,7 @@ export default class Listener {
   }
 
   stop() {
+    this.autoRestart = false;
     this.recognition.stop();
   }
 }
