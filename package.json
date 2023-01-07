@@ -13,7 +13,8 @@
   "scripts": {
     "start": "parcel serve --open chrome src/index.html",
     "build": "parcel build src/index.html",
-    "lint": "eslint --ignore-path .gitignore ."
+    "lint": "eslint --ignore-path .gitignore .",
+    "check": "tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
     "@tensorflow-models/pose-detection": "^2.0.0",
