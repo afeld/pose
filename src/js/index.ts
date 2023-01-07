@@ -4,7 +4,7 @@ import Canvas from "./canvas";
 import Detector from "./detector";
 import { getElementById, querySelector } from "./dom_helpers";
 import Effect from "./effects/effect";
-import actions, { generateActionHelp } from "./actions";
+import { actionForKeyCode, generateActionHelp } from "./actions";
 import ListenerController from "./listener_controller";
 import Shadow from "./effects/shadow";
 
@@ -77,7 +77,7 @@ const handleVisibilityChanges = (
 };
 
 const onKeyPress = (event: KeyboardEvent, effects: Effect[]) => {
-  const action = actions.find((action) => action.keycode === event.code);
+  const action = actionForKeyCode(event.code);
   if (!action) {
     console.warn(`no action for key "${event.code}"`);
     return;
@@ -97,7 +97,7 @@ const setup = async () => {
   const video = Video.matchCanvas(canvas);
   const stats = new Stats();
   const detector = new Detector(video);
-  const effects = [] as Effect[];
+  const effects: Effect[] = [];
   // start with a Shadow
   Shadow.addTo(effects);
 

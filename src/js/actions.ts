@@ -3,7 +3,15 @@ import Effect from "./effects/effect";
 import Freeze from "./effects/freeze";
 import Shadow from "./effects/shadow";
 
-const actions = [
+interface Action {
+  description: string;
+  keycode: string;
+  // list of variants
+  commands: string[];
+  callback: (effects: Effect[]) => void;
+}
+
+const actions: Action[] = [
   {
     description: "Reset effects",
     keycode: "KeyR",
@@ -14,14 +22,19 @@ const actions = [
   {
     description: "Shadow",
     keycode: "KeyS",
-    // handle variants
-    commands: ["start shadow", "shadow", "shut up", "add shadow", "at shadow"],
+    commands: [
+      "start shadow",
+      "shadow",
+      "shout out",
+      "shut up",
+      "add shadow",
+      "at shadow",
+    ],
     callback: (effects: Effect[]) => Shadow.addTo(effects),
   },
   {
     description: "Start cannon",
     keycode: "KeyC",
-    // handle variants
     commands: [
       "start cannon",
       "start canon",
@@ -37,7 +50,6 @@ const actions = [
   {
     description: "Freeze",
     keycode: "KeyF",
-    // handle variants
     commands: ["freeze", "frieze", "fries"],
     callback: (effects: Effect[]) => Freeze.addTo(effects),
   },
@@ -48,6 +60,9 @@ export const allCommands = () =>
 
 export const actionForCommand = (command: string) =>
   actions.find((action) => action.commands.includes(command));
+
+export const actionForKeyCode = (keycode: string) =>
+  actions.find((action) => action.keycode === keycode);
 
 export const generateActionHelp = (table: HTMLTableSectionElement) => {
   actions.forEach((action) => {
