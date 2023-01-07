@@ -61,6 +61,8 @@ export default class Skeleton {
   draw(canvas: Canvas) {
     const ctx = canvas.context();
     const camera = new Camera(ctx);
+
+    ctx.lineCap = "round";
     camera.drawSkeleton(this.keypoints, this.color);
   }
 }
