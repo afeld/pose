@@ -1,6 +1,7 @@
 import Cannon from "./effects/cannon";
 import Effect from "./effects/effect";
 import Freeze from "./effects/freeze";
+import Shadow from "./effects/shadow";
 
 const actions = [
   {
@@ -10,6 +11,15 @@ const actions = [
     callback: (effects: Effect[]) => {
       effects.splice(0);
       // TODO detach handlers?
+    },
+  },
+  {
+    description: "Shadow",
+    keycode: "KeyS",
+    // handle variants
+    commands: ["start shadow", "shadow", "add shadow", "at shadow"],
+    callback: (effects: Effect[]) => {
+      Shadow.addTo(effects);
     },
   },
   {

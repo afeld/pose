@@ -38,4 +38,9 @@ export default class Canvas {
     }
     return ctx;
   }
+
+  clear() {
+    const ctx = this.context();
+    ctx.clearRect(0, 0, this.width(), this.height());
+  }
 }

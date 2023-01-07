@@ -4,21 +4,14 @@ import Video from "./video";
 import Canvas from "./canvas";
 import Detector from "./detector";
 import { getElementById, querySelector } from "./dom_helpers";
-import { drawMask } from "./segment_helpers";
 import Effect from "./effects/effect";
 import actions, { generateActionHelp } from "./actions";
 import ListenerController from "./listener_controller";
-import { Pose } from "@tensorflow-models/pose-detection";
+import Shadow from "./effects/shadow";
 
 const showFPS = (stats: Stats) => {
   stats.showPanel(0);
   document.body.appendChild(stats.dom);
-};
-
-const drawLivePerson = async (pose: Pose, canvas: HTMLCanvasElement) => {
-  if (pose?.segmentation) {
-    await drawMask(pose.segmentation, canvas);
-  }
 };
 
 // the "game loop"
@@ -32,8 +25,9 @@ const onAnimationFrame = async (
 
   if (detector.isReady()) {
     const pose = await detector.detect();
-    await drawLivePerson(pose, canvas.el);
     canvas.loaded();
+
+    canvas.clear();
 
     if (pose) {
       effects.forEach((effect) => effect.onAnimationFrame(pose, canvas));
@@ -102,7 +96,8 @@ const setup = async () => {
   const video = Video.matchCanvas(canvas);
   const stats = new Stats();
   const detector = new Detector(video);
-  const effects = [] as Effect[];
+  // start with a Shadow
+  const effects = [new Shadow()] as Effect[];
 
   // kick off the video display
   onAnimationFrame(stats, detector, canvas, effects);
