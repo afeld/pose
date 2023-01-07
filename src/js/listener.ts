@@ -58,16 +58,23 @@ export default class Listener {
 
   // callback
   onError = (event: SpeechRecognitionErrorEvent) => {
+    // https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognitionErrorEvent/error#value
     switch (event.error) {
       case "not-allowed":
       case "service-not-allowed":
+        alert("Access not allowed; please restart.");
         this.autoRestart = false;
+        break;
+      case "network":
+        this.autoRestart = false;
+        alert("Must be online to use voice commands; please restart.");
         break;
       case "no-speech":
         // Chrome automaticaly stops after ~7 seconds (as of 1/7/23); we will restart it below
         break;
       default:
-        console.error("unexpected error in speech recognition:", event.error);
+        alert("Unexpected error in speech recognition");
+        console.error(event.error);
     }
   };
 
