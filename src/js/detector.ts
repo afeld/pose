@@ -20,6 +20,8 @@ export default class Detector {
         runtime: "mediapipe",
         solutionPath: "https://cdn.jsdelivr.net/npm/@mediapipe/pose",
         enableSegmentation: true,
+        enableSmoothing: true,
+        modelType: "lite",
       });
     }
 

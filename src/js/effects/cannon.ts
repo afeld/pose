@@ -17,7 +17,7 @@ export default class Cannon extends Effect {
   color: string;
 
   // there isn't a way to retrieve from Stats, so hard code
-  FRAMES_PER_SECOND = 17;
+  FRAMES_PER_SECOND = 30;
 
   /** @param delay - the amount of time to wait, in seconds */
   constructor({ delay = 1, color = "black" }) {
