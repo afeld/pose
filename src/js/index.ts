@@ -15,9 +15,9 @@ const showFPS = (stats: Stats) => {
   document.body.appendChild(stats.dom);
 };
 
-const drawLivePerson = (pose: Pose, canvas: HTMLCanvasElement) => {
+const drawLivePerson = async (pose: Pose, canvas: HTMLCanvasElement) => {
   if (pose?.segmentation) {
-    drawMask(pose.segmentation, canvas);
+    await drawMask(pose.segmentation, canvas);
   }
 };
 
@@ -32,7 +32,7 @@ const onAnimationFrame = async (
 
   if (detector.isReady()) {
     const pose = await detector.detect();
-    drawLivePerson(pose, canvas.el);
+    await drawLivePerson(pose, canvas.el);
     canvas.loaded();
 
     if (pose) {
