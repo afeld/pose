@@ -1,59 +1,55 @@
-import { Pose, Keypoint } from "@tensorflow-models/body-pix/dist/types";
-import * as posenet from "@tensorflow-models/posenet";
-import { Vector2D } from "@tensorflow-models/posenet/dist/types";
+import { Keypoint, Pose } from "@tensorflow-models/pose-detection";
+import * as posedetection from "@tensorflow-models/pose-detection";
 import Canvas from "./canvas";
+import { MODEL } from "./detector";
 
 const COLOR = "black";
-const LINE_WIDTH = 6;
+const params = {
+  DEFAULT_LINE_WIDTH: 6,
+  STATE: {
+    model: MODEL,
+    modelConfig: {
+      scoreThreshold: 0.1,
+    },
+  },
+};
 
 // based on
-// https://github.com/tensorflow/tfjs-models/blob/af59ff3eb3350986173ac8c8ae504806b02dad39/body-pix/demo/demo_util.js/#L81-L109
+// https://github.com/tensorflow/tfjs-models/blob/4e8fa791175b9f637cbecdbc579ab71d3f35e48c/pose-detection/demos/live_video/src/camera.js#L203-L234
 
-/**
- * Draws a line on a canvas, i.e. a joint
- */
-function drawSegment(
-  [ay, ax]: number[],
-  [by, bx]: number[],
-  color: string,
-  scale: number,
-  ctx: CanvasRenderingContext2D
-) {
-  ctx.beginPath();
-  ctx.moveTo(ax * scale, ay * scale);
-  ctx.lineTo(bx * scale, by * scale);
-  ctx.lineWidth = LINE_WIDTH;
-  ctx.strokeStyle = color;
-  ctx.stroke();
-}
+class Camera {
+  ctx: CanvasRenderingContext2D;
 
-function toTuple({ y, x }: Vector2D) {
-  return [y, x];
-}
+  constructor(ctx: CanvasRenderingContext2D) {
+    this.ctx = ctx;
+  }
 
-/**
- * Draws a pose skeleton by looking up all adjacent keypoints/joints
- */
-function drawSkeleton(
-  keypoints: Keypoint[],
-  minConfidence: number,
-  ctx: CanvasRenderingContext2D,
-  scale = 1
-) {
-  const adjacentKeyPoints = posenet.getAdjacentKeyPoints(
-    keypoints,
-    minConfidence
-  );
+  drawSkeleton(keypoints: Keypoint[]) {
+    const color = COLOR;
 
-  adjacentKeyPoints.forEach((keypoints) => {
-    drawSegment(
-      toTuple(keypoints[0].position),
-      toTuple(keypoints[1].position),
-      COLOR,
-      scale,
-      ctx
-    );
-  });
+    this.ctx.fillStyle = color;
+    this.ctx.strokeStyle = color;
+    this.ctx.lineWidth = params.DEFAULT_LINE_WIDTH;
+
+    posedetection.util
+      .getAdjacentPairs(params.STATE.model)
+      .forEach(([i, j]) => {
+        const kp1 = keypoints[i];
+        const kp2 = keypoints[j];
+
+        // If score is null, just show the keypoint.
+        const score1 = kp1.score != null ? kp1.score : 1;
+        const score2 = kp2.score != null ? kp2.score : 1;
+        const scoreThreshold = params.STATE.modelConfig.scoreThreshold || 0;
+
+        if (score1 >= scoreThreshold && score2 >= scoreThreshold) {
+          this.ctx.beginPath();
+          this.ctx.moveTo(kp1.x, kp1.y);
+          this.ctx.lineTo(kp2.x, kp2.y);
+          this.ctx.stroke();
+        }
+      });
+  }
 }
 
 export default class Skeleton {
@@ -65,6 +61,7 @@ export default class Skeleton {
 
   draw(canvas: Canvas) {
     const ctx = canvas.context();
-    drawSkeleton(this.keypoints, 0.1, ctx);
+    const camera = new Camera(ctx);
+    camera.drawSkeleton(this.keypoints);
   }
 }

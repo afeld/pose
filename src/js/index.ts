@@ -8,19 +8,17 @@ import { drawMask } from "./segment_helpers";
 import Effect from "./effects/effect";
 import actions, { generateActionHelp } from "./actions";
 import ListenerController from "./listener_controller";
+import { Pose } from "@tensorflow-models/pose-detection";
 
 const showFPS = (stats: Stats) => {
   stats.showPanel(0);
   document.body.appendChild(stats.dom);
 };
 
-const drawLivePerson = async (
-  detector: Detector,
-  canvas: HTMLCanvasElement
-) => {
-  const segmentation = await detector.detect();
-  drawMask(segmentation, canvas);
-  return segmentation;
+const drawLivePerson = async (pose: Pose, canvas: HTMLCanvasElement) => {
+  if (pose?.segmentation) {
+    await drawMask(pose.segmentation, canvas);
+  }
 };
 
 // the "game loop"
@@ -33,10 +31,13 @@ const onAnimationFrame = async (
   stats.begin();
 
   if (detector.isReady()) {
-    const segmentation = await drawLivePerson(detector, canvas.el);
+    const pose = await detector.detect();
+    await drawLivePerson(pose, canvas.el);
     canvas.loaded();
 
-    effects.forEach((effect) => effect.onAnimationFrame(segmentation, canvas));
+    if (pose) {
+      effects.forEach((effect) => effect.onAnimationFrame(pose, canvas));
+    }
   }
 
   stats.end();

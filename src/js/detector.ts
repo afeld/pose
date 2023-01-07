@@ -1,25 +1,29 @@
-import * as bodyPix from "@tensorflow-models/body-pix";
+// https://github.com/tensorflow/tfjs-models/tree/master/pose-detection/src/blazepose_mediapipe#usage
+
+import * as poseDetection from "@tensorflow-models/pose-detection";
 import Video from "./video";
 
+export const MODEL = poseDetection.SupportedModels.BlazePose;
+
 export default class Detector {
-  _model: bodyPix.BodyPix | undefined;
+  _detector: poseDetection.PoseDetector | undefined;
   video: Video;
 
   constructor(video: Video) {
-    this.getModel();
+    this.getDetector();
     this.video = video;
   }
 
-  async getModel() {
-    if (!this._model) {
-      this._model = await bodyPix.load({
-        architecture: "MobileNetV1",
-        outputStride: 16,
-        multiplier: 0.5,
+  async getDetector() {
+    if (!this._detector) {
+      this._detector = await poseDetection.createDetector(MODEL, {
+        runtime: "mediapipe",
+        solutionPath: "https://cdn.jsdelivr.net/npm/@mediapipe/pose",
+        enableSegmentation: true,
       });
     }
 
-    return this._model;
+    return this._detector;
   }
 
   isReady() {
@@ -27,10 +31,12 @@ export default class Detector {
   }
 
   async detect() {
-    const model = await this.getModel();
-    return await model.segmentPerson(this.video.el, {
-      internalResolution: "medium",
-      maxDetections: 1,
+    const detector = await this.getDetector();
+    const poses = await detector.estimatePoses(this.video.el, {
+      flipHorizontal: true,
     });
+    // their type signature is wrong
+    const pose: poseDetection.Pose | undefined = poses[0];
+    return pose;
   }
 }

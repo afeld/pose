@@ -1,11 +1,11 @@
-import { SemanticPersonSegmentation } from "@tensorflow-models/body-pix";
+import { Pose } from "@tensorflow-models/pose-detection";
 import Canvas from "../canvas";
 import { drawSkeleton } from "../segment_helpers";
 import Effect from "./effect";
 
 export default class Cannon implements Effect {
   delay: number;
-  segmentations: SemanticPersonSegmentation[];
+  poses: Pose[];
 
   // there isn't a way to retrieve from Stats, so hard code
   FRAMES_PER_SECOND = 17;
@@ -13,23 +13,23 @@ export default class Cannon implements Effect {
   /** @param delay - the amount of time to wait, in seconds */
   constructor(delay = 1) {
     this.delay = delay;
-    this.segmentations = [];
+    this.poses = [];
   }
 
-  onAnimationFrame(segmentation: SemanticPersonSegmentation, canvas: Canvas) {
-    this.segmentations.push(segmentation);
+  onAnimationFrame(pose: Pose, canvas: Canvas) {
+    this.poses.push(pose);
 
-    const numSegmentations = this.segmentations.length;
+    const numPoses = this.poses.length;
     const framesToKeep = this.delay * this.FRAMES_PER_SECOND;
-    if (numSegmentations > 0) {
+    if (numPoses > 0) {
       // display the oldest saved frame
-      const oldSeg = this.segmentations[0];
-      drawSkeleton(oldSeg, canvas);
+      const oldPose = this.poses[0];
+      drawSkeleton(oldPose, canvas);
 
-      if (numSegmentations > framesToKeep) {
+      if (numPoses > framesToKeep) {
         // shorten to most recent frames
-        const numToShift = numSegmentations - framesToKeep;
-        this.segmentations = this.segmentations.slice(numToShift);
+        const numToShift = numPoses - framesToKeep;
+        this.poses = this.poses.slice(numToShift);
       }
     }
   }
