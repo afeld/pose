@@ -1,4 +1,3 @@
-import "@tensorflow/tfjs";
 import Stats from "stats.js";
 import Video from "./video";
 import Canvas from "./canvas";

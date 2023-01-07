@@ -18,7 +18,6 @@
   },
   "dependencies": {
     "@tensorflow-models/pose-detection": "^2.0.0",
-    "@tensorflow/tfjs": "^4.2.0",
     "stats.js": "^0.17.0"
   }
 }
