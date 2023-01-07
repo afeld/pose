@@ -1,3 +1,5 @@
+import throttle from "lodash.throttle";
+
 // https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API#chrome_support
 // https://github.com/mdn/content/pull/12412
 const iSpeechRecognition = window.SpeechRecognition || webkitSpeechRecognition;
@@ -50,22 +52,28 @@ export default class Listener {
           autoRestart = false;
           break;
         case "no-speech":
-          // Chrome automaticaly stops after a while; we will restart it below
+          // Chrome automaticaly stops after ~7 seconds (as of 1/7/23); we will restart it below
           break;
         default:
           console.error("unexpected error in speech recognition:", event.error);
       }
     });
-    // https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition#events
-    for (const event of ["audioend", "end", "soundend", "speechend"]) {
-      this.recognition.addEventListener(event, () => {
+    // only restart once
+    const endCallback = throttle(
+      () => {
         setTimeout(() => {
           if (autoRestart) {
             console.log("restarting speech recognition");
             this.start();
           }
         }, 100);
-      });
+      },
+      100,
+      { leading: true, trailing: false }
+    );
+    // https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition#events
+    for (const event of ["audioend", "end", "soundend", "speechend"]) {
+      this.recognition.addEventListener(event, endCallback);
     }
   }
 
