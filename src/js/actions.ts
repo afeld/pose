@@ -7,7 +7,7 @@ const actions = [
   {
     description: "Reset effects",
     keycode: "KeyR",
-    commands: ["reset"],
+    commands: ["reset", "clear", "start over", "restart"],
     // TODO detach handlers?
     callback: (effects: Effect[]) => effects.splice(0),
   },
@@ -15,7 +15,7 @@ const actions = [
     description: "Shadow",
     keycode: "KeyS",
     // handle variants
-    commands: ["start shadow", "shadow", "add shadow", "at shadow"],
+    commands: ["start shadow", "shadow", "shut up", "add shadow", "at shadow"],
     callback: (effects: Effect[]) => Shadow.addTo(effects),
   },
   {

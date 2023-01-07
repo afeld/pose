@@ -44,21 +44,29 @@ export default class Listener {
     // https://stackoverflow.com/questions/29996350/speech-recognition-run-continuously
     let autoRestart = true;
     this.recognition.addEventListener("error", (event) => {
-      console.error("error in speech recognition:", event.error);
-
       switch (event.error) {
         case "not-allowed":
         case "service-not-allowed":
           autoRestart = false;
+          break;
+        case "no-speech":
+          // Chrome automaticaly stops after a while; we will restart it below
+          break;
+        default:
+          console.error("unexpected error in speech recognition:", event.error);
       }
     });
-    this.recognition.addEventListener("speechend", () => {
-      setTimeout(() => {
-        if (autoRestart) {
-          this.recognition.start();
-        }
-      }, 100);
-    });
+    // https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition#events
+    for (const event of ["audioend", "end", "soundend", "speechend"]) {
+      this.recognition.addEventListener(event, () => {
+        setTimeout(() => {
+          if (autoRestart) {
+            console.log("restarting speech recognition");
+            this.start();
+          }
+        }, 100);
+      });
+    }
   }
 
   onCommand(callback: (command: string) => void) {
@@ -74,7 +82,11 @@ export default class Listener {
   }
 
   start() {
-    this.recognition.start();
+    try {
+      this.recognition.start();
+    } catch (DomException) {
+      // already started; safe to ignore
+    }
   }
 
   stop() {
