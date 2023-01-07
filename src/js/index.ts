@@ -8,21 +8,17 @@ import { drawMask } from "./segment_helpers";
 import Effect from "./effects/effect";
 import actions, { generateActionHelp } from "./actions";
 import ListenerController from "./listener_controller";
+import { Pose } from "@tensorflow-models/pose-detection";
 
 const showFPS = (stats: Stats) => {
   stats.showPanel(0);
   document.body.appendChild(stats.dom);
 };
 
-const drawLivePerson = async (
-  detector: Detector,
-  canvas: HTMLCanvasElement
-) => {
-  const pose = await detector.detect();
+const drawLivePerson = (pose: Pose, canvas: HTMLCanvasElement) => {
   if (pose?.segmentation) {
     drawMask(pose.segmentation, canvas);
   }
-  return pose;
 };
 
 // the "game loop"
@@ -35,7 +31,8 @@ const onAnimationFrame = async (
   stats.begin();
 
   if (detector.isReady()) {
-    const pose = await drawLivePerson(detector, canvas.el);
+    const pose = await detector.detect();
+    drawLivePerson(pose, canvas.el);
     canvas.loaded();
 
     if (pose) {
