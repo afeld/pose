@@ -19,7 +19,7 @@ const drawLivePerson = async (
   canvas: HTMLCanvasElement
 ) => {
   const pose = await detector.detect();
-  if (pose && pose.segmentation) {
+  if (pose?.segmentation) {
     drawMask(pose.segmentation, canvas);
   }
   return pose;
