@@ -38,7 +38,6 @@ export const drawMask = async (
 
   const coloredPartImage = await getMask(segmentation, color);
   const opacity = 1;
-  const flipHorizontal = true;
   const maskBlurAmount = 0;
 
   await bodySegmentation.drawMask(
@@ -46,8 +45,7 @@ export const drawMask = async (
     EMPTY_BACKGROUND,
     coloredPartImage,
     opacity,
-    maskBlurAmount,
-    flipHorizontal
+    maskBlurAmount
   );
 };
 
