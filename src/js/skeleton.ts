@@ -4,7 +4,6 @@ import Canvas from "./canvas";
 import { MODEL } from "./detector";
 
 const params = {
-  DEFAULT_LINE_WIDTH: 6,
   STATE: {
     model: MODEL,
     modelConfig: {
@@ -23,10 +22,10 @@ class Camera {
     this.ctx = ctx;
   }
 
-  drawSkeleton(keypoints: Keypoint[], color = "black") {
+  drawSkeleton(keypoints: Keypoint[], { color = "black", strokeWidth = 6 }) {
     this.ctx.fillStyle = color;
     this.ctx.strokeStyle = color;
-    this.ctx.lineWidth = params.DEFAULT_LINE_WIDTH;
+    this.ctx.lineWidth = strokeWidth;
 
     posedetection.util
       .getAdjacentPairs(params.STATE.model)
@@ -52,10 +51,12 @@ class Camera {
 export default class Skeleton {
   keypoints: Keypoint[];
   color: string;
+  strokeWidth: number;
 
-  constructor(pose: Pose, color = "black") {
+  constructor(pose: Pose, { color = "black", strokeWidth = 6 }) {
     this.keypoints = pose.keypoints;
     this.color = color;
+    this.strokeWidth = strokeWidth;
   }
 
   draw(canvas: Canvas) {
@@ -63,6 +64,9 @@ export default class Skeleton {
     const camera = new Camera(ctx);
 
     ctx.lineCap = "round";
-    camera.drawSkeleton(this.keypoints, this.color);
+    camera.drawSkeleton(this.keypoints, {
+      color: this.color,
+      strokeWidth: this.strokeWidth,
+    });
   }
 }

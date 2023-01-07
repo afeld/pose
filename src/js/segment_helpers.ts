@@ -52,7 +52,11 @@ export const drawMask = async (
   );
 };
 
-export const drawSkeleton = (pose: Pose, canvas: Canvas, color = "black") => {
-  const skeleton = new Skeleton(pose, color);
+export const drawSkeleton = (
+  pose: Pose,
+  canvas: Canvas,
+  { color = "black", strokeWidth = 6 }
+) => {
+  const skeleton = new Skeleton(pose, { color, strokeWidth });
   skeleton.draw(canvas);
 };

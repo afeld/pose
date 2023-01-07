@@ -35,7 +35,7 @@ export default class Cannon extends Effect {
     if (numPoses > 0) {
       // display the oldest saved frame
       const oldPose = this.poses[0];
-      drawSkeleton(oldPose, canvas, this.color);
+      drawSkeleton(oldPose, canvas, { color: this.color });
 
       if (numPoses > framesToKeep) {
         // shorten to most recent frames
