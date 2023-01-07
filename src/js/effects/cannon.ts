@@ -3,16 +3,26 @@ import Canvas from "../canvas";
 import { drawSkeleton } from "../segment_helpers";
 import Effect from "./effect";
 
+const COLORS = ["black", "fuchsia", "green", "purple"];
+
+const getColor = (effectIndex: number) => {
+  // cycle through the colors
+  const colorIndex = effectIndex % (COLORS.length - 1);
+  return COLORS[colorIndex];
+};
+
 export default class Cannon implements Effect {
   delay: number;
   poses: Pose[];
+  color: string;
 
   // there isn't a way to retrieve from Stats, so hard code
   FRAMES_PER_SECOND = 17;
 
   /** @param delay - the amount of time to wait, in seconds */
-  constructor(delay = 1) {
+  constructor({ delay = 1, color = "black" }) {
     this.delay = delay;
+    this.color = color;
     this.poses = [];
   }
 
@@ -24,7 +34,7 @@ export default class Cannon implements Effect {
     if (numPoses > 0) {
       // display the oldest saved frame
       const oldPose = this.poses[0];
-      drawSkeleton(oldPose, canvas);
+      drawSkeleton(oldPose, canvas, this.color);
 
       if (numPoses > framesToKeep) {
         // shorten to most recent frames
@@ -45,7 +55,9 @@ export default class Cannon implements Effect {
       0
     );
     const delay = numCannons + 1;
-    const effect = new Cannon(delay);
+    const color = getColor(numCannons);
+
+    const effect = new Cannon({ delay, color });
     effects.push(effect);
   }
 }

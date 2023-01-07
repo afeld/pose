@@ -3,7 +3,6 @@ import * as posedetection from "@tensorflow-models/pose-detection";
 import Canvas from "./canvas";
 import { MODEL } from "./detector";
 
-const COLOR = "black";
 const params = {
   DEFAULT_LINE_WIDTH: 6,
   STATE: {
@@ -24,9 +23,7 @@ class Camera {
     this.ctx = ctx;
   }
 
-  drawSkeleton(keypoints: Keypoint[]) {
-    const color = COLOR;
-
+  drawSkeleton(keypoints: Keypoint[], color = "black") {
     this.ctx.fillStyle = color;
     this.ctx.strokeStyle = color;
     this.ctx.lineWidth = params.DEFAULT_LINE_WIDTH;
@@ -54,14 +51,16 @@ class Camera {
 
 export default class Skeleton {
   keypoints: Keypoint[];
+  color: string;
 
-  constructor(pose: Pose) {
+  constructor(pose: Pose, color = "black") {
     this.keypoints = pose.keypoints;
+    this.color = color;
   }
 
   draw(canvas: Canvas) {
     const ctx = canvas.context();
     const camera = new Camera(ctx);
-    camera.drawSkeleton(this.keypoints);
+    camera.drawSkeleton(this.keypoints, this.color);
   }
 }
