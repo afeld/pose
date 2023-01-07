@@ -30,7 +30,9 @@ const onAnimationFrame = async (
     canvas.clear();
 
     if (pose) {
-      effects.forEach((effect) => effect.onAnimationFrame(pose, canvas));
+      for (const effect of effects) {
+        await effect.onAnimationFrame(pose, canvas);
+      }
     }
   }
 
@@ -96,8 +98,9 @@ const setup = async () => {
   const video = Video.matchCanvas(canvas);
   const stats = new Stats();
   const detector = new Detector(video);
+  const effects = [] as Effect[];
   // start with a Shadow
-  const effects = [new Shadow()] as Effect[];
+  Shadow.addTo(effects);
 
   // kick off the video display
   onAnimationFrame(stats, detector, canvas, effects);

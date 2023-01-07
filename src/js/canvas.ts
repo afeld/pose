@@ -40,6 +40,7 @@ export default class Canvas {
   }
 
   clear() {
+    // https://stackoverflow.com/a/2142549/358804
     const ctx = this.context();
     ctx.clearRect(0, 0, this.width(), this.height());
   }

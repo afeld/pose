@@ -6,7 +6,7 @@ import Effect from "./effect";
 export default class Freeze implements Effect {
   frame: Pose | undefined;
 
-  onAnimationFrame(pose: Pose, canvas: Canvas) {
+  async onAnimationFrame(pose: Pose, canvas: Canvas) {
     if (!this.frame) {
       this.frame = pose;
     }

@@ -4,9 +4,9 @@ import { drawMask } from "../segment_helpers";
 import Effect from "./effect";
 
 export default class Shadow implements Effect {
-  onAnimationFrame(pose: Pose, canvas: Canvas) {
+  async onAnimationFrame(pose: Pose, canvas: Canvas) {
     if (pose?.segmentation) {
-      drawMask(pose.segmentation, canvas.el);
+      await drawMask(pose.segmentation, canvas.el);
     }
   }
 
@@ -18,7 +18,8 @@ export default class Shadow implements Effect {
     const hasShadow = effects.some((effect) => effect instanceof Shadow);
     if (!hasShadow) {
       const effect = new Shadow();
-      effects.push(effect);
+      // the Shadow needs to be first, because otherwise it overwrites the other effects
+      effects.unshift(effect);
     }
   }
 }

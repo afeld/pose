@@ -16,7 +16,7 @@ export default class Cannon implements Effect {
     this.poses = [];
   }
 
-  onAnimationFrame(pose: Pose, canvas: Canvas) {
+  async onAnimationFrame(pose: Pose, canvas: Canvas) {
     this.poses.push(pose);
 
     const numPoses = this.poses.length;
