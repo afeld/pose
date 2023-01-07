@@ -29,6 +29,7 @@ const createRecognizer = (commands: string[]) => {
 export default class Listener {
   commands: string[];
   recognition: SpeechRecognition;
+  autoRestart = true;
 
   constructor(commands: string[]) {
     this.commands = commands;
@@ -44,39 +45,44 @@ export default class Listener {
 
     // ensure it runs continuously
     // https://stackoverflow.com/questions/29996350/speech-recognition-run-continuously
-    let autoRestart = true;
-    this.recognition.addEventListener("error", (event) => {
-      switch (event.error) {
-        case "not-allowed":
-        case "service-not-allowed":
-          autoRestart = false;
-          break;
-        case "no-speech":
-          // Chrome automaticaly stops after ~7 seconds (as of 1/7/23); we will restart it below
-          break;
-        default:
-          console.error("unexpected error in speech recognition:", event.error);
-      }
-    });
+    this.recognition.addEventListener("error", this.onError);
     // only restart once
-    const endCallback = throttle(
-      () => {
-        setTimeout(() => {
-          if (autoRestart) {
-            console.log("restarting speech recognition");
-            this.start();
-          }
-        }, 100);
-      },
-      100,
-      { leading: true, trailing: false }
-    );
+    const endCallback = throttle(this.onEnd, 100, {
+      leading: true,
+      trailing: false,
+    });
     // https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition#events
     for (const event of ["audioend", "end", "soundend", "speechend"]) {
       this.recognition.addEventListener(event, endCallback);
     }
   }
 
+  // callback
+  onError = (event: SpeechRecognitionErrorEvent) => {
+    switch (event.error) {
+      case "not-allowed":
+      case "service-not-allowed":
+        this.autoRestart = false;
+        break;
+      case "no-speech":
+        // Chrome automaticaly stops after ~7 seconds (as of 1/7/23); we will restart it below
+        break;
+      default:
+        console.error("unexpected error in speech recognition:", event.error);
+    }
+  };
+
+  // callback
+  onEnd = () => {
+    setTimeout(() => {
+      if (this.autoRestart) {
+        console.log("restarting speech recognition");
+        this.start();
+      }
+    }, 100);
+  };
+
+  // register event handler
   onCommand(callback: (command: string) => void) {
     this.recognition.addEventListener("result", (event) => {
       const lastCommand = event.results[event.results.length - 1][0].transcript;
