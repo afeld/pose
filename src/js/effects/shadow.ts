@@ -3,7 +3,7 @@ import Canvas from "../canvas";
 import { drawMask } from "../segment_helpers";
 import Effect from "./effect";
 
-export default class Shadow implements Effect {
+export default class Shadow extends Effect {
   async onAnimationFrame(pose: Pose, canvas: Canvas) {
     if (pose?.segmentation) {
       await drawMask(pose.segmentation, canvas.el);

@@ -8,19 +8,15 @@ const actions = [
     description: "Reset effects",
     keycode: "KeyR",
     commands: ["reset"],
-    callback: (effects: Effect[]) => {
-      effects.splice(0);
-      // TODO detach handlers?
-    },
+    // TODO detach handlers?
+    callback: (effects: Effect[]) => effects.splice(0),
   },
   {
     description: "Shadow",
     keycode: "KeyS",
     // handle variants
     commands: ["start shadow", "shadow", "add shadow", "at shadow"],
-    callback: (effects: Effect[]) => {
-      Shadow.addTo(effects);
-    },
+    callback: (effects: Effect[]) => Shadow.addTo(effects),
   },
   {
     description: "Start cannon",
@@ -36,19 +32,14 @@ const actions = [
       "at cannon",
       "at canon",
     ],
-    callback: (effects: Effect[]) => {
-      Cannon.addTo(effects);
-    },
+    callback: (effects: Effect[]) => Cannon.addTo(effects),
   },
   {
     description: "Freeze",
     keycode: "KeyF",
     // handle variants
     commands: ["freeze", "frieze", "fries"],
-    callback: (effects: Effect[]) => {
-      const freeze = new Freeze();
-      effects.push(freeze);
-    },
+    callback: (effects: Effect[]) => Freeze.addTo(effects),
   },
 ];
 

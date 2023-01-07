@@ -11,7 +11,7 @@ const getColor = (effectIndex: number) => {
   return COLORS[colorIndex];
 };
 
-export default class Cannon implements Effect {
+export default class Cannon extends Effect {
   delay: number;
   poses: Pose[];
   color: string;
@@ -21,6 +21,7 @@ export default class Cannon implements Effect {
 
   /** @param delay - the amount of time to wait, in seconds */
   constructor({ delay = 1, color = "black" }) {
+    super();
     this.delay = delay;
     this.color = color;
     this.poses = [];
