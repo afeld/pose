@@ -7,10 +7,30 @@ import Effect from "./effects/effect";
 import { actionForKeyCode, generateActionHelp } from "./actions";
 import ListenerController from "./listener_controller";
 import Shadow from "./effects/shadow";
+import { Pose } from "@tensorflow-models/pose-detection";
 
 const showFPS = (stats: Stats) => {
   stats.showPanel(0);
   document.body.appendChild(stats.dom);
+};
+
+// modifies the list
+const sortEfects = (currentPose: Pose, effects: Effect[]) => {
+  effects.sort((a, b) => {
+    const aVal = a.sortVal(currentPose);
+    const bVal = b.sortVal(currentPose);
+
+    if (aVal && bVal) {
+      if (aVal < bVal) {
+        return -1;
+      }
+      if (aVal > bVal) {
+        return 1;
+      }
+    }
+    // a must be equal to b, or one doesn't have a sortVal()
+    return 0;
+  });
 };
 
 // the "game loop"
@@ -29,6 +49,7 @@ const onAnimationFrame = async (
     canvas.clear();
 
     if (pose) {
+      sortEfects(pose, effects);
       for (const effect of effects) {
         await effect.onAnimationFrame(pose, canvas);
       }
