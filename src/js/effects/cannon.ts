@@ -17,6 +17,7 @@ export default class Cannon extends Effect {
   color: string;
 
   // there isn't a way to retrieve from Stats, so hard code
+  // TODO calculate this based on the time since the last call to onAnimationFrame()
   FRAMES_PER_SECOND = 30;
 
   /** @param delay - the amount of time to wait, in seconds */
