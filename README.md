@@ -8,7 +8,7 @@ Experiment using [Tensorflow.js's BlazePose-MediaPipe model](https://github.com/
 
 1. Install required software:
    - [Google Chrome](https://www.google.com/chrome/index.html)
-     - You can use a different [supported browser](https://developer.mozilla.org/en-US/docs/Web/API/SpeechGrammarList#browser_compatibility), but will need to modify the `start` command in [`package.json`](package.json).
+     - As of this writing, [other browsers aren't supported](https://caniuse.com/speech-recognition).
    - [Node.js](https://nodejs.org/)
 1. Install dependencies.
 
