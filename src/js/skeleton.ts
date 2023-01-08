@@ -4,7 +4,6 @@ import Canvas from "./canvas";
 import { MODEL } from "./detector";
 
 const params = {
-  DEFAULT_LINE_WIDTH: 6,
   STATE: {
     model: MODEL,
     modelConfig: {
@@ -13,9 +12,59 @@ const params = {
   },
 };
 
+const hypotenuse = (a: Keypoint, b: Keypoint) => {
+  // Pythagorean theorem
+  return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+};
+
+// expected to be in the 50-200 range
+const getShoulderWidth = (keypoints: Keypoint[]) => {
+  const leftShoulder = keypoints.find((kp) => kp.name === "left_shoulder");
+  const rightShoulder = keypoints.find((kp) => kp.name === "right_shoulder");
+  if (leftShoulder && rightShoulder) {
+    return hypotenuse(leftShoulder, rightShoulder);
+  } else {
+    return null;
+  }
+};
+
+// https://stats.stackexchange.com/a/281164
+const scale = (
+  value: number,
+  r_min: number,
+  r_max: number,
+  t_min: number,
+  t_max: number
+) => {
+  return ((value - r_min) * (t_max - t_min)) / (r_max - r_min) + t_min;
+};
+
+// scale the line width to give appearance of depth
+const calculateLineWidth = (keypoints: Keypoint[]) => {
+  const shoulderWidth = getShoulderWidth(keypoints);
+
+  // somewhat arbitrary values
+
+  if (!shoulderWidth) {
+    return 6;
+  }
+
+  const LINE_WIDTH_MIN = 1;
+  const LINE_WIDTH_MAX = 15;
+  const SHOULDER_WIDTH_MIN = 50;
+  const SHOULDER_WIDTH_MAX = 200;
+
+  return scale(
+    shoulderWidth,
+    SHOULDER_WIDTH_MIN,
+    SHOULDER_WIDTH_MAX,
+    LINE_WIDTH_MIN,
+    LINE_WIDTH_MAX
+  );
+};
+
 // based on
 // https://github.com/tensorflow/tfjs-models/blob/4e8fa791175b9f637cbecdbc579ab71d3f35e48c/pose-detection/demos/live_video/src/camera.js#L203-L234
-
 class Camera {
   ctx: CanvasRenderingContext2D;
 
@@ -23,10 +72,10 @@ class Camera {
     this.ctx = ctx;
   }
 
-  drawSkeleton(keypoints: Keypoint[], color = "black") {
+  drawSkeleton(keypoints: Keypoint[], { color = "black", lineWidth = 6 }) {
     this.ctx.fillStyle = color;
     this.ctx.strokeStyle = color;
-    this.ctx.lineWidth = params.DEFAULT_LINE_WIDTH;
+    this.ctx.lineWidth = lineWidth;
 
     posedetection.util
       .getAdjacentPairs(params.STATE.model)
@@ -63,6 +112,11 @@ export default class Skeleton {
     const camera = new Camera(ctx);
 
     ctx.lineCap = "round";
-    camera.drawSkeleton(this.keypoints, this.color);
+
+    const lineWidth = calculateLineWidth(this.keypoints);
+    camera.drawSkeleton(this.keypoints, {
+      color: this.color,
+      lineWidth,
+    });
   }
 }
