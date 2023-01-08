@@ -36,6 +36,10 @@ export default class Cannon extends Effect {
 
   sortVal(_currentPose: Pose) {
     const oldPose = this.poseToDisplay();
+    // TODO confirm whether this race condition still exists
+    if (!oldPose) {
+      return null;
+    }
     return getShoulderWidth(oldPose.keypoints);
   }
 
