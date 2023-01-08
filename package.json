@@ -19,6 +19,7 @@
     "check": "tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
+    "@google-cloud/speech": "^5.1.0",
     "@tensorflow-models/pose-detection": "^2.0.0",
     "@tensorflow/tfjs": "^4.2.0",
     "dat.gui": "^0.7.9",

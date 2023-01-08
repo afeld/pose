@@ -2,7 +2,7 @@
 
 [![Tests](https://github.com/afeld/pose/actions/workflows/tests.yml/badge.svg)](https://github.com/afeld/pose/actions/workflows/tests.yml)
 
-Experiment using [Tensorflow.js's BlazePose-MediaPipe model](https://github.com/tensorflow/tfjs-models/tree/master/pose-detection/src/blazepose_mediapipe#readme) and the [Web Speech API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API).
+Experiment using [Tensorflow.js's BlazePose-MediaPipe model](https://github.com/tensorflow/tfjs-models/tree/master/pose-detection/src/blazepose_mediapipe#readme) and [Google Cloud Speech-to-Text](https://cloud.google.com/speech-to-text/docs).
 
 ## To run
 
@@ -10,6 +10,7 @@ Experiment using [Tensorflow.js's BlazePose-MediaPipe model](https://github.com/
    - [Google Chrome](https://www.google.com/chrome/index.html)
      - As of this writing, [other browsers aren't supported](https://caniuse.com/speech-recognition).
    - [Node.js](https://nodejs.org/)
+1. [Set up Speech-to-Text](https://cloud.google.com/speech-to-text/docs/before-you-begin)
 1. Install dependencies.
 
    ```sh

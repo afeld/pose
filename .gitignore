@@ -1,3 +1,5 @@
 .parcel-cache/
 dist/
 node_modules/
+# https://cloud.google.com/speech-to-text/docs/before-you-begin#create_a_json_key_for_your_service_account
+pose-*.json
