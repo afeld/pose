@@ -28,10 +28,9 @@ const getMask = async (segmentation: Segmentation, color = COLOR_RED) => {
   return coloredPartImage;
 };
 
-export const drawMask = async (
-  segmentation: Segmentation,
+const drawImageDataWithTransparency = (
   canvas: HTMLCanvasElement,
-  color = COLOR_RED
+  imageData: ImageData
 ) => {
   const ctx = canvas.getContext("2d");
   if (!ctx) {
@@ -47,10 +46,17 @@ export const drawMask = async (
     return;
   }
 
-  const coloredPartImage = await getMask(segmentation, color);
-  ctx2.putImageData(coloredPartImage, 0, 0);
-
+  ctx2.putImageData(imageData, 0, 0);
   ctx.drawImage(canvas2, 0, 0);
+};
+
+export const drawMask = async (
+  segmentation: Segmentation,
+  canvas: HTMLCanvasElement,
+  color = COLOR_RED
+) => {
+  const coloredPartImage = await getMask(segmentation, color);
+  drawImageDataWithTransparency(canvas, coloredPartImage);
 };
 
 export const drawSkeleton = (pose: Pose, canvas: Canvas, color = "black") => {
