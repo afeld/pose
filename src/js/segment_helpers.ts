@@ -29,18 +29,15 @@ const getMask = async (segmentation: Segmentation, color = COLOR_RED) => {
 };
 
 const drawImageDataWithTransparency = (
-  canvas: HTMLCanvasElement,
+  canvas: Canvas,
   imageData: ImageData
 ) => {
-  const ctx = canvas.getContext("2d");
-  if (!ctx) {
-    return;
-  }
+  const ctx = canvas.context();
 
   // Render to offscreen canvas to convert the ImageData to something that can be used by drawImage(), which supports transparency. putImageData() overwrites with transparent pixels.
   // https://stackoverflow.com/a/53239232/358804
 
-  const canvas2 = new OffscreenCanvas(canvas.clientWidth, canvas.clientHeight);
+  const canvas2 = new OffscreenCanvas(canvas.width(), canvas.height());
   const ctx2 = canvas2.getContext("2d");
   if (!ctx2) {
     return;
@@ -52,7 +49,7 @@ const drawImageDataWithTransparency = (
 
 export const drawMask = async (
   segmentation: Segmentation,
-  canvas: HTMLCanvasElement,
+  canvas: Canvas,
   color = COLOR_RED
 ) => {
   const coloredPartImage = await getMask(segmentation, color);

@@ -11,7 +11,7 @@ export default class Shadow extends Effect {
 
   async onAnimationFrame(pose: Pose, canvas: Canvas) {
     if (pose?.segmentation) {
-      await drawMask(pose.segmentation, canvas.el);
+      await drawMask(pose.segmentation, canvas);
     }
   }
 
