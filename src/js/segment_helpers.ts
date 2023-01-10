@@ -4,10 +4,7 @@ import {
   Color,
   Segmentation,
 } from "@tensorflow-models/pose-detection/dist/shared/calculators/interfaces/common_interfaces";
-import {
-  drawMask as drawMaskUtil,
-  toBinaryMask,
-} from "@tensorflow-models/pose-detection/dist/shared/calculators/render_util";
+import { toBinaryMask } from "@tensorflow-models/pose-detection/dist/shared/calculators/render_util";
 import Canvas from "./canvas";
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -31,25 +28,32 @@ const getMask = async (segmentation: Segmentation, color = COLOR_RED) => {
   return coloredPartImage;
 };
 
+const drawImageDataWithTransparency = (
+  canvas: Canvas,
+  imageData: ImageData
+) => {
+  const ctx = canvas.context();
+
+  // Render to offscreen canvas to convert the ImageData to something that can be used by drawImage(), which supports transparency. putImageData() overwrites with transparent pixels.
+  // https://stackoverflow.com/a/53239232/358804
+
+  const canvas2 = new OffscreenCanvas(canvas.width(), canvas.height());
+  const ctx2 = canvas2.getContext("2d");
+  if (!ctx2) {
+    return;
+  }
+
+  ctx2.putImageData(imageData, 0, 0);
+  ctx.drawImage(canvas2, 0, 0);
+};
+
 export const drawMask = async (
   segmentation: Segmentation,
-  canvas: HTMLCanvasElement,
+  canvas: Canvas,
   color = COLOR_RED
 ) => {
-  // TODO move up to be a constant. Moved here because the size wasn't correct when at the top of the file.
-  const EMPTY_BACKGROUND = new Image(canvas.clientWidth, canvas.clientHeight);
-
   const coloredPartImage = await getMask(segmentation, color);
-  const opacity = 1;
-  const maskBlurAmount = 0;
-
-  await drawMaskUtil(
-    canvas,
-    EMPTY_BACKGROUND,
-    coloredPartImage,
-    opacity,
-    maskBlurAmount
-  );
+  drawImageDataWithTransparency(canvas, coloredPartImage);
 };
 
 export const drawSkeleton = (pose: Pose, canvas: Canvas, color = "black") => {

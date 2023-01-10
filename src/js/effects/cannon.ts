@@ -1,6 +1,7 @@
 import { Pose } from "@tensorflow-models/pose-detection";
 import Canvas from "../canvas";
 import { drawSkeleton } from "../segment_helpers";
+import { getShoulderWidth } from "../skeleton";
 import Effect from "./effect";
 
 const COLORS = ["black", "fuchsia", "green", "purple"];
@@ -31,6 +32,15 @@ export default class Cannon extends Effect {
   // returns the oldest saved frame
   poseToDisplay() {
     return this.poses[0];
+  }
+
+  sortVal(_currentPose: Pose) {
+    const oldPose = this.poseToDisplay();
+    // TODO confirm whether this race condition still exists
+    if (!oldPose) {
+      return null;
+    }
+    return getShoulderWidth(oldPose.keypoints);
   }
 
   async onAnimationFrame(pose: Pose, canvas: Canvas) {
