@@ -35,7 +35,7 @@ export default class Detector {
   async detect() {
     const detector = await this.getDetector();
     const poses = await detector.estimatePoses(this.video.el, {
-      flipHorizontal: true,
+      flipHorizontal: false,
     });
     // their type signature is wrong
     const pose: poseDetection.Pose | undefined = poses[0];
