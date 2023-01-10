@@ -11,9 +11,9 @@ import {
 import Canvas from "./canvas";
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-const COLOR_CLEAR = { r: 0, g: 0, b: 0, a: 0 } as Color;
-const COLOR_RED = { r: 255, g: 0, b: 0, a: 255 } as Color;
-const COLOR_GREEN = { r: 0, g: 255, b: 0, a: 255 } as Color;
+const COLOR_CLEAR: Color = { r: 0, g: 0, b: 0, a: 0 };
+const COLOR_RED: Color = { r: 255, g: 0, b: 0, a: 255 };
+const COLOR_GREEN: Color = { r: 0, g: 255, b: 0, a: 255 };
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 const getMask = async (segmentation: Segmentation, color = COLOR_RED) => {

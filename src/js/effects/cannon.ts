@@ -28,21 +28,23 @@ export default class Cannon extends Effect {
     this.poses = [];
   }
 
+  // returns the oldest saved frame
+  poseToDisplay() {
+    return this.poses[0];
+  }
+
   async onAnimationFrame(pose: Pose, canvas: Canvas) {
     this.poses.push(pose);
 
+    const oldPose = this.poseToDisplay();
+    drawSkeleton(oldPose, canvas, this.color);
+
     const numPoses = this.poses.length;
     const framesToKeep = this.delay * this.FRAMES_PER_SECOND;
-    if (numPoses > 0) {
-      // display the oldest saved frame
-      const oldPose = this.poses[0];
-      drawSkeleton(oldPose, canvas, this.color);
-
-      if (numPoses > framesToKeep) {
-        // shorten to most recent frames
-        const numToShift = numPoses - framesToKeep;
-        this.poses = this.poses.slice(numToShift);
-      }
+    if (numPoses > framesToKeep) {
+      // shorten to most recent frames
+      const numToShift = numPoses - framesToKeep;
+      this.poses = this.poses.slice(numToShift);
     }
   }
 
