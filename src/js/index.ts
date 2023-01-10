@@ -17,18 +17,18 @@ const showFPS = (stats: Stats) => {
 // modifies the list
 const sortEfects = (currentPose: Pose, effects: Effect[]) => {
   effects.sort((a, b) => {
-    const aVal = a.sortVal(currentPose);
-    const bVal = b.sortVal(currentPose);
+    const aVal = a.depth(currentPose);
+    const bVal = b.depth(currentPose);
 
     if (aVal && bVal) {
       if (aVal < bVal) {
-        return -1;
-      }
-      if (aVal > bVal) {
         return 1;
       }
+      if (aVal > bVal) {
+        return -1;
+      }
     }
-    // a must be equal to b, or one doesn't have a sortVal()
+    // a must be equal to b, or one doesn't have a known depth()
     return 0;
   });
 };

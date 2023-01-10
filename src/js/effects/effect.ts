@@ -2,7 +2,7 @@ import { Pose } from "@tensorflow-models/pose-detection";
 import Canvas from "../canvas";
 
 export default abstract class Effect {
-  abstract sortVal(currentPose: Pose): number | null;
+  abstract depth(currentPose: Pose): number | null;
   abstract onAnimationFrame(pose: Pose, canvas: Canvas): Promise<void>;
 
   // unable to make an abstract static method

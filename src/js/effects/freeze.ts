@@ -1,17 +1,17 @@
 import { Pose } from "@tensorflow-models/pose-detection";
 import Canvas from "../canvas";
 import { drawSkeleton } from "../segment_helpers";
-import { getShoulderWidth } from "../skeleton";
+import { getAverageDepth } from "../skeleton";
 import Effect from "./effect";
 
 export default class Freeze extends Effect {
   frame: Pose | undefined;
 
-  sortVal(_currentPose: Pose) {
+  depth(_currentPose: Pose) {
     if (!this.frame) {
       return null;
     }
-    return getShoulderWidth(this.frame.keypoints);
+    return getAverageDepth(this.frame);
   }
 
   async onAnimationFrame(pose: Pose, canvas: Canvas) {

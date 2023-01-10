@@ -1,12 +1,12 @@
 import { Pose } from "@tensorflow-models/pose-detection";
 import Canvas from "../canvas";
 import { drawMask } from "../segment_helpers";
-import { getShoulderWidth } from "../skeleton";
+import { getAverageDepth } from "../skeleton";
 import Effect from "./effect";
 
 export default class Shadow extends Effect {
-  sortVal(currentPose: Pose) {
-    return getShoulderWidth(currentPose.keypoints);
+  depth(currentPose: Pose) {
+    return getAverageDepth(currentPose);
   }
 
   async onAnimationFrame(pose: Pose, canvas: Canvas) {

@@ -7,7 +7,7 @@ const params = {
   STATE: {
     model: MODEL,
     modelConfig: {
-      scoreThreshold: 0.1,
+      scoreThreshold: 0.5,
     },
   },
 };
@@ -26,6 +26,29 @@ export const getShoulderWidth = (keypoints: Keypoint[]) => {
   } else {
     return null;
   }
+};
+
+export const getAverageDepth = (pose: Pose) => {
+  // unclear when it would be undefined
+  if (!pose.keypoints3D) {
+    throw new Error("unable to determine depth");
+  }
+
+  let numerator = 0;
+  let denominator = 0;
+
+  for (const keypoint of pose.keypoints3D) {
+    if (
+      keypoint.z &&
+      keypoint.score &&
+      keypoint.score > params.STATE.modelConfig.scoreThreshold
+    ) {
+      numerator += keypoint.z;
+      denominator += 1;
+    }
+  }
+
+  return numerator / denominator;
 };
 
 // https://stats.stackexchange.com/a/281164
