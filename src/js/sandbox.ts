@@ -1,5 +1,3 @@
-const start = Date.now();
-
 setInterval(async () => {
   const devices = await navigator.mediaDevices.enumerateDevices();
   const inputDevices = devices.filter((device) => device.kind === "audioinput");

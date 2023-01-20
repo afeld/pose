@@ -11,54 +11,32 @@ interface Action {
   callback: (effects: Effect[]) => void;
 }
 
+// commands need to be part of the 18w vocabulary:
+// https://github.com/tensorflow/tfjs-models/tree/master/speech-commands#online-streaming-recognition
 const actions: Action[] = [
   {
     description: "Reset effects",
     keycode: "KeyR",
-    commands: ["reset", "clear", "start over", "restart"],
+    commands: ["zero", "stop"],
     // TODO detach handlers?
     callback: (effects: Effect[]) => effects.splice(0),
   },
   {
     description: "Shadow",
     keycode: "KeyS",
-    commands: [
-      "start shadow",
-      "shadow",
-      "shout out",
-      "shut up",
-      "add shadow",
-      "at shadow",
-    ],
+    commands: ["two"],
     callback: (effects: Effect[]) => Shadow.addTo(effects),
   },
   {
     description: "Start cannon",
     keycode: "KeyC",
-    commands: [
-      "start cannon",
-      "start canon",
-      "cannon",
-      "canon",
-      "add cannon",
-      "add canon",
-      "at cannon",
-      "at canon",
-    ],
+    commands: ["three"],
     callback: (effects: Effect[]) => Cannon.addTo(effects),
   },
   {
     description: "Freeze",
     keycode: "KeyF",
-    commands: [
-      "freeze",
-      "free",
-      "fries",
-      "frieze",
-      "priest",
-      "prince",
-      "trees",
-    ],
+    commands: ["one"],
     callback: (effects: Effect[]) => Freeze.addTo(effects),
   },
   {
@@ -69,9 +47,6 @@ const actions: Action[] = [
     callback: (_effects: Effect[]) => {}, // eslint-disable-line @typescript-eslint/no-empty-function
   },
 ];
-
-export const allCommands = () =>
-  actions.map((action) => action.commands).flat();
 
 export const actionForCommand = (command: string) =>
   actions.find((action) => action.commands.includes(command));
