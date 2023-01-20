@@ -4,7 +4,6 @@ import {
   Color,
   Segmentation,
 } from "@tensorflow-models/pose-detection/dist/shared/calculators/interfaces/common_interfaces";
-import { toBinaryMask } from "@tensorflow-models/pose-detection/dist/shared/calculators/render_util";
 import Canvas from "./canvas";
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -13,19 +12,24 @@ const COLOR_RED: Color = { r: 255, g: 0, b: 0, a: 255 };
 const COLOR_GREEN: Color = { r: 0, g: 255, b: 0, a: 255 };
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
+const scriptUrl = new URL("segment.worker.ts", import.meta.url);
+const worker = new Worker(scriptUrl);
+
 const getMask = async (segmentation: Segmentation, color = COLOR_RED) => {
   const backgroundColor = COLOR_CLEAR;
   const drawContour = true;
 
-  // https://github.com/tensorflow/tfjs-models/blob/master/body-segmentation/README.md#bodysegmentationtobinarymask
-  const coloredPartImage = await toBinaryMask(
-    segmentation,
-    color,
-    backgroundColor,
-    drawContour
-  );
+  const promise = new Promise<ImageData>((resolve, reject) => {
+    worker.onmessage = (e) => resolve(e.data);
+    worker.postMessage({
+      segmentation,
+      color,
+      backgroundColor,
+      drawContour,
+    });
+  });
 
-  return coloredPartImage;
+  return promise;
 };
 
 const drawImageDataWithTransparency = (
