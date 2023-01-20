@@ -1,4 +1,4 @@
-import { actionForCommand, allCommands } from "./actions";
+import { actionForCommand } from "./actions";
 import Effect from "./effects/effect";
 import Listener from "./listener";
 import { config, speechDetectionController } from "./controls";
@@ -8,8 +8,7 @@ export default class ListenerController {
   effects: Effect[];
 
   constructor(effects: Effect[]) {
-    const commands = allCommands();
-    this.listener = new Listener(commands);
+    this.listener = new Listener();
     this.effects = effects;
 
     // set up handlers
