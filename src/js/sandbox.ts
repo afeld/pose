@@ -1,5 +1,16 @@
-// const tf = require("@tensorflow/tfjs");
-const speechCommands = require("@tensorflow-models/speech-commands");
+import * as speechCommands from "@tensorflow-models/speech-commands";
+
+// returns the index of the maximum value in an array
+const indexOfMax = (arr: Float32Array) => {
+  // https://stackoverflow.com/questions/11301438/return-index-of-greatest-value-in-an-array#comment54083228_30850912
+  return arr.reduce(
+    (bestIndexSoFar, currentlyTestedValue, currentlyTestedIndex, array) =>
+      currentlyTestedValue > array[bestIndexSoFar]
+        ? currentlyTestedIndex
+        : bestIndexSoFar,
+    0
+  );
+};
 
 const run = async () => {
   // When calling `create()`, you must provide the type of the audio input.
@@ -23,15 +34,17 @@ const run = async () => {
   //    - probabilityThreshold
   //    - includeEmbedding
   recognizer.listen(
-    (result) => {
+    async (result) => {
       // - result.scores contains the probability scores that correspond to
       //   recognizer.wordLabels().
       // - result.spectrogram contains the spectrogram of the recognized word.
-      console.log(result);
+      const maxIndex = indexOfMax(result.scores as Float32Array);
+      const score = result.scores[maxIndex];
+      const command = recognizer.wordLabels()[maxIndex];
+      console.log(`command: ${command}, score: ${score}`);
     },
     {
-      includeSpectrogram: true,
-      probabilityThreshold: 0.75,
+      probabilityThreshold: 0.999,
     }
   );
 };
