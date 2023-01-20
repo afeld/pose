@@ -19,11 +19,12 @@
     "check": "tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
-    "@google-cloud/speech": "^5.1.0",
+    "@google-cloud/speech": "^5.1.1",
     "@tensorflow-models/pose-detection": "^2.0.0",
     "@tensorflow/tfjs": "^4.2.0",
     "dat.gui": "^0.7.9",
     "lodash.throttle": "^4.1.1",
+    "node-record-lpcm16": "^1.0.1",
     "stats.js": "^0.17.0"
   }
 }
