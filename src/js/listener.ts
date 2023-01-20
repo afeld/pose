@@ -42,7 +42,7 @@ export default class Listener {
   recognizer: speechCommands.SpeechCommandRecognizer;
   eventEmitter: EventEmitter;
 
-  constructor(commands: string[]) {
+  constructor() {
     this.recognizer = speechCommands.create("BROWSER_FFT");
     this.eventEmitter = new EventEmitter();
     this.setupListeners();
