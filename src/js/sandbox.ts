@@ -1,4 +1,7 @@
+// https://github.com/tensorflow/tfjs-models/tree/master/speech-commands#online-streaming-recognition
+
 import * as speechCommands from "@tensorflow-models/speech-commands";
+import throttle from "lodash.throttle";
 
 // returns the index of the maximum value in an array
 const indexOfMax = (arr: Float32Array) => {
@@ -27,26 +30,31 @@ const run = async () => {
   // See the array of words that the recognizer is trained to recognize.
   console.log(recognizer.wordLabels());
 
+  // the recognizer seems to pick up duplicate commands sometimes, so only take the first one
+  const onCommand = throttle(
+    (result: speechCommands.SpeechCommandRecognizerResult) => {
+      // - result.scores contains the probability scores that correspond to
+      //   recognizer.wordLabels().
+      // - result.spectrogram contains the spectrogram of the recognized word.
+
+      const maxIndex = indexOfMax(result.scores as Float32Array);
+      const score = result.scores[maxIndex];
+      const command = recognizer.wordLabels()[maxIndex];
+      console.log(`command: ${command}, score: ${score}`);
+    },
+    1000,
+    { leading: true, trailing: false }
+  );
+
   // `listen()` takes two arguments:
   // 1. A callback function that is invoked anytime a word is recognized.
   // 2. A configuration object with adjustable fields such a
   //    - includeSpectrogram
   //    - probabilityThreshold
   //    - includeEmbedding
-  recognizer.listen(
-    async (result) => {
-      // - result.scores contains the probability scores that correspond to
-      //   recognizer.wordLabels().
-      // - result.spectrogram contains the spectrogram of the recognized word.
-      const maxIndex = indexOfMax(result.scores as Float32Array);
-      const score = result.scores[maxIndex];
-      const command = recognizer.wordLabels()[maxIndex];
-      console.log(`command: ${command}, score: ${score}`);
-    },
-    {
-      probabilityThreshold: 0.999,
-    }
-  );
+  recognizer.listen(async (result) => onCommand(result), {
+    probabilityThreshold: 0.99,
+  });
 };
 
 run();
