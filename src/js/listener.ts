@@ -1,118 +1,59 @@
-import throttle from "lodash.throttle";
+// based on
+// https://github.com/tensorflow/tfjs-models/tree/master/speech-commands#online-streaming-recognition
 
-// https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API#chrome_support
-const iSpeechRecognition = window.SpeechRecognition || webkitSpeechRecognition;
-const iSpeechGrammarList = window.SpeechGrammarList || webkitSpeechGrammarList;
+import * as speechCommands from "@tensorflow-models/speech-commands";
+import { EventEmitter } from "events";
 
-const createGrammar = (commands: string[]) => {
-  const speechRecognitionList = new iSpeechGrammarList();
-  const commandStr = commands.join(" | ");
-  const grammar = `#JSGF V1.0; grammar commands; public <command> = ${commandStr} ;`;
-  speechRecognitionList.addFromString(grammar, 1);
-  return speechRecognitionList;
-};
-
-const createRecognizer = (commands: string[]) => {
-  const recognition = new iSpeechRecognition();
-  recognition.continuous = true;
-  recognition.lang = "en-US";
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
-
-  const speechRecognitionList = createGrammar(commands);
-  recognition.grammars = speechRecognitionList;
-
-  return recognition;
+// returns the index of the maximum value in an array
+const indexOfMax = (arr: Float32Array) => {
+  // https://stackoverflow.com/questions/11301438/return-index-of-greatest-value-in-an-array#comment54083228_30850912
+  return arr.reduce(
+    (bestIndexSoFar, currentlyTestedValue, currentlyTestedIndex, array) =>
+      currentlyTestedValue > array[bestIndexSoFar]
+        ? currentlyTestedIndex
+        : bestIndexSoFar,
+    0
+  );
 };
 
 export default class Listener {
-  commands: string[];
-  recognition: SpeechRecognition;
-  autoRestart = true;
+  recognizer: speechCommands.SpeechCommandRecognizer;
+  eventEmitter: EventEmitter;
 
   constructor(commands: string[]) {
-    this.commands = commands;
-
-    this.recognition = createRecognizer(this.commands);
+    this.recognizer = speechCommands.create("BROWSER_FFT");
+    this.eventEmitter = new EventEmitter();
     this.setupListeners();
   }
 
-  setupListeners() {
-    this.recognition.addEventListener("nomatch", () => {
-      console.log("no match for voice command");
-    });
-
-    // ensure it runs continuously
-    // https://stackoverflow.com/questions/29996350/speech-recognition-run-continuously
-    this.recognition.addEventListener("error", this.onError);
-    // only restart once
-    const endCallback = throttle(this.onEnd, 100, {
-      leading: true,
-      trailing: false,
-    });
-    // https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition#events
-    for (const event of ["audioend", "end", "soundend", "speechend"]) {
-      this.recognition.addEventListener(event, endCallback);
-    }
+  async setupListeners() {
+    await this.recognizer.ensureModelLoaded();
   }
 
-  // callback
-  onError = (event: SpeechRecognitionErrorEvent) => {
-    // https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognitionErrorEvent/error#value
-    switch (event.error) {
-      case "not-allowed":
-      case "service-not-allowed":
-        alert("Access not allowed; please restart.");
-        this.autoRestart = false;
-        break;
-      case "network":
-        this.autoRestart = false;
-        alert("Must be online to use voice commands; please restart.");
-        break;
-      case "no-speech":
-        // Chrome automaticaly stops after ~7 seconds (as of 1/7/23); we will restart it below
-        break;
-      default:
-        alert("Unexpected error in speech recognition");
-        console.error(event.error);
-    }
-  };
-
-  // callback
-  onEnd = () => {
-    setTimeout(() => {
-      if (this.autoRestart) {
-        console.log("restarting speech recognition");
-        this.start();
-      }
-    }, 100);
+  listenCallback = async (
+    result: speechCommands.SpeechCommandRecognizerResult
+  ) => {
+    const maxIndex = indexOfMax(result.scores as Float32Array);
+    const score = result.scores[maxIndex];
+    const command = this.recognizer.wordLabels()[maxIndex];
+    console.log(`command: ${command}, score: ${score}`);
+    this.eventEmitter.emit("command", command);
   };
 
   // register event handler
   onCommand(callback: (command: string) => void) {
-    this.recognition.addEventListener("result", (event) => {
-      const lastResult = event.results[event.results.length - 1];
-      const lastCommand = lastResult[0].transcript;
-      const cleanCommand = lastCommand.toLowerCase().trim();
-      if (this.commands.includes(cleanCommand)) {
-        callback(cleanCommand);
-      } else {
-        console.warn("unknown command:", cleanCommand);
-      }
-    });
+    this.eventEmitter.on("command", callback);
   }
 
   start() {
-    this.autoRestart = true;
-    try {
-      this.recognition.start();
-    } catch (DomException) {
-      // already started; safe to ignore
-    }
+    this.recognizer.listen(this.listenCallback, {
+      probabilityThreshold: 0.99,
+      // the recognizer seems to pick up duplicate commands sometimes, so only take the first one
+      suppressionTimeMillis: 1500,
+    });
   }
 
   stop() {
-    this.autoRestart = false;
-    this.recognition.stop();
+    this.recognizer.stopListening();
   }
 }
