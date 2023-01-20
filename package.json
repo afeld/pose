@@ -14,12 +14,14 @@
   },
   "scripts": {
     "start": "parcel serve --open chrome src/index.html",
+    "sandbox": "parcel serve --open chrome src/sandbox.html",
     "build": "parcel build src/index.html",
     "lint": "eslint --ignore-path .gitignore .",
     "check": "tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
     "@tensorflow-models/pose-detection": "^2.0.0",
+    "@tensorflow-models/speech-commands": "^0.5.4",
     "@tensorflow/tfjs": "^4.2.0",
     "dat.gui": "^0.7.9",
     "lodash.throttle": "^4.1.1",
