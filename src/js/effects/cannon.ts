@@ -1,5 +1,6 @@
 import { Pose } from "@tensorflow-models/pose-detection";
 import Canvas from "../canvas";
+import { MaxSizeQueue } from "../queue";
 import { drawSkeleton } from "../segment_helpers";
 import { getShoulderWidth } from "../skeleton";
 import Effect from "./effect";
@@ -14,7 +15,7 @@ const getColor = (effectIndex: number) => {
 
 export default class Cannon extends Effect {
   delay: number;
-  poses: Pose[];
+  poses: MaxSizeQueue<Pose>;
   color: string;
 
   // there isn't a way to retrieve from Stats, so hard code
@@ -26,14 +27,16 @@ export default class Cannon extends Effect {
     super();
     this.delay = delay;
     this.color = color;
-    this.poses = [];
+
+    const framesToKeep = this.delay * this.FRAMES_PER_SECOND;
+    this.poses = new MaxSizeQueue<Pose>(framesToKeep);
   }
 
   /**
    * @returns the oldest saved frame
    */
   poseToDisplay() {
-    return this.poses[0];
+    return this.poses.peek();
   }
 
   sortVal(_currentPose: Pose) {
@@ -50,14 +53,6 @@ export default class Cannon extends Effect {
 
     const oldPose = this.poseToDisplay();
     drawSkeleton(oldPose, canvas, this.color);
-
-    const numPoses = this.poses.length;
-    const framesToKeep = this.delay * this.FRAMES_PER_SECOND;
-    if (numPoses > framesToKeep) {
-      // shorten to most recent frames
-      const numToShift = numPoses - framesToKeep;
-      this.poses = this.poses.slice(numToShift);
-    }
   }
 
   /**
