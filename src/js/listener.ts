@@ -20,18 +20,20 @@ const indexOfMax = (arr: Float32Array) => {
   );
 };
 
+const isPreferredDevice = (device: MediaDeviceInfo) => {
+  return (
+    device.kind === "audioinput" &&
+    device.deviceId !== DEFAULT_DEVICE_ID &&
+    device.label.toLowerCase().includes("bluetooth")
+  );
+};
+
 /**
  * @returns the device ID of the first bluetooth audio input device, if available
  */
 const getDeviceID = async () => {
   const devices = await navigator.mediaDevices.enumerateDevices();
-  let device = devices.find(
-    (device) =>
-      device.kind === "audioinput" &&
-      device.deviceId !== DEFAULT_DEVICE_ID &&
-      device.label.toLowerCase().includes("bluetooth")
-  );
-
+  const device = devices.find(isPreferredDevice);
   if (device) {
     return device.deviceId;
   }
