@@ -1,8 +1,6 @@
 import * as tf from "@tensorflow/tfjs";
 import Stats from "stats.js";
-import Video from "./video";
 import Canvas from "./canvas";
-import Detector from "./detector";
 import { getElementById, querySelector } from "./dom_helpers";
 import Effect from "./effects/effect";
 import { actionForKeyCode, generateActionHelp } from "./actions";
@@ -37,44 +35,32 @@ const sortEfects = (currentPose: Pose, effects: Effect[]) => {
   });
 };
 
-let lastPose: Pose | undefined;
+const onDetection = async (canvas: Canvas, pose: Pose, effects: Effect[]) => {
+  canvas.loaded();
+
+  canvas.clear();
+  sortEfects(pose, effects);
+  for (const effect of effects) {
+    await effect.onAnimationFrame(pose, canvas);
+  }
+};
 
 /**
  * the "game loop"
  */
 const onAnimationFrame = async (
   stats: Stats,
-  detector: Detector,
+  detectorWindow: Window,
   canvas: Canvas,
   effects: Effect[]
 ) => {
   stats.begin();
-
-  if (detector.isReady()) {
-    let pose = await detector.detect();
-    // if no current pose is detected, use the last one to avoid flickering
-    if (!pose) {
-      pose = lastPose;
-    }
-
-    canvas.loaded();
-
-    canvas.clear();
-    if (pose) {
-      sortEfects(pose, effects);
-      for (const effect of effects) {
-        await effect.onAnimationFrame(pose, canvas);
-      }
-    }
-
-    lastPose = pose;
-  }
-
+  detectorWindow.postMessage("detect", "*");
   stats.end();
 
   // loop
   requestAnimationFrame(() =>
-    onAnimationFrame(stats, detector, canvas, effects)
+    onAnimationFrame(stats, detectorWindow, canvas, effects)
   );
 };
 
@@ -82,17 +68,12 @@ const onAnimationFrame = async (
  * avoid being creepy by only watching+listening when the window is visible
  */
 const onVisibilityChange = (
-  video: Video,
   canvas: Canvas,
   listenerController: ListenerController
 ) => {
   if (document.hidden) {
-    video.turnOffWebcam();
     listenerController.stop();
   } else {
-    // try to match output resolution
-    video.setUpWebcam(canvas.width(), canvas.height());
-
     listenerController.startIfAllowed();
   }
 };
@@ -100,17 +81,13 @@ const onVisibilityChange = (
 /**
  * only use the webcam when the window is visible
  */
-const handleVisibilityChanges = (
-  video: Video,
-  canvas: Canvas,
-  effects: Effect[]
-) => {
+const handleVisibilityChanges = (canvas: Canvas, effects: Effect[]) => {
   const listenerController = new ListenerController(effects);
 
-  onVisibilityChange(video, canvas, listenerController);
+  onVisibilityChange(canvas, listenerController);
   document.addEventListener(
     "visibilitychange",
-    () => onVisibilityChange(video, canvas, listenerController),
+    () => onVisibilityChange(canvas, listenerController),
     false
   );
 };
@@ -138,18 +115,30 @@ const setup = async () => {
   tf.enableProdMode();
 
   const canvas = createCanvas();
-  const video = Video.matchCanvas(canvas);
   const stats = new Stats();
-  const detector = new Detector(video);
+
+  const detectorIFrame = getElementById("detect") as HTMLIFrameElement;
+  const detectorWindow = detectorIFrame.contentWindow;
+  if (!detectorWindow) {
+    throw new Error("no detectorWindow");
+  }
+  window.addEventListener("message", async (event) => {
+    const pose = event.data as Pose;
+    // https://github.com/tensorflow/tfjs-models/blob/4e8fa791175b9f637cbecdbc579ab71d3f35e48c/pose-detection/src/blazepose_mediapipe/detector.ts/#L48-L51
+    pose.segmentation.maskValueToLabel = () => "person";
+
+    onDetection(canvas, event.data, effects);
+  });
+
   const effects: Effect[] = [];
   // start with a Shadow
   Shadow.addTo(effects);
 
   // kick off the video display
-  onAnimationFrame(stats, detector, canvas, effects);
+  onAnimationFrame(stats, detectorWindow, canvas, effects);
 
   document.addEventListener("keypress", (event) => onKeyPress(event, effects));
-  handleVisibilityChanges(video, canvas, effects);
+  handleVisibilityChanges(canvas, effects);
   showFPS(stats);
 
   const actionsTable = querySelector(
