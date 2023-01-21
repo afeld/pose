@@ -28,6 +28,8 @@ const getMask = async (segmentation: Segmentation, color = COLOR_RED) => {
   return coloredPartImage;
 };
 
+let canvas2: OffscreenCanvas | undefined;
+
 const drawImageDataWithTransparency = (
   canvas: Canvas,
   imageData: ImageData
@@ -37,7 +39,13 @@ const drawImageDataWithTransparency = (
   // Render to offscreen canvas to convert the ImageData to something that can be used by drawImage(), which supports transparency. putImageData() overwrites with transparent pixels.
   // https://stackoverflow.com/a/53239232/358804
 
-  const canvas2 = new OffscreenCanvas(canvas.width(), canvas.height());
+  const width = canvas.width();
+  const height = canvas.height();
+  if (!canvas2 || canvas2.width !== width || canvas2.height !== height) {
+    // cache the canvas
+    canvas2 = new OffscreenCanvas(width, height);
+  }
+
   const ctx2 = canvas2.getContext("2d");
   if (!ctx2) {
     return;
