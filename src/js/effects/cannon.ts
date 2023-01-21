@@ -29,7 +29,9 @@ export default class Cannon extends Effect {
     this.poses = [];
   }
 
-  // returns the oldest saved frame
+  /**
+   * @returns the oldest saved frame
+   */
   poseToDisplay() {
     return this.poses[0];
   }

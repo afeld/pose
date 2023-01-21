@@ -14,7 +14,9 @@ const showFPS = (stats: Stats) => {
   document.body.appendChild(stats.dom);
 };
 
-// modifies the list
+/**
+ * @param effects gets modified
+ */
 const sortEfects = (currentPose: Pose, effects: Effect[]) => {
   effects.sort((a, b) => {
     const aVal = a.sortVal(currentPose);
@@ -33,7 +35,9 @@ const sortEfects = (currentPose: Pose, effects: Effect[]) => {
   });
 };
 
-// the "game loop"
+/**
+ * the "game loop"
+ */
 const onAnimationFrame = async (
   stats: Stats,
   detector: Detector,
@@ -64,7 +68,9 @@ const onAnimationFrame = async (
   );
 };
 
-// avoid being creepy by only watching+listening when the window is visible
+/**
+ * avoid being creepy by only watching+listening when the window is visible
+ */
 const onVisibilityChange = (
   video: Video,
   canvas: Canvas,
@@ -81,7 +87,9 @@ const onVisibilityChange = (
   }
 };
 
-// only use the webcam when the window is visible
+/**
+ * only use the webcam when the window is visible
+ */
 const handleVisibilityChanges = (
   video: Video,
   canvas: Canvas,

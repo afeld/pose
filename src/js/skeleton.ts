@@ -39,7 +39,9 @@ const scale = (
   return ((value - r_min) * (t_max - t_min)) / (r_max - r_min) + t_min;
 };
 
-// scale the line width to give appearance of depth
+/**
+ * scale the line width to give appearance of depth
+ */
 const calculateLineWidth = (keypoints: Keypoint[]) => {
   const shoulderWidth = getShoulderWidth(keypoints);
 
