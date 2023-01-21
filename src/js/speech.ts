@@ -5,7 +5,7 @@ const run = async () => {
   await tf.setBackend("webgl");
 
   const listener = new Listener();
-  listener.onCommand((result) => window.postMessage(result));
+  listener.onCommand((result) => window.parent.postMessage(result, "*"));
 
   window.addEventListener("message", (event) => {
     switch (event.data) {

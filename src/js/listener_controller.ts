@@ -14,14 +14,17 @@ export default class ListenerController {
     this.speechWindow = iframe.contentWindow as Window;
 
     // set up handlers
-    this.speechWindow.addEventListener("message", (event) =>
+    this.speechWindow.addEventListener("load", () => {
+      this.startIfAllowed();
+    });
+    window.addEventListener("message", (event) =>
       this.onVoiceCommand(event.data)
     );
     speechDetectionController.onChange(this.onCheckboxChange);
   }
 
   onVoiceCommand = (command: string) => {
-    console.log("command:", command);
+    console.log("command received:", command);
 
     const action = actionForCommand(command);
     if (!action) {
@@ -45,11 +48,11 @@ export default class ListenerController {
 
   startIfAllowed() {
     if (this.isAllowed()) {
-      this.speechWindow.postMessage("start");
+      this.speechWindow.postMessage("start", "*");
     }
   }
 
   stop() {
-    this.speechWindow.postMessage("stop");
+    this.speechWindow.postMessage("stop", "*");
   }
 }

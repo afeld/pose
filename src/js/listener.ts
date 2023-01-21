@@ -86,7 +86,7 @@ export default class Listener {
     }
 
     await this.recognizer.listen(this.listenCallback, {
-      probabilityThreshold: 0.9,
+      probabilityThreshold: 0.99,
       // the recognizer seems to pick up duplicate commands sometimes, so only take the first one
       suppressionTimeMillis: 1500,
       audioTrackConstraints: {
@@ -117,9 +117,9 @@ export default class Listener {
   async stop() {
     if (this.recognizer.isListening()) {
       await this.recognizer.stopListening();
-      console.log("voice commands already disabled");
-    } else {
       console.log("voice commands disabled");
+    } else {
+      console.log("voice commands already disabled");
     }
   }
 }
