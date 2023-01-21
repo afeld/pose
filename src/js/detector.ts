@@ -38,7 +38,7 @@ export default class Detector {
       flipHorizontal: false,
     });
     // their type signature is wrong
-    const pose: poseDetection.Pose | undefined = poses[0];
+    const pose = poses[0] as poseDetection.Pose | undefined;
     return pose;
   }
 }
