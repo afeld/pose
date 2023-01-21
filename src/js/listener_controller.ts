@@ -41,7 +41,7 @@ export default class ListenerController {
 
   startIfAllowed() {
     if (this.isAllowed()) {
-      this.listener.start();
+      // this.listener.start();
       console.log("voice commands enabled");
     }
   }

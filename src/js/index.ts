@@ -133,7 +133,7 @@ const createCanvas = () => {
 
 const setup = async () => {
   // https://www.tensorflow.org/js/guide/platform_environment#backends
-  tf.setBackend("webgl");
+  await tf.setBackend("webgl");
   // https://www.tensorflow.org/js/guide/platform_environment#flags
   tf.enableProdMode();
 
