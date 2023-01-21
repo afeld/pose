@@ -86,7 +86,7 @@ export default class Listener {
     }
 
     await this.recognizer.listen(this.listenCallback, {
-      probabilityThreshold: 0.99,
+      probabilityThreshold: 0.9,
       // the recognizer seems to pick up duplicate commands sometimes, so only take the first one
       suppressionTimeMillis: 1500,
       audioTrackConstraints: {
