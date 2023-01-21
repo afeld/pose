@@ -61,6 +61,13 @@ const actions: Action[] = [
     ],
     callback: (effects: Effect[]) => Freeze.addTo(effects),
   },
+  {
+    description: "Show/hide controls",
+    keycode: "KeyH",
+    commands: [],
+    // no-op; handled by dat.gui directly
+    callback: (effects: Effect[]) => {},
+  },
 ];
 
 export const allCommands = () =>

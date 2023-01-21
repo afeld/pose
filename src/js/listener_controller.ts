@@ -1,10 +1,9 @@
 import { actionForCommand, allCommands } from "./actions";
-import { getElementById } from "./dom_helpers";
 import Effect from "./effects/effect";
 import Listener from "./listener";
+import { config, speechDetectionController } from "./controls";
 
 export default class ListenerController {
-  el: HTMLInputElement;
   listener: Listener;
   effects: Effect[];
 
@@ -12,10 +11,10 @@ export default class ListenerController {
     const commands = allCommands();
     this.listener = new Listener(commands);
     this.effects = effects;
-    this.listener.onCommand(this.onVoiceCommand);
 
-    this.el = getElementById("enable-speech") as HTMLInputElement;
-    this.el.addEventListener("change", this.onCheckboxChange);
+    // set up handlers
+    this.listener.onCommand(this.onVoiceCommand);
+    speechDetectionController.onChange(this.onCheckboxChange);
   }
 
   onVoiceCommand = (command: string) => {
@@ -29,8 +28,8 @@ export default class ListenerController {
     action.callback(this.effects);
   };
 
-  onCheckboxChange = () => {
-    if (this.el.checked) {
+  onCheckboxChange = (value: boolean) => {
+    if (value) {
       this.startIfAllowed();
     } else {
       this.stop();
@@ -38,7 +37,7 @@ export default class ListenerController {
   };
 
   isAllowed() {
-    return this.el.checked;
+    return config.speechDetection;
   }
 
   startIfAllowed() {

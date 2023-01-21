@@ -9,6 +9,7 @@ import { actionForKeyCode, generateActionHelp } from "./actions";
 import ListenerController from "./listener_controller";
 import Shadow from "./effects/shadow";
 import { Pose } from "@tensorflow-models/pose-detection";
+import "./controls";
 
 const showFPS = (stats: Stats) => {
   stats.showPanel(0);
