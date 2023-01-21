@@ -93,6 +93,8 @@ export default class Listener {
         deviceId: deviceId,
       },
     });
+
+    console.log("voice commands enabled");
   }
 
   /**
@@ -115,6 +117,9 @@ export default class Listener {
   async stop() {
     if (this.recognizer.isListening()) {
       await this.recognizer.stopListening();
+      console.log("voice commands already disabled");
+    } else {
+      console.log("voice commands disabled");
     }
   }
 }

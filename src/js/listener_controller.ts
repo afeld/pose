@@ -5,17 +5,18 @@ import { getElementById } from "./dom_helpers";
 
 export default class ListenerController {
   effects: Effect[];
+  speechWindow: Window;
 
   constructor(effects: Effect[]) {
     this.effects = effects;
 
-    // set up handlers
-
     const iframe = getElementById("speech") as HTMLIFrameElement;
-    iframe.contentWindow?.addEventListener("message", (event) =>
+    this.speechWindow = iframe.contentWindow as Window;
+
+    // set up handlers
+    this.speechWindow.addEventListener("message", (event) =>
       this.onVoiceCommand(event.data)
     );
-
     speechDetectionController.onChange(this.onCheckboxChange);
   }
 
@@ -44,13 +45,11 @@ export default class ListenerController {
 
   startIfAllowed() {
     if (this.isAllowed()) {
-      // this.listener.start();
-      console.log("voice commands enabled");
+      this.speechWindow.postMessage("start");
     }
   }
 
   stop() {
-    // this.listener.stop();
-    console.log("voice commands disabled");
+    this.speechWindow.postMessage("stop");
   }
 }
