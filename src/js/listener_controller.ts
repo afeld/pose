@@ -1,18 +1,21 @@
 import { actionForCommand } from "./actions";
 import Effect from "./effects/effect";
-import Listener from "./listener";
 import { config, speechDetectionController } from "./controls";
+import { getElementById } from "./dom_helpers";
 
 export default class ListenerController {
-  listener: Listener;
   effects: Effect[];
 
   constructor(effects: Effect[]) {
-    this.listener = new Listener();
     this.effects = effects;
 
     // set up handlers
-    this.listener.onCommand(this.onVoiceCommand);
+
+    const iframe = getElementById("speech") as HTMLIFrameElement;
+    iframe.contentWindow?.addEventListener("message", (event) =>
+      this.onVoiceCommand(event.data)
+    );
+
     speechDetectionController.onChange(this.onCheckboxChange);
   }
 
@@ -47,7 +50,7 @@ export default class ListenerController {
   }
 
   stop() {
-    this.listener.stop();
+    // this.listener.stop();
     console.log("voice commands disabled");
   }
 }

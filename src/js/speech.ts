@@ -5,7 +5,7 @@ const run = async () => {
   await tf.setBackend("webgl");
 
   const listener = new Listener();
-  listener.onCommand((result) => console.log(result));
+  listener.onCommand((result) => window.postMessage(result));
   listener.start();
 };
 
