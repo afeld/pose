@@ -48,3 +48,11 @@ body {
 .table td {
   padding: 0.5em;
 }
+
+#speech {
+  /* https://stackoverflow.com/a/25435165/358804 */
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 0;
+}
