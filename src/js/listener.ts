@@ -4,7 +4,7 @@ export default class Listener {
   socket: Socket;
   autoRestart = true;
 
-  constructor(commands: string[]) {
+  constructor() {
     this.socket = io("ws://localhost:3000");
   }
 
