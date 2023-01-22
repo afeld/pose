@@ -36,11 +36,15 @@ declare module "vosk" {
     grammar: string[];
   }
 
+  interface Result {
+    text: string;
+  }
+
   class Recognizer {
     constructor(opts: RecognizerOpts);
     acceptWaveform(data: Waveform): boolean;
-    result(): string;
-    finalResult(): string;
+    result(): Result;
+    finalResult(): Result;
     free(): void;
   }
 }

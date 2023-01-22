@@ -1,5 +1,7 @@
 import { io, Socket } from "socket.io-client";
 
+export const EVENT_NAME = "command";
+
 export default class Listener {
   socket: Socket;
   autoRestart = true;
@@ -10,7 +12,7 @@ export default class Listener {
 
   // register event handler
   async onCommand(callback: (command: string) => void) {
-    this.socket.on("command", (msg: string) => {
+    this.socket.on(EVENT_NAME, (msg: string) => {
       console.log("message: " + msg);
       callback(msg);
     });

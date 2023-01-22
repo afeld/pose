@@ -6,6 +6,7 @@ import vosk from "vosk";
 import fs from "fs";
 import mic from "mic";
 import { allCommands } from "./actions";
+import { EVENT_NAME } from "./listener";
 
 const app = express();
 const server = http.createServer(app);
@@ -65,7 +66,13 @@ io.on("connection", (socket) => {
 
   micInputStream.on("data", (data) => {
     if (rec.acceptWaveform(data)) {
-      console.log(rec.result());
+      const command = rec.result().text;
+      // sometimes it's empty
+      if (!command) {
+        return;
+      }
+      console.log(command);
+      socket.emit(EVENT_NAME, command);
     }
     // rec.partialResult()
   });
