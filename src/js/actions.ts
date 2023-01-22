@@ -66,7 +66,7 @@ const actions: Action[] = [
     keycode: "KeyH",
     commands: [],
     // no-op; handled by dat.gui directly
-    callback: (effects: Effect[]) => {},
+    callback: (_effects: Effect[]) => {}, // eslint-disable-line @typescript-eslint/no-empty-function
   },
 ];
 
