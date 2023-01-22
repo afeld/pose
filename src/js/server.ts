@@ -63,7 +63,7 @@ io.on("connection", (socket) => {
     console.log("user disconnected");
   });
 
-  micInputStream.on("data", (data: any) => {
+  micInputStream.on("data", (data) => {
     if (rec.acceptWaveform(data)) {
       console.log(rec.result());
     }

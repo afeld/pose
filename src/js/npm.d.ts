@@ -1,3 +1,5 @@
+declare class Waveform {}
+
 declare module "mic" {
   interface MicOpts {
     rate: string;
@@ -6,8 +8,18 @@ declare module "mic" {
     device: string;
   }
 
-  function mic(options: MicOpts): any;
-  export = mic;
+  class AudioStream {
+    on(event: string, callback: (data: Waveform) => void): void;
+  }
+
+  class MicInstance {
+    getAudioStream(): AudioStream;
+    start(): void;
+    stop(): void;
+  }
+
+  export default function mic(options: MicOpts): MicInstance;
+  // export = mic;
 }
 
 declare module "vosk" {
@@ -26,7 +38,7 @@ declare module "vosk" {
 
   class Recognizer {
     constructor(opts: RecognizerOpts);
-    acceptWaveform(data: any): boolean;
+    acceptWaveform(data: Waveform): boolean;
     result(): string;
     finalResult(): string;
     free(): void;
