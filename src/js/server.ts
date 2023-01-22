@@ -5,6 +5,7 @@ import { Server } from "socket.io";
 import vosk from "vosk";
 import fs from "fs";
 import mic from "mic";
+import { allCommands } from "./actions";
 
 const app = express();
 const server = http.createServer(app);
@@ -28,10 +29,11 @@ if (!fs.existsSync(MODEL_PATH)) {
 
 vosk.setLogLevel(0);
 const model = new vosk.Model(MODEL_PATH);
+const commands = allCommands();
 const rec = new vosk.Recognizer({
   model: model,
   sampleRate: SAMPLE_RATE,
-  grammar: ["one", "two"],
+  grammar: commands,
 });
 
 const micInstance = mic({
