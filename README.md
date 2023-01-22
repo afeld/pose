@@ -10,6 +10,7 @@ Experiment using [Tensorflow.js's BlazePose-MediaPipe model](https://github.com/
    - [Google Chrome](https://www.google.com/chrome/index.html)
      - As of this writing, [other browsers aren't supported](https://caniuse.com/speech-recognition).
    - [Node.js](https://nodejs.org/)
+1. [Download the model](https://alphacephei.com/vosk/models) and unzip to `models/` in this directory.
 1. Install dependencies.
 
    ```sh
