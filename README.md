@@ -21,3 +21,10 @@ Experiment using [Tensorflow.js's BlazePose-MediaPipe model](https://github.com/
    ```sh
    npm start
    ```
+
+1. [Download the model](https://alphacephei.com/vosk/models)
+1. Make an archive
+
+   ```sh
+   tar -czf src/model.tar.gz model/
+   ```

@@ -24,6 +24,7 @@
     "dat.gui": "^0.7.9",
     "lodash.throttle": "^4.1.1",
     "stats.js": "^0.17.0",
-    "vosk": "^0.3.39"
+    "vosk": "^0.3.39",
+    "vosk-browser": "^0.0.8"
   }
 }
