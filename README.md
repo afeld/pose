@@ -19,5 +19,11 @@ Experiment using [Tensorflow.js's BlazePose-MediaPipe model](https://github.com/
 1. Start the server.
 
    ```sh
+   npm run server
+   ```
+
+1. Start the front end.
+
+   ```sh
    npm start
    ```
