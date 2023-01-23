@@ -2,7 +2,11 @@
 
 [![Tests](https://github.com/afeld/pose/actions/workflows/tests.yml/badge.svg)](https://github.com/afeld/pose/actions/workflows/tests.yml)
 
-Experiment using [Tensorflow.js's BlazePose-MediaPipe model](https://github.com/tensorflow/tfjs-models/tree/master/pose-detection/src/blazepose_mediapipe#readme) and the [Web Speech API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API).
+Experiment using [Tensorflow.js's BlazePose-MediaPipe model](https://github.com/tensorflow/tfjs-models/tree/master/pose-detection/src/blazepose_mediapipe#readme) and the [Vosk](https://alphacephei.com/vosk/) for speech recognition.
+
+## Architecture
+
+There's a server that runs locally to do speech detection, while the front end runs via [Parcel](https://parceljs.org/). Recognized commands are sent from the server to the front end via [Socket.IO](https://socket.io/).
 
 ## To run
 
@@ -28,3 +32,5 @@ Experiment using [Tensorflow.js's BlazePose-MediaPipe model](https://github.com/
    ```sh
    npm start
    ```
+
+There's a bug in the server where it can't be stopped with `Control`+`C`, so use `killall node`.

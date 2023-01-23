@@ -58,6 +58,7 @@ process.on("SIGINT", function () {
   micInstance.stop();
 });
 
+console.log("Waiting for socket connection…");
 io.on("connection", (socket) => {
   console.log("a user connected");
   socket.on("disconnect", () => {
