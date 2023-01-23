@@ -11,8 +11,7 @@ interface Action {
   callback: (effects: Effect[]) => void;
 }
 
-// commands need to be part of the 18w vocabulary:
-// https://github.com/tensorflow/tfjs-models/tree/master/speech-commands#online-streaming-recognition
+// commands need to be part of model
 const actions: Action[] = [
   {
     description: "Reset effects",
