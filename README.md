@@ -21,3 +21,20 @@ Experiment using Tensorflow.js's [BlazePose-MediaPipe](https://github.com/tensor
    ```sh
    npm start
    ```
+
+## Updating the model
+
+When new [commands](src/js/actions.ts) are added, etc., the model will need to be updated.
+
+1. [Open the model in Teachable Machine](https://teachablemachine.withgoogle.com/train/audio/1B3spw3AFZA2FiMZ2d8b1v0vP7CJIAheO)
+1. Add a class, add more samples, etc.
+1. Train
+1. `Save project to Drive`
+1. `Export Model`
+1. Download
+1. Copy the files into `static/model/`
+1. Format the files
+
+   ```sh
+   npx prettier -w static/model
+   ```
