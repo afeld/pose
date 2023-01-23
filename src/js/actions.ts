@@ -16,26 +16,26 @@ const actions: Action[] = [
   {
     description: "Reset effects",
     keycode: "KeyR",
-    commands: ["zero", "stop"],
+    commands: ["reset", "clear", "start over", "restart"],
     // TODO detach handlers?
     callback: (effects: Effect[]) => effects.splice(0),
   },
   {
     description: "Shadow",
     keycode: "KeyS",
-    commands: ["two"],
+    commands: ["shadow"],
     callback: (effects: Effect[]) => Shadow.addTo(effects),
   },
   {
     description: "Start cannon",
     keycode: "KeyC",
-    commands: ["three"],
+    commands: ["cannon"],
     callback: (effects: Effect[]) => Cannon.addTo(effects),
   },
   {
     description: "Freeze",
     keycode: "KeyF",
-    commands: ["one"],
+    commands: ["freeze"],
     callback: (effects: Effect[]) => Freeze.addTo(effects),
   },
   {
@@ -46,6 +46,9 @@ const actions: Action[] = [
     callback: (_effects: Effect[]) => {}, // eslint-disable-line @typescript-eslint/no-empty-function
   },
 ];
+
+export const allCommands = () =>
+  actions.map((action) => action.commands).flat();
 
 export const actionForCommand = (command: string) =>
   actions.find((action) => action.commands.includes(command));

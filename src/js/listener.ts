@@ -3,6 +3,7 @@
 
 import * as speechCommands from "@tensorflow-models/speech-commands";
 import { EventEmitter } from "events";
+import { allCommands } from "./actions";
 
 const DEFAULT_DEVICE_ID = "default";
 
@@ -40,6 +41,18 @@ const getDeviceID = async () => {
   return DEFAULT_DEVICE_ID;
 };
 
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#implementing_basic_set_operations
+/**
+ * @returns the items in setA that aren't in setB
+ */
+const difference = (setA: any[], setB: any[]) => {
+  const _difference = new Set(setA);
+  for (const elem of setB) {
+    _difference.delete(elem);
+  }
+  return _difference;
+};
+
 export default class Listener {
   recognizer: speechCommands.SpeechCommandRecognizer;
   eventEmitter: EventEmitter;
@@ -59,8 +72,13 @@ export default class Listener {
 
   async setupListeners() {
     await this.recognizer.ensureModelLoaded();
+
     const classLabels = this.recognizer.wordLabels();
-    console.log("Supported labels:", classLabels);
+    const desiredCommands = allCommands();
+    const diff = difference(desiredCommands, classLabels);
+    if (diff.size > 0) {
+      console.log("Commands missing in the model:", diff);
+    }
   }
 
   listenCallback = async (
