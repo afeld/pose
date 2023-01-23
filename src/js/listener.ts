@@ -45,13 +45,22 @@ export default class Listener {
   eventEmitter: EventEmitter;
 
   constructor() {
-    this.recognizer = speechCommands.create("BROWSER_FFT");
+    // can't use URL Dependencies (https://parceljs.org/languages/javascript/#url-dependencies) because the .bin file gets loaded under the hood, and there isn't a clear way to tell the model the URL for that
+    // https://github.com/googlecreativelab/teachablemachine-community/blob/master/snippets/markdown/audio/tensorflowjs/javascript.md
+    this.recognizer = speechCommands.create(
+      "BROWSER_FFT",
+      undefined,
+      `${location.origin}/model2/model-2023-01-22T21.05.37.json`,
+      `${location.origin}/model2/metadata.json`
+    );
     this.eventEmitter = new EventEmitter();
     this.setupListeners();
   }
 
   async setupListeners() {
     await this.recognizer.ensureModelLoaded();
+    const classLabels = this.recognizer.wordLabels();
+    console.log("Supported labels:", classLabels);
   }
 
   listenCallback = async (
