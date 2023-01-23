@@ -50,8 +50,8 @@ export default class Listener {
     this.recognizer = speechCommands.create(
       "BROWSER_FFT",
       undefined,
-      `${location.origin}/model2/model-2023-01-22T21.05.37.json`,
-      `${location.origin}/model2/metadata.json`
+      `${location.origin}/model/model.json`,
+      `${location.origin}/model/metadata.json`
     );
     this.eventEmitter = new EventEmitter();
     this.setupListeners();
