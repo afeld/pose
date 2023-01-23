@@ -17,7 +17,7 @@ const io = new Server(server, {
 });
 
 const MODEL_PATH = "model";
-const SAMPLE_RATE = 16000;
+const SAMPLE_RATE = 44100;
 
 if (!fs.existsSync(MODEL_PATH)) {
   console.log(
@@ -31,12 +31,14 @@ if (!fs.existsSync(MODEL_PATH)) {
 vosk.setLogLevel(0);
 const model = new vosk.Model(MODEL_PATH);
 const commands = allCommands();
+console.log("Supported commands:", commands);
 const rec = new vosk.Recognizer({
   model: model,
   sampleRate: SAMPLE_RATE,
   grammar: commands,
 });
 
+// https://github.com/ashishbajaj99/mic#micoptions
 const micInstance = mic({
   rate: String(SAMPLE_RATE),
   channels: "1",
@@ -65,6 +67,7 @@ io.on("connection", (socket) => {
     console.log("user disconnected");
   });
 
+  // TODO ensure there aren't multiple registered
   micInputStream.on("data", (data) => {
     if (rec.acceptWaveform(data)) {
       const command = rec.result().text;
@@ -72,11 +75,20 @@ io.on("connection", (socket) => {
       if (!command) {
         return;
       }
-      console.log(command);
       socket.emit(EVENT_NAME, command);
     }
-    // rec.partialResult()
   });
+});
+
+micInputStream.on("data", (data) => {
+  if (rec.acceptWaveform(data)) {
+    console.log("result:");
+    console.log(rec.result());
+    console.log("partial:");
+    console.log(rec.partialResult());
+    console.log("final result:");
+    console.log(rec.finalResult());
+  }
 });
 
 micInstance.start();

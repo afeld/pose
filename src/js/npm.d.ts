@@ -44,6 +44,7 @@ declare module "vosk" {
     constructor(opts: RecognizerOpts);
     acceptWaveform(data: Waveform): boolean;
     result(): Result;
+    partialResult(): Result;
     finalResult(): Result;
     free(): void;
   }

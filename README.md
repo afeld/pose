@@ -18,6 +18,7 @@ There's a server that runs locally to do speech detection, while the front end r
 1. Install dependencies.
 
    ```sh
+   brew install sox
    npm install
    ```
 
