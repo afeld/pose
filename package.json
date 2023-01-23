@@ -16,8 +16,7 @@
     "util": "^0.12.5"
   },
   "scripts": {
-    "start": "parcel serve --open chrome src/index.html",
-    "sandbox": "parcel serve --open chrome src/sandbox.html",
+    "start": "parcel serve --open chrome src/*.html",
     "build": "parcel build src/index.html",
     "lint": "eslint --ignore-path .gitignore .",
     "check": "tsc --noEmit --skipLibCheck"
