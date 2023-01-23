@@ -88,7 +88,9 @@ export default class Listener {
     }, 100);
   };
 
-  // register event handler
+  /**
+   * register event handler
+   */
   onCommand(callback: (command: string) => void) {
     this.recognition.addEventListener("result", (event) => {
       const lastResult = event.results[event.results.length - 1];

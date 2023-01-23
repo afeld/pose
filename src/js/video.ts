@@ -51,7 +51,9 @@ export default class Video {
     return this.metadataLoaded && this.dataLoaded;
   }
 
-  // creates a Video instance with a "virtual" element (outside of the DOM) matching the size of the provided canvas
+  /**
+   * @returns a Video instance with a "virtual" element (outside of the DOM) matching the size of the provided canvas
+   */
   static matchCanvas(canvas: Canvas) {
     const videoEl = document.createElement("video");
     videoEl.autoplay = true;
