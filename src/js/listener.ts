@@ -117,8 +117,13 @@ export default class Listener {
       overlapFactor: 0.75,
       // the recognizer seems to pick up duplicate commands sometimes, so only take the first one
       suppressionTimeMillis: 1500,
+      // https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints#instance_properties_of_audio_tracks
       audioTrackConstraints: {
         deviceId: deviceId,
+        noiseSuppression: true,
+        echoCancellation: true,
+        // https://richardbloomfield.blog/2021/12/my-ear-buds-keep-auto-muting-themselves/
+        autoGainControl: false,
       },
     });
   }
