@@ -29,5 +29,5 @@ Experiment using [Tensorflow.js's BlazePose-MediaPipe model](https://github.com/
 1. Run the Node server
 
    ```sh
-   GOOGLE_APPLICATION_CREDENTIALS=<key_path> node src/js/speech.js
+   GOOGLE_APPLICATION_CREDENTIALS=<key_path> npx ts-node src/js/speech.ts
    ```
