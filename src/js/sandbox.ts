@@ -1,6 +1,5 @@
-setInterval(async () => {
-  const devices = await navigator.mediaDevices.enumerateDevices();
-  const inputDevices = devices.filter((device) => device.kind === "audioinput");
-  const labels = inputDevices.map((device) => device.label);
-  console.log(labels);
-}, 100);
+import Listener from "./listener";
+
+const listener = new Listener();
+listener.onCommand((command) => console.log(command));
+listener.start();

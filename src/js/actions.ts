@@ -16,7 +16,7 @@ const actions: Action[] = [
   {
     description: "Reset effects",
     keycode: "KeyR",
-    commands: ["reset", "clear", "start over", "restart"],
+    commands: ["reset"],
     // TODO detach handlers?
     callback: (effects: Effect[]) => effects.splice(0),
   },

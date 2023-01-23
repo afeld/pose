@@ -6,6 +6,7 @@ import { EventEmitter } from "events";
 import { allCommands } from "./actions";
 
 const DEFAULT_DEVICE_ID = "default";
+const BACKGROUND_NOISE_LABEL = "Background Noise";
 
 /**
  * @returns the index of the maximum value in an array
@@ -85,9 +86,23 @@ export default class Listener {
   listenCallback = async (
     result: speechCommands.SpeechCommandRecognizerResult
   ) => {
-    const maxIndex = indexOfMax(result.scores as Float32Array);
+    const labels = this.recognizer.wordLabels();
+    const scores = result.scores as Float32Array;
+
+    // const labelScores = Array.from(scores).map((score, i) => {
+    //   const label = labels[i];
+    //   return [label, score];
+    // });
+    // console.table(labelScores);
+
+    const maxIndex = indexOfMax(scores);
     const score = result.scores[maxIndex];
-    const command = this.recognizer.wordLabels()[maxIndex];
+    const command = labels[maxIndex];
+    if (command === BACKGROUND_NOISE_LABEL) {
+      // ignore
+      return;
+    }
+
     console.log(`command: ${command}, score: ${score}`);
     this.eventEmitter.emit("command", command);
   };
