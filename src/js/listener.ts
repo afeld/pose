@@ -93,7 +93,9 @@ export default class Listener {
     }
 
     await this.recognizer.listen(this.listenCallback, {
-      probabilityThreshold: 0.99,
+      probabilityThreshold: 0.9,
+      // per https://github.com/googlecreativelab/teachablemachine-community/blob/master/snippets/markdown/audio/tensorflowjs/javascript.md
+      overlapFactor: 0.75,
       // the recognizer seems to pick up duplicate commands sometimes, so only take the first one
       suppressionTimeMillis: 1500,
       audioTrackConstraints: {
