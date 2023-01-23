@@ -2,7 +2,7 @@
 
 [![Tests](https://github.com/afeld/pose/actions/workflows/tests.yml/badge.svg)](https://github.com/afeld/pose/actions/workflows/tests.yml)
 
-Experiment using [Tensorflow.js's BlazePose-MediaPipe model](https://github.com/tensorflow/tfjs-models/tree/master/pose-detection/src/blazepose_mediapipe#readme) and the [Web Speech API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API).
+Experiment using Tensorflow.js's [BlazePose-MediaPipe](https://github.com/tensorflow/tfjs-models/tree/master/pose-detection/src/blazepose_mediapipe#readme) and [Speech Command Recognizer](https://github.com/tensorflow/tfjs-models/tree/master/speech-commands) models. The latter uses a model trained with [Teachable Machine](https://teachablemachine.withgoogle.com/train/audio).
 
 ## To run
 
