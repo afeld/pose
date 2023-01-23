@@ -15,7 +15,7 @@
  * =============================================================================
  */
 
-import * as speechCommands from "../src";
+import * as speechCommands from "@tensorflow-models/speech-commands";
 
 import { plotSpectrogram } from "./ui";
 

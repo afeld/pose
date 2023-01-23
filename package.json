@@ -27,6 +27,7 @@
     "@tensorflow/tfjs": "^4.2.0",
     "dat.gui": "^0.7.9",
     "lodash.throttle": "^4.1.1",
+    "plotly.js-dist": "^2.18.0",
     "stats.js": "^0.17.0"
   }
 }
