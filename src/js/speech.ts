@@ -10,26 +10,31 @@ import speech from "@google-cloud/speech";
 const projectId = "pose-374103";
 const client = new speech.SpeechClient({ projectId });
 
-const encoding = "LINEAR16";
 const sampleRateHertz = 16000;
-const languageCode = "en-US";
 
 // Create a recognize stream
+// TODO allow recording
 const recognizeStream = client
   .streamingRecognize({
+    // https://cloud.google.com/speech-to-text/docs/reference/rpc/google.cloud.speech.v1#google.cloud.speech.v1.StreamingRecognitionConfig
     config: {
-      encoding: encoding,
-      sampleRateHertz: sampleRateHertz,
-      languageCode: languageCode,
+      encoding: "LINEAR16",
+      sampleRateHertz,
+      languageCode: "en-US",
       // https://cloud.google.com/speech-to-text/docs/transcription-model
       model: "command_and_search",
+      audioChannelCount: 1,
+      maxAlternatives: 0,
+      enableAutomaticPunctuation: false,
+      // https://cloud.google.com/speech-to-text/docs/adaptation-model#fine-tune_transcription_results_using_boost
       speechContexts: [
         {
           phrases: ["freeze", "reset", "shadow", "cannon"],
+          boost: 20,
         },
       ],
     },
-    interimResults: false, // If you want interim results, set this to true
+    interimResults: false,
   })
   .on("error", console.error)
   .on("data", (data) =>
