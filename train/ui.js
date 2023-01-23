@@ -15,12 +15,12 @@
  * =============================================================================
  */
 
-import * as SpeechCommands from '../src';
+import * as SpeechCommands from "../src";
 
-import {BACKGROUND_NOISE_TAG, UNKNOWN_TAG} from '../src';
+import { BACKGROUND_NOISE_TAG, UNKNOWN_TAG } from "../src";
 
-const statusDisplay = document.getElementById('status-display');
-const candidateWordsContainer = document.getElementById('candidate-words');
+const statusDisplay = document.getElementById("status-display");
+const candidateWordsContainer = document.getElementById("candidate-words");
 
 /**
  * Log a message to a textarea.
@@ -29,7 +29,7 @@ const candidateWordsContainer = document.getElementById('candidate-words');
  */
 export function logToStatusDisplay(message) {
   const date = new Date();
-  statusDisplay.value += `[${date.toISOString()}] ` + message + '\n';
+  statusDisplay.value += `[${date.toISOString()}] ` + message + "\n";
   statusDisplay.scrollTop = statusDisplay.scrollHeight;
 }
 
@@ -52,20 +52,20 @@ export function populateCandidateWords(words) {
     if (word === BACKGROUND_NOISE_TAG || word === UNKNOWN_TAG) {
       continue;
     }
-    const wordSpan = document.createElement('span');
+    const wordSpan = document.createElement("span");
     wordSpan.textContent = word;
-    wordSpan.classList.add('candidate-word');
+    wordSpan.classList.add("candidate-word");
     candidateWordsContainer.appendChild(wordSpan);
     candidateWordSpans[word] = wordSpan;
   }
 }
 
 export function showCandidateWords() {
-  candidateWordsContainer.classList.remove('candidate-words-hidden');
+  candidateWordsContainer.classList.remove("candidate-words-hidden");
 }
 
 export function hideCandidateWords() {
-  candidateWordsContainer.classList.add('candidate-words-hidden');
+  candidateWordsContainer.classList.add("candidate-words-hidden");
 }
 
 /**
@@ -89,7 +89,12 @@ export function hideCandidateWords() {
  *   <= fftSize.
  */
 export async function plotSpectrogram(
-    canvas, frequencyData, fftSize, fftDisplaySize, config) {
+  canvas,
+  frequencyData,
+  fftSize,
+  fftDisplaySize,
+  config
+) {
   if (fftDisplaySize == null) {
     fftDisplaySize = fftSize;
   }
@@ -115,7 +120,7 @@ export async function plotSpectrogram(
     return;
   }
 
-  const context = canvas.getContext('2d');
+  const context = canvas.getContext("2d");
   context.clearRect(0, 0, canvas.width, canvas.height);
 
   const numFrames = frequencyData.length / fftSize;
@@ -141,22 +146,24 @@ export async function plotSpectrogram(
       let colorValue = (spectrum[j] - min) / (max - min);
       colorValue = Math.pow(colorValue, 3);
       colorValue = Math.round(255 * colorValue);
-      const fillStyle =
-          `rgb(${colorValue},${255 - colorValue},${255 - colorValue})`;
+      const fillStyle = `rgb(${colorValue},${255 - colorValue},${
+        255 - colorValue
+      })`;
       context.fillStyle = fillStyle;
       context.fillRect(x, y, pixelWidth, pixelHeight);
     }
   }
 
   if (config.markKeyFrame) {
-    const keyFrameIndex = config.keyFrameIndex == null ?
-        await SpeechCommands
-            .getMaxIntensityFrameIndex(
-                {data: frequencyData, frameSize: fftSize})
-            .data() :
-        config.keyFrameIndex;
+    const keyFrameIndex =
+      config.keyFrameIndex == null
+        ? await SpeechCommands.getMaxIntensityFrameIndex({
+            data: frequencyData,
+            frameSize: fftSize,
+          }).data()
+        : config.keyFrameIndex;
     // Draw lines to mark the maximum-intensity frame.
-    context.strokeStyle = 'black';
+    context.strokeStyle = "black";
     context.beginPath();
     context.moveTo(pixelWidth * keyFrameIndex, 0);
     context.lineTo(pixelWidth * keyFrameIndex, canvas.height * 0.1);
@@ -181,35 +188,42 @@ export async function plotSpectrogram(
  * @param {number} topK Top _ scores to render.
  */
 export function plotPredictions(
-    canvas, candidateWords, probabilities, topK, timeToLiveMillis) {
+  canvas,
+  candidateWords,
+  probabilities,
+  topK,
+  timeToLiveMillis
+) {
   if (topK != null) {
     let wordsAndProbs = [];
     for (let i = 0; i < candidateWords.length; ++i) {
       wordsAndProbs.push([candidateWords[i], probabilities[i]]);
     }
-    wordsAndProbs.sort((a, b) => (b[1] - a[1]));
+    wordsAndProbs.sort((a, b) => b[1] - a[1]);
     wordsAndProbs = wordsAndProbs.slice(0, topK);
-    candidateWords = wordsAndProbs.map(item => item[0]);
-    probabilities = wordsAndProbs.map(item => item[1]);
+    candidateWords = wordsAndProbs.map((item) => item[0]);
+    probabilities = wordsAndProbs.map((item) => item[1]);
 
     // Highlight the top word.
     const topWord = wordsAndProbs[0][0];
     console.log(
-        `"${topWord}" (p=${wordsAndProbs[0][1].toFixed(6)}) @ ` +
-        new Date().toTimeString());
+      `"${topWord}" (p=${wordsAndProbs[0][1].toFixed(6)}) @ ` +
+        new Date().toTimeString()
+    );
     for (const word in candidateWordSpans) {
       if (word === topWord) {
-        candidateWordSpans[word].classList.add('candidate-word-active');
+        candidateWordSpans[word].classList.add("candidate-word-active");
         if (timeToLiveMillis != null) {
           setTimeout(() => {
             if (candidateWordSpans[word]) {
               candidateWordSpans[word].classList.remove(
-                  'candidate-word-active');
+                "candidate-word-active"
+              );
             }
           }, timeToLiveMillis);
         }
       } else {
-        candidateWordSpans[word].classList.remove('candidate-word-active');
+        candidateWordSpans[word].classList.remove("candidate-word-active");
       }
     }
   }

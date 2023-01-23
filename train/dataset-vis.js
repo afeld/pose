@@ -15,14 +15,14 @@
  * =============================================================================
  */
 
-import * as speechCommands from '../src';
+import * as speechCommands from "../src";
 
-import {plotSpectrogram} from './ui';
+import { plotSpectrogram } from "./ui";
 
 /** Remove the children of a div that do not have the isFixed attribute. */
 export function removeNonFixedChildrenFromWordDiv(wordDiv) {
   for (let i = wordDiv.children.length - 1; i >= 0; --i) {
-    if (wordDiv.children[i].getAttribute('isFixed') == null) {
+    if (wordDiv.children[i].getAttribute("isFixed") == null) {
       wordDiv.removeChild(wordDiv.children[i]);
     } else {
       break;
@@ -43,8 +43,10 @@ function getCanvasClickRelativeXCoordinate(canvasElement, event) {
   if (event.pageX) {
     x = event.pageX;
   } else {
-    x = event.clientX + document.body.scrollLeft +
-        document.documentElement.scrollLeft;
+    x =
+      event.clientX +
+      document.body.scrollLeft +
+      document.documentElement.scrollLeft;
   }
   x -= canvasElement.offsetLeft;
   return x / canvasElement.width;
@@ -78,9 +80,13 @@ export class DatasetViz {
    *   and the length expected by the model.) Defaults to 1.
    */
   constructor(
-      transferRecognizer, topLevelContainer, minExamplesPerClass,
-      startTransferLearnButton, downloadAsFileButton,
-      transferDurationMultiplier = 1) {
+    transferRecognizer,
+    topLevelContainer,
+    minExamplesPerClass,
+    startTransferLearnButton,
+    downloadAsFileButton,
+    transferDurationMultiplier = 1
+  ) {
     this.transferRecognizer = transferRecognizer;
     this.container = topLevelContainer;
     this.minExamplesPerClass = minExamplesPerClass;
@@ -96,7 +102,7 @@ export class DatasetViz {
   words_() {
     const words = [];
     for (const element of this.container.children) {
-      words.push(element.getAttribute('word'));
+      words.push(element.getAttribute("word"));
     }
     return words;
   }
@@ -117,28 +123,29 @@ export class DatasetViz {
    */
   async drawExample(wordDiv, word, spectrogram, rawAudio, uid) {
     if (uid == null) {
-      throw new Error('Error: UID is not provided for pre-existing example.');
+      throw new Error("Error: UID is not provided for pre-existing example.");
     }
 
     removeNonFixedChildrenFromWordDiv(wordDiv);
 
     // Create the left and right nav buttons.
-    const leftButton = document.createElement('button');
-    leftButton.textContent = '←';
+    const leftButton = document.createElement("button");
+    leftButton.textContent = "←";
     wordDiv.appendChild(leftButton);
 
-    const rightButton = document.createElement('button');
-    rightButton.textContent = '→';
+    const rightButton = document.createElement("button");
+    rightButton.textContent = "→";
     wordDiv.appendChild(rightButton);
 
     // Determine the position of the example in the word of the dataset.
-    const exampleUIDs =
-        this.transferRecognizer.getExamples(word).map(ex => ex.uid);
+    const exampleUIDs = this.transferRecognizer
+      .getExamples(word)
+      .map((ex) => ex.uid);
     const position = exampleUIDs.indexOf(uid);
     this.navIndices[word] = exampleUIDs.indexOf(uid);
 
     if (position > 0) {
-      leftButton.addEventListener('click', () => {
+      leftButton.addEventListener("click", () => {
         this.redraw(word, exampleUIDs[position - 1]);
       });
     } else {
@@ -146,7 +153,7 @@ export class DatasetViz {
     }
 
     if (position < exampleUIDs.length - 1) {
-      rightButton.addEventListener('click', () => {
+      rightButton.addEventListener("click", () => {
         this.redraw(word, exampleUIDs[position + 1]);
       });
     } else {
@@ -154,24 +161,27 @@ export class DatasetViz {
     }
 
     // Spectrogram canvas.
-    const exampleCanvas = document.createElement('canvas');
-    exampleCanvas.style['display'] = 'inline-block';
-    exampleCanvas.style['vertical-align'] = 'middle';
+    const exampleCanvas = document.createElement("canvas");
+    exampleCanvas.style["display"] = "inline-block";
+    exampleCanvas.style["vertical-align"] = "middle";
     exampleCanvas.height = 60;
     exampleCanvas.width = 80;
-    exampleCanvas.style['padding'] = '3px';
+    exampleCanvas.style["padding"] = "3px";
 
     // Set up the click callback for the spectrogram canvas. When clicked,
     // the keyFrameIndex will be set.
     if (word !== speechCommands.BACKGROUND_NOISE_TAG) {
-      exampleCanvas.addEventListener('click', event => {
-        const relativeX =
-            getCanvasClickRelativeXCoordinate(exampleCanvas, event);
+      exampleCanvas.addEventListener("click", (event) => {
+        const relativeX = getCanvasClickRelativeXCoordinate(
+          exampleCanvas,
+          event
+        );
         const numFrames = spectrogram.data.length / spectrogram.frameSize;
         const keyFrameIndex = Math.floor(numFrames * relativeX);
         console.log(
-            `relativeX=${relativeX}; ` +
-            `changed keyFrameIndex to ${keyFrameIndex}`);
+          `relativeX=${relativeX}; ` +
+            `changed keyFrameIndex to ${keyFrameIndex}`
+        );
         this.transferRecognizer.setExampleKeyFrameIndex(uid, keyFrameIndex);
         this.redraw(word, uid);
       });
@@ -181,33 +191,40 @@ export class DatasetViz {
 
     const modelNumFrames = this.transferRecognizer.modelInputShape()[1];
     await plotSpectrogram(
-        exampleCanvas, spectrogram.data, spectrogram.frameSize,
-        spectrogram.frameSize, {
-          pixelsPerFrame: exampleCanvas.width / modelNumFrames,
-          maxPixelWidth: Math.round(0.4 * window.innerWidth),
-          markKeyFrame: this.transferDurationMultiplier > 1 &&
-              word !== speechCommands.BACKGROUND_NOISE_TAG,
-          keyFrameIndex: spectrogram.keyFrameIndex
-        });
+      exampleCanvas,
+      spectrogram.data,
+      spectrogram.frameSize,
+      spectrogram.frameSize,
+      {
+        pixelsPerFrame: exampleCanvas.width / modelNumFrames,
+        maxPixelWidth: Math.round(0.4 * window.innerWidth),
+        markKeyFrame:
+          this.transferDurationMultiplier > 1 &&
+          word !== speechCommands.BACKGROUND_NOISE_TAG,
+        keyFrameIndex: spectrogram.keyFrameIndex,
+      }
+    );
 
     if (rawAudio != null) {
-      const playButton = document.createElement('button');
-      playButton.textContent = '▶️';
-      playButton.addEventListener('click', () => {
+      const playButton = document.createElement("button");
+      playButton.textContent = "▶️";
+      playButton.addEventListener("click", () => {
         playButton.disabled = true;
         speechCommands.utils.playRawAudio(
-            rawAudio, () => playButton.disabled = false);
+          rawAudio,
+          () => (playButton.disabled = false)
+        );
       });
       wordDiv.appendChild(playButton);
     }
 
     // Create Delete button.
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'X';
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "X";
     wordDiv.appendChild(deleteButton);
 
     // Callback for delete button.
-    deleteButton.addEventListener('click', () => {
+    deleteButton.addEventListener("click", () => {
       this.transferRecognizer.removeExample(uid);
       // TODO(cais): Smarter logic for which example to draw after deletion.
       // Right now it always redraws the last available one.
@@ -227,11 +244,11 @@ export class DatasetViz {
    */
   async redraw(word, uid) {
     if (word == null) {
-      throw new Error('word is not specified');
+      throw new Error("word is not specified");
     }
     let divIndex;
     for (divIndex = 0; divIndex < this.container.children.length; ++divIndex) {
-      if (this.container.children[divIndex].getAttribute('word') === word) {
+      if (this.container.children[divIndex].getAttribute("word") === word) {
         break;
       }
     }
@@ -239,9 +256,9 @@ export class DatasetViz {
       throw new Error(`Cannot find div corresponding to word ${word}`);
     }
     const wordDiv = this.container.children[divIndex];
-    const exampleCounts = this.transferRecognizer.isDatasetEmpty() ?
-        {} :
-        this.transferRecognizer.countExamples();
+    const exampleCounts = this.transferRecognizer.isDatasetEmpty()
+      ? {}
+      : this.transferRecognizer.countExamples();
 
     if (word in exampleCounts) {
       const examples = this.transferRecognizer.getExamples(word);
@@ -261,7 +278,12 @@ export class DatasetViz {
 
       const spectrogram = example.example.spectrogram;
       await this.drawExample(
-          wordDiv, word, spectrogram, example.example.rawAudio, example.uid);
+        wordDiv,
+        word,
+        spectrogram,
+        example.example.rawAudio,
+        example.uid
+      );
     } else {
       removeNonFixedChildrenFromWordDiv(wordDiv);
     }
@@ -282,19 +304,18 @@ export class DatasetViz {
 
   /** Update the button states according to the state of transferRecognizer. */
   updateButtons_() {
-    const exampleCounts = this.transferRecognizer.isDatasetEmpty() ?
-        {} :
-        this.transferRecognizer.countExamples();
-    const minCountByClass =
-        this.words_()
-            .map(word => exampleCounts[word] || 0)
-            .reduce((prev, current) => current < prev ? current : prev);
+    const exampleCounts = this.transferRecognizer.isDatasetEmpty()
+      ? {}
+      : this.transferRecognizer.countExamples();
+    const minCountByClass = this.words_()
+      .map((word) => exampleCounts[word] || 0)
+      .reduce((prev, current) => (current < prev ? current : prev));
 
     for (const element of this.container.children) {
-      const word = element.getAttribute('word');
+      const word = element.getAttribute("word");
       const button = element.children[0];
       const displayWord =
-          word === speechCommands.BACKGROUND_NOISE_TAG ? 'noise' : word;
+        word === speechCommands.BACKGROUND_NOISE_TAG ? "noise" : word;
       const exampleCount = exampleCounts[word] || 0;
       if (exampleCount === 0) {
         button.textContent = `${displayWord} (${exampleCount})`;
@@ -304,18 +325,18 @@ export class DatasetViz {
       }
     }
 
-    const requiredMinCountPerClass =
-        Math.ceil(this.minExamplesPerClass / this.transferDurationMultiplier);
+    const requiredMinCountPerClass = Math.ceil(
+      this.minExamplesPerClass / this.transferDurationMultiplier
+    );
     if (minCountByClass >= requiredMinCountPerClass) {
-      this.startTransferLearnButton.textContent = 'Start transfer learning';
+      this.startTransferLearnButton.textContent = "Start transfer learning";
       this.startTransferLearnButton.disabled = false;
     } else {
-      this.startTransferLearnButton.textContent =
-          `Need at least ${requiredMinCountPerClass} examples per word`;
+      this.startTransferLearnButton.textContent = `Need at least ${requiredMinCountPerClass} examples per word`;
       this.startTransferLearnButton.disabled = true;
     }
 
     this.downloadAsFileButton.disabled =
-        this.transferRecognizer.isDatasetEmpty();
+      this.transferRecognizer.isDatasetEmpty();
   }
 }
