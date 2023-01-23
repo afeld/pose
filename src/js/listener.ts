@@ -41,11 +41,12 @@ const getDeviceID = async () => {
   return DEFAULT_DEVICE_ID;
 };
 
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#implementing_basic_set_operations
 /**
  * @returns the items in setA that aren't in setB
  */
-const difference = (setA: any[], setB: any[]) => {
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set#implementing_basic_set_operations
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const difference = (setA: Iterable<any>, setB: any[]) => {
   const _difference = new Set(setA);
   for (const elem of setB) {
     _difference.delete(elem);
