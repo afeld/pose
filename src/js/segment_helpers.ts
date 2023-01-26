@@ -7,7 +7,7 @@ import { BLACK, CLEAR } from "./colors";
 
 const getMask = async (segmentation: Segmentation, color = BLACK) => {
   const backgroundColor = CLEAR;
-  const drawContour = true;
+  const drawContour = false;
 
   // https://github.com/tensorflow/tfjs-models/blob/master/body-segmentation/README.md#bodysegmentationtobinarymask
   const coloredPartImage = await toBinaryMask(
