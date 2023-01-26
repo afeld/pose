@@ -10,6 +10,7 @@ import Shadow from "./effects/shadow";
 import "./controls";
 import { onAnimationFrame } from "./loop";
 import { handleVisibilityChanges } from "./visibility";
+import { setupFullscreen } from "./fullscreen";
 
 const showFPS = (stats: Stats) => {
   stats.showPanel(0);
@@ -64,6 +65,7 @@ const setup = async () => {
 
   document.addEventListener("keypress", (event) => onKeyPress(event, effects));
   handleVisibilityChanges(video, canvas, effects);
+  setupFullscreen(canvas);
   showFPS(stats);
 };
 

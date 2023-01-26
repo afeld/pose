@@ -1,12 +1,13 @@
 import * as dat from "dat.gui";
 import actions, { primaryCommand } from "./actions";
 
-export const config = { speechDetection: true };
+export const config = { fullscreen: false, speechDetection: true };
 
 export const gui = new dat.GUI();
 gui.useLocalStorage = true;
 // console.log(gui.getSaveObject());
 
+export const fullscreenController = gui.add(config, "fullscreen");
 export const speechDetectionController = gui.add(config, "speechDetection");
 
 const commandsGui = gui.addFolder("Voice commands");
