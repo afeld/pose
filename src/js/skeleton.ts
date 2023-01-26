@@ -2,6 +2,8 @@ import { Keypoint, Pose } from "@tensorflow-models/pose-detection";
 import * as posedetection from "@tensorflow-models/pose-detection";
 import Canvas from "./canvas";
 import { MODEL } from "./detector";
+import * as colors from "./colors";
+import { Color } from "@tensorflow-models/pose-detection/dist/shared/calculators/interfaces/common_interfaces";
 
 const params = {
   STATE: {
@@ -76,9 +78,11 @@ class Camera {
     this.ctx = ctx;
   }
 
-  drawSkeleton(keypoints: Keypoint[], { color = "black", lineWidth = 6 }) {
-    this.ctx.fillStyle = color;
-    this.ctx.strokeStyle = color;
+  drawSkeleton(keypoints: Keypoint[], { color = colors.BLACK, lineWidth = 6 }) {
+    const colorStr = colors.toString(color);
+
+    this.ctx.fillStyle = colorStr;
+    this.ctx.strokeStyle = colorStr;
     this.ctx.lineWidth = lineWidth;
 
     posedetection.util
@@ -104,9 +108,9 @@ class Camera {
 
 export default class Skeleton {
   keypoints: Keypoint[];
-  color: string;
+  color: Color;
 
-  constructor(pose: Pose, color = "black") {
+  constructor(pose: Pose, color = colors.BLACK) {
     this.keypoints = pose.keypoints;
     this.color = color;
   }

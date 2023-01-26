@@ -1,11 +1,19 @@
 import { Pose } from "@tensorflow-models/pose-detection";
+import { Color } from "@tensorflow-models/pose-detection/dist/shared/calculators/interfaces/common_interfaces";
 import Canvas from "../canvas";
 import { drawSkeleton } from "../segment_helpers";
 import { getShoulderWidth } from "../skeleton";
 import Effect from "./effect";
+import * as colors from "../colors";
 
 export default class Freeze extends Effect {
+  color: Color;
   frame: Pose | undefined;
+
+  constructor() {
+    super();
+    this.color = colors.getNext();
+  }
 
   sortVal(_currentPose: Pose) {
     if (!this.frame) {
@@ -19,7 +27,7 @@ export default class Freeze extends Effect {
       this.frame = pose;
     }
 
-    drawSkeleton(this.frame, canvas);
+    drawSkeleton(this.frame, canvas, this.color);
   }
 
   /**

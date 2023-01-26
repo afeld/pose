@@ -6,15 +6,10 @@ import {
 } from "@tensorflow-models/pose-detection/dist/shared/calculators/interfaces/common_interfaces";
 import { toBinaryMask } from "@tensorflow-models/pose-detection/dist/shared/calculators/render_util";
 import Canvas from "./canvas";
+import { BLACK, CLEAR } from "./colors";
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-const COLOR_CLEAR: Color = { r: 0, g: 0, b: 0, a: 0 };
-const COLOR_RED: Color = { r: 255, g: 0, b: 0, a: 255 };
-const COLOR_GREEN: Color = { r: 0, g: 255, b: 0, a: 255 };
-/* eslint-enable @typescript-eslint/no-unused-vars */
-
-const getMask = async (segmentation: Segmentation, color = COLOR_RED) => {
-  const backgroundColor = COLOR_CLEAR;
+const getMask = async (segmentation: Segmentation, color = BLACK) => {
+  const backgroundColor = CLEAR;
   const drawContour = true;
 
   // https://github.com/tensorflow/tfjs-models/blob/master/body-segmentation/README.md#bodysegmentationtobinarymask
@@ -58,13 +53,13 @@ const drawImageDataWithTransparency = (
 export const drawMask = async (
   segmentation: Segmentation,
   canvas: Canvas,
-  color = COLOR_RED
+  color = BLACK
 ) => {
   const coloredPartImage = await getMask(segmentation, color);
   drawImageDataWithTransparency(canvas, coloredPartImage);
 };
 
-export const drawSkeleton = (pose: Pose, canvas: Canvas, color = "black") => {
+export const drawSkeleton = (pose: Pose, canvas: Canvas, color = BLACK) => {
   const skeleton = new Skeleton(pose, color);
   skeleton.draw(canvas);
 };
