@@ -29,26 +29,6 @@ body {
   transform: translate(-50%, -50%);
 }
 
-.content {
-  padding: 2em;
-}
-
-.table {
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-
-.table,
-.table th,
-.table td {
-  border: 1px solid black;
-}
-
-.table th,
-.table td {
-  padding: 0.5em;
-}
-
 #speech {
   /* https://stackoverflow.com/a/25435165/358804 */
   position: absolute;

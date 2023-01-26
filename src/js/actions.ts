@@ -23,8 +23,8 @@ const actions: Action[] = [
     description: "Shadow",
     keycode: "KeyS",
     commands: [
-      "start shadow",
       "shadow",
+      "start shadow",
       "shout out",
       "shut up",
       "add shadow",
@@ -36,9 +36,9 @@ const actions: Action[] = [
     description: "Start cannon",
     keycode: "KeyC",
     commands: [
+      "cannon",
       "start cannon",
       "start canon",
-      "cannon",
       "canon",
       "add cannon",
       "add canon",
@@ -78,17 +78,5 @@ export const actionForCommand = (command: string) =>
 
 export const actionForKeyCode = (keycode: string) =>
   actions.find((action) => action.keycode === keycode);
-
-export const generateActionHelp = (table: HTMLTableSectionElement) => {
-  actions.forEach((action) => {
-    const row = document.createElement("tr");
-    const key = action.keycode.replace("Key", "").toLowerCase();
-    row.innerHTML = `
-      <td>${action.description}</td>
-      <td>"${action.commands[0]}"</td>
-      <td><code>${key}</code></td>`;
-    table.appendChild(row);
-  });
-};
 
 export default actions;

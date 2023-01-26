@@ -3,9 +3,9 @@ import Stats from "stats.js";
 import Video from "./video";
 import Canvas from "./canvas";
 import Detector from "./detector";
-import { getElementById, querySelector } from "./dom_helpers";
+import { getElementById } from "./dom_helpers";
 import Effect from "./effects/effect";
-import { actionForKeyCode, generateActionHelp } from "./actions";
+import { actionForKeyCode } from "./actions";
 import Shadow from "./effects/shadow";
 import "./controls";
 import { onAnimationFrame } from "./loop";
@@ -65,11 +65,6 @@ const setup = async () => {
   document.addEventListener("keypress", (event) => onKeyPress(event, effects));
   handleVisibilityChanges(video, canvas, effects);
   showFPS(stats);
-
-  const actionsTable = querySelector(
-    "#actions tbody"
-  ) as HTMLTableSectionElement;
-  generateActionHelp(actionsTable);
 };
 
 setup();
