@@ -56,9 +56,7 @@ const setup = async () => {
   // start with a Shadow
   Shadow.addTo(effects);
 
-  window.addEventListener("error", (event) => {
-    onPageError(event, detector);
-  });
+  window.addEventListener("error", (event) => onPageError(event, detector));
 
   // kick off the video display
   onAnimationFrame(stats, detector, canvas, effects);

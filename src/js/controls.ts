@@ -13,11 +13,6 @@ export const speechDetectionController = gui.add(config, "speechDetection");
 const commandsGui = gui.addFolder("Voice commands");
 const commandList = commandsGui.domElement.childNodes[0] as HTMLUListElement;
 
-const instructionsEl = document.createElement("li");
-instructionsEl.innerHTML =
-  "<em>The keyboard shortcut is the first letter.</em>";
-commandList.appendChild(instructionsEl);
-
 // add the list of commands
 for (const action of actions) {
   const command = primaryCommand(action);
@@ -26,6 +21,6 @@ for (const action of actions) {
   }
 
   const commandEl = document.createElement("li");
-  commandEl.innerText = command;
+  commandEl.innerText = `${action.description}: ${command} | ${action.keycode}`;
   commandList.appendChild(commandEl);
 }

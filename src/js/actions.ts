@@ -15,7 +15,7 @@ const actions: Action[] = [
   {
     description: "Reset effects",
     keycode: "KeyR",
-    commands: ["reset", "clear", "start over", "restart"],
+    commands: ["zero", "reset", "clear", "start over", "restart"],
     // TODO detach handlers?
     callback: (effects: Effect[]) => effects.splice(0),
   },
@@ -23,6 +23,7 @@ const actions: Action[] = [
     description: "Shadow",
     keycode: "KeyS",
     commands: [
+      "two",
       "shadow",
       "start shadow",
       "shout out",
@@ -36,6 +37,7 @@ const actions: Action[] = [
     description: "Start cannon",
     keycode: "KeyC",
     commands: [
+      "three",
       "cannon",
       "start cannon",
       "start canon",
@@ -51,6 +53,7 @@ const actions: Action[] = [
     description: "Freeze",
     keycode: "KeyF",
     commands: [
+      "one",
       "freeze",
       "free",
       "fries",
