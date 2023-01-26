@@ -1,24 +1,30 @@
-import { actionForCommand, allCommands } from "./actions";
+import { actionForCommand } from "./actions";
 import Effect from "./effects/effect";
-import Listener from "./listener";
 import { config, speechDetectionController } from "./controls";
+import { getElementById } from "./dom_helpers";
 
 export default class ListenerController {
-  listener: Listener;
   effects: Effect[];
+  speechWindow: Window;
 
   constructor(effects: Effect[]) {
-    const commands = allCommands();
-    this.listener = new Listener(commands);
     this.effects = effects;
 
+    const iframe = getElementById("speech") as HTMLIFrameElement;
+    this.speechWindow = iframe.contentWindow as Window;
+
     // set up handlers
-    this.listener.onCommand(this.onVoiceCommand);
+    this.speechWindow.addEventListener("load", () => {
+      this.startIfAllowed();
+    });
+    window.addEventListener("message", (event) =>
+      this.onVoiceCommand(event.data)
+    );
     speechDetectionController.onChange(this.onCheckboxChange);
   }
 
   onVoiceCommand = (command: string) => {
-    console.log("command:", command);
+    console.log("command received:", command);
 
     const action = actionForCommand(command);
     if (!action) {
@@ -42,13 +48,11 @@ export default class ListenerController {
 
   startIfAllowed() {
     if (this.isAllowed()) {
-      this.listener.start();
-      console.log("voice commands enabled");
+      this.speechWindow.postMessage("start", "*");
     }
   }
 
   stop() {
-    this.listener.stop();
-    console.log("voice commands disabled");
+    this.speechWindow.postMessage("stop", "*");
   }
 }

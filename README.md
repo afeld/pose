@@ -4,6 +4,8 @@
 
 Experiment using [Tensorflow.js's BlazePose-MediaPipe model](https://github.com/tensorflow/tfjs-models/tree/master/pose-detection/src/blazepose_mediapipe#readme) and the [Web Speech API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API).
 
+The site is written in Typescript, and the site is built by [Parcel](https://parceljs.org/). The speech detection happens in an iframe (for performance reasons), and recognized commands are sent to the parent window.
+
 ## To run
 
 1. Install required software:
