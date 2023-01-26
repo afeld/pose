@@ -7,6 +7,18 @@ import { getShoulderWidth } from "../skeleton";
 import Effect from "./effect";
 import * as colors from "../colors";
 
+/**
+ * increases the delay on a logarithmic scale, so that there's a greater delay up front and closer together the more Cannons are added
+ */
+const computeDelay = (effects: Effect[]) => {
+  const numExistingCannons = effects.reduce(
+    (prev, effect) => (effect instanceof Cannon ? prev + 1 : prev),
+    0
+  );
+  // the numbers are somewhat arbitrary; played around until it looked good
+  return 2 * Math.log(numExistingCannons + 1) + 3;
+};
+
 export default class Cannon extends Effect {
   delay: number;
   poses: MaxSizeQueue<Pose>;
@@ -50,19 +62,12 @@ export default class Cannon extends Effect {
   }
 
   /**
-   * Adds a Cannon to the list of effects, delaying by one more second each time.
+   * Adds a Cannon to the list of effects.
    * @param effects - gets modified
    */
   static addTo(effects: Effect[]) {
-    // increase the delay by one for each added
-    const numCannons = effects.reduce(
-      (prev, effect) => (effect instanceof Cannon ? prev + 1 : prev),
-      0
-    );
-    const delay = numCannons + 1;
-
+    const delay = computeDelay(effects);
     const color = colors.getNext();
-
     const effect = new Cannon({ delay, color });
     effects.push(effect);
   }
