@@ -1,5 +1,5 @@
 import * as dat from "dat.gui";
-import actions from "./actions";
+import actions, { primaryCommand } from "./actions";
 
 export const config = { speechDetection: true };
 
@@ -19,7 +19,7 @@ commandList.appendChild(instructionsEl);
 
 // add the list of commands
 for (const action of actions) {
-  const command = action.commands[0] as string | undefined;
+  const command = primaryCommand(action);
   if (!command) {
     continue;
   }

@@ -1,25 +1,40 @@
 import throttle from "lodash.throttle";
+import { allCommands, primaryCommands, secondaryCommands } from "./actions";
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API#chrome_support
 const iSpeechRecognition = window.SpeechRecognition || webkitSpeechRecognition;
 const iSpeechGrammarList = window.SpeechGrammarList || webkitSpeechGrammarList;
 
-const createGrammar = (commands: string[]) => {
-  const speechRecognitionList = new iSpeechGrammarList();
+/**
+ * @returns a string in the JSGF format: https://www.w3.org/TR/jsgf/
+ */
+export const createGrammar = (commands: string[]) => {
   const commandStr = commands.join(" | ");
-  const grammar = `#JSGF V1.0; grammar commands; public <command> = ${commandStr} ;`;
-  speechRecognitionList.addFromString(grammar, 1);
+  return `#JSGF V1.0; grammar commands; public <command> = ${commandStr} ;`;
+};
+
+export const createGrammarList = () => {
+  const speechRecognitionList = new iSpeechGrammarList();
+
+  // give precedence to primary commands, but support the secondary ones too
+
+  const primaryGrammar = createGrammar(primaryCommands());
+  speechRecognitionList.addFromString(primaryGrammar, 1);
+
+  const secondaryGrammar = createGrammar(secondaryCommands());
+  speechRecognitionList.addFromString(secondaryGrammar, 0.2);
+
   return speechRecognitionList;
 };
 
-const createRecognizer = (commands: string[]) => {
+const createRecognizer = () => {
   const recognition = new iSpeechRecognition();
   recognition.continuous = true;
   recognition.lang = "en-US";
   recognition.interimResults = false;
   recognition.maxAlternatives = 1;
 
-  const speechRecognitionList = createGrammar(commands);
+  const speechRecognitionList = createGrammarList();
   recognition.grammars = speechRecognitionList;
 
   return recognition;
@@ -30,10 +45,10 @@ export default class Listener {
   recognition: SpeechRecognition;
   autoRestart = true;
 
-  constructor(commands: string[]) {
-    this.commands = commands;
+  constructor() {
+    this.commands = allCommands();
 
-    this.recognition = createRecognizer(this.commands);
+    this.recognition = createRecognizer();
     this.setupListeners();
   }
 

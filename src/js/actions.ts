@@ -6,7 +6,7 @@ import Shadow from "./effects/shadow";
 interface Action {
   description: string;
   keycode: string;
-  // list of variants
+  // list of variants, with the first being the primary
   commands: string[];
   callback: (effects: Effect[]) => void;
 }
@@ -72,6 +72,17 @@ const actions: Action[] = [
 
 export const allCommands = () =>
   actions.map((action) => action.commands).flat();
+
+export const primaryCommand = (action: Action): string | undefined =>
+  action.commands[0];
+
+export const primaryCommands = () =>
+  actions
+    .map((action) => primaryCommand(action))
+    .filter((command) => !!command) as string[];
+
+export const secondaryCommands = () =>
+  actions.map((action) => action.commands.slice(1)).flat();
 
 export const actionForCommand = (command: string) =>
   actions.find((action) => action.commands.includes(command));
