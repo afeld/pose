@@ -1,9 +1,6 @@
 import Skeleton from "./skeleton";
 import { Pose } from "@tensorflow-models/pose-detection";
-import {
-  Color,
-  Segmentation,
-} from "@tensorflow-models/pose-detection/dist/shared/calculators/interfaces/common_interfaces";
+import { Segmentation } from "@tensorflow-models/pose-detection/dist/shared/calculators/interfaces/common_interfaces";
 import { toBinaryMask } from "@tensorflow-models/pose-detection/dist/shared/calculators/render_util";
 import Canvas from "./canvas";
 import { BLACK, CLEAR } from "./colors";
