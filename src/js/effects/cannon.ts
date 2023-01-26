@@ -1,29 +1,23 @@
 import { Pose } from "@tensorflow-models/pose-detection";
+import { Color } from "@tensorflow-models/pose-detection/dist/shared/calculators/interfaces/common_interfaces";
 import Canvas from "../canvas";
 import { MaxSizeQueue } from "../queue";
 import { drawSkeleton } from "../segment_helpers";
 import { getShoulderWidth } from "../skeleton";
 import Effect from "./effect";
-
-const COLORS = ["black", "fuchsia", "green", "purple"];
-
-const getColor = (effectIndex: number) => {
-  // cycle through the colors
-  const colorIndex = effectIndex % (COLORS.length - 1);
-  return COLORS[colorIndex];
-};
+import * as colors from "../colors";
 
 export default class Cannon extends Effect {
   delay: number;
   poses: MaxSizeQueue<Pose>;
-  color: string;
+  color: Color;
 
   // there isn't a way to retrieve from Stats, so hard code
   // TODO calculate this based on the time since the last call to onAnimationFrame()
   FRAMES_PER_SECOND = 30;
 
   /** @param delay - the amount of time to wait, in seconds */
-  constructor({ delay = 1, color = "black" }) {
+  constructor({ delay = 1, color = colors.BLACK }) {
     super();
     this.delay = delay;
     this.color = color;
@@ -66,7 +60,8 @@ export default class Cannon extends Effect {
       0
     );
     const delay = numCannons + 1;
-    const color = getColor(numCannons);
+
+    const color = colors.getNext();
 
     const effect = new Cannon({ delay, color });
     effects.push(effect);

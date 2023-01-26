@@ -1,17 +1,26 @@
 import { Pose } from "@tensorflow-models/pose-detection";
+import { Color } from "@tensorflow-models/pose-detection/dist/shared/calculators/interfaces/common_interfaces";
 import Canvas from "../canvas";
 import { drawMask } from "../segment_helpers";
 import { getShoulderWidth } from "../skeleton";
 import Effect from "./effect";
+import * as colors from "../colors";
 
 export default class Shadow extends Effect {
+  color: Color;
+
+  constructor() {
+    super();
+    this.color = colors.getNext();
+  }
+
   sortVal(currentPose: Pose) {
     return getShoulderWidth(currentPose.keypoints);
   }
 
   async onAnimationFrame(pose: Pose, canvas: Canvas) {
     if (pose?.segmentation) {
-      await drawMask(pose.segmentation, canvas);
+      await drawMask(pose.segmentation, canvas, this.color);
     }
   }
 
