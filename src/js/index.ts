@@ -16,6 +16,15 @@ const showFPS = (stats: Stats) => {
   document.body.appendChild(stats.dom);
 };
 
+const onPageError = (event: ErrorEvent, detector: Detector) => {
+  const error = event.error as Error;
+  if (event.filename.includes("wasm") && error.name === "RuntimeError") {
+    // For some reason, a WASM error happens in the pose detection sometimes, which stops it. Restart it.
+    console.warn("WASM error, restarting pose detection");
+    detector.reset();
+  }
+};
+
 /**
  * @param effects gets modified
  */
@@ -144,6 +153,10 @@ const setup = async () => {
   const effects: Effect[] = [];
   // start with a Shadow
   Shadow.addTo(effects);
+
+  window.addEventListener("error", (event) => {
+    onPageError(event, detector);
+  });
 
   // kick off the video display
   onAnimationFrame(stats, detector, canvas, effects);

@@ -32,6 +32,10 @@ export default class Detector {
     return this.video.isLoaded();
   }
 
+  reset() {
+    this._detector?.reset();
+  }
+
   async detect() {
     const detector = await this.getDetector();
     const poses = await detector.estimatePoses(this.video.el, {
