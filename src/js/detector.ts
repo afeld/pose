@@ -18,10 +18,14 @@ export default class Detector {
     if (!this._detector) {
       this._detector = await poseDetection.createDetector(MODEL, {
         runtime: "mediapipe",
-        solutionPath: "https://cdn.jsdelivr.net/npm/@mediapipe/pose",
         enableSegmentation: true,
         enableSmoothing: true,
         modelType: "lite",
+
+        // model is copied with the site build via a Parcel plugin so it can be loaded locally
+        // https://github.com/tensorflow/tfjs-models/tree/master/pose-detection/src/blazepose_mediapipe#create-a-detector
+        // https://github.com/elwin013/parcel-reporter-static-files-copy#customization
+        solutionPath: "node_modules/@mediapipe/pose",
       });
     }
 

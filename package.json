@@ -9,6 +9,7 @@
     "buffer": "^5.5.0",
     "eslint": "^8.31.0",
     "parcel": "^2.8.2",
+    "parcel-reporter-static-files-copy": "^1.5.0",
     "process": "^0.11.10",
     "typescript": "^4.9.4"
   },
@@ -24,5 +25,9 @@
     "dat.gui": "^0.7.9",
     "lodash.throttle": "^4.1.1",
     "stats.js": "^0.17.0"
+  },
+  "staticFiles": {
+    "staticPath": "node_modules/@mediapipe/pose",
+    "staticOutPath": "node_modules/@mediapipe/pose"
   }
 }
