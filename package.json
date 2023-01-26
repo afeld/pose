@@ -13,7 +13,7 @@
     "typescript": "^4.9.4"
   },
   "scripts": {
-    "start": "parcel serve --open chrome src/index.html",
+    "start": "parcel serve --open chrome src/*.html",
     "build": "parcel build src/index.html",
     "lint": "eslint --ignore-path .gitignore .",
     "check": "tsc --noEmit --skipLibCheck"

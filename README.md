@@ -23,3 +23,16 @@ Experiment using [Tensorflow.js's BlazePose-MediaPipe model](https://github.com/
    ```sh
    npm start
    ```
+
+## Sandbox
+
+The sandbox can be used for testing pieces in isolation.
+
+1. Edit [`sandbox.ts`](src/js/sandbox.ts).
+1. Start the server.
+
+   ```sh
+   npm start
+   ```
+
+1. Visit http://localhost:1234/sandbox.html.
