@@ -13,11 +13,26 @@ interface Action {
 
 const actions: Action[] = [
   {
-    description: "Reset effects",
+    description: "Reset",
     keycode: "KeyR",
     commands: ["zero", "reset", "clear", "start over", "restart"],
     // TODO detach handlers?
     callback: (effects: Effect[]) => effects.splice(0),
+  },
+  {
+    description: "Freeze",
+    keycode: "KeyF",
+    commands: [
+      "one",
+      "freeze",
+      "free",
+      "fries",
+      "frieze",
+      "priest",
+      "prince",
+      "trees",
+    ],
+    callback: (effects: Effect[]) => Freeze.addTo(effects),
   },
   {
     description: "Shadow",
@@ -34,7 +49,7 @@ const actions: Action[] = [
     callback: (effects: Effect[]) => Shadow.addTo(effects),
   },
   {
-    description: "Start cannon",
+    description: "Cannon",
     keycode: "KeyC",
     commands: [
       "three",
@@ -48,21 +63,6 @@ const actions: Action[] = [
       "at canon",
     ],
     callback: (effects: Effect[]) => Cannon.addTo(effects),
-  },
-  {
-    description: "Freeze",
-    keycode: "KeyF",
-    commands: [
-      "one",
-      "freeze",
-      "free",
-      "fries",
-      "frieze",
-      "priest",
-      "prince",
-      "trees",
-    ],
-    callback: (effects: Effect[]) => Freeze.addTo(effects),
   },
   {
     description: "Show/hide controls",
