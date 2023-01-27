@@ -14,9 +14,16 @@ const params = {
   },
 };
 
+/**
+ * uses the Pythagorean theorem to calculate the distance between keypoints in 2D, or 3D (if available)
+ */
 const hypotenuse = (a: Keypoint, b: Keypoint) => {
-  // Pythagorean theorem
-  return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+  let sides = Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2);
+  if (a.z && b.z) {
+    // 3D
+    sides += Math.pow(a.z - b.z, 2);
+  }
+  return Math.sqrt(sides);
 };
 
 /**
