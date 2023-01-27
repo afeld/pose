@@ -2,10 +2,10 @@ import { Pose } from "@tensorflow-models/pose-detection";
 import { Color } from "@tensorflow-models/pose-detection/dist/shared/calculators/interfaces/common_interfaces";
 import Canvas from "../display/canvas";
 import { MaxSizeQueue } from "../utils/queue";
-import { drawSkeleton } from "../utils/segment_helpers";
 import { getShoulderWidth } from "../utils/math";
 import Effect from "./effect";
 import * as colors from "../utils/colors";
+import { drawMask } from "../utils/segment_helpers";
 
 /**
  * increases the delay on a logarithmic scale, so that there's a greater delay up front and closer together the more Cannons are added
@@ -58,7 +58,10 @@ export default class Cannon extends Effect {
     this.poses.push(pose);
 
     const oldPose = this.poseToDisplay();
-    drawSkeleton(oldPose, canvas, this.color);
+    if (!oldPose.segmentation) {
+      return;
+    }
+    await drawMask(oldPose.segmentation, canvas, this.color);
   }
 
   /**
