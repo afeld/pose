@@ -56,6 +56,10 @@ const setup = async () => {
   // start with a Shadow
   Shadow.addTo(effects);
 
+  // add preview video
+  const container = getElementById("container");
+  container.appendChild(video.el);
+
   window.addEventListener("error", (event) => onPageError(event, detector));
 
   // kick off the video display
