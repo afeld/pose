@@ -16,7 +16,7 @@ const computeDelay = (effects: Effect[]) => {
     0
   );
   // the numbers are somewhat arbitrary; played around until it looked good
-  return 3 * Math.log(numExistingCannons + 1) + 8;
+  return 4 * Math.log(numExistingCannons + 1) + 6;
 };
 
 export default class Cannon extends Effect {
@@ -26,7 +26,7 @@ export default class Cannon extends Effect {
 
   // there isn't a way to retrieve from Stats, so hard code
   // TODO calculate this based on the time since the last call to onAnimationFrame()
-  FRAMES_PER_SECOND = 30;
+  FRAMES_PER_SECOND = 63;
 
   /** @param delay - the amount of time to wait, in seconds */
   constructor({ delay = 1, color = colors.BLACK }) {
