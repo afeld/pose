@@ -12,6 +12,7 @@ interface Action {
 }
 
 const actions: Action[] = [
+  // not bothering to include LiveVideo, since it's only meant to be used at the beginning
   {
     description: "Reset",
     keycode: "KeyR",

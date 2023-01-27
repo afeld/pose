@@ -6,11 +6,11 @@ import Detector from "./detector";
 import { getElementById } from "./dom_helpers";
 import Effect from "./effects/effect";
 import { actionForKeyCode } from "./actions";
-import Shadow from "./effects/shadow";
 import "./controls";
 import { onAnimationFrame } from "./loop";
 import { handleVisibilityChanges } from "./visibility";
 import { setupFullscreen } from "./fullscreen";
+import LiveVideo from "./effects/live_video";
 
 const showFPS = (stats: Stats) => {
   stats.showPanel(0);
@@ -53,8 +53,8 @@ const setup = async () => {
   const stats = new Stats();
   const detector = new Detector(video);
   const effects: Effect[] = [];
-  // start with a Shadow
-  Shadow.addTo(effects);
+  // start with live video
+  LiveVideo.addTo(effects, video);
 
   window.addEventListener("error", (event) => onPageError(event, detector));
 

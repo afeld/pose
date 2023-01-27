@@ -32,6 +32,7 @@ export default class Canvas {
   }
 
   context() {
+    // TODO cache
     const ctx = this.el.getContext("2d");
     if (!ctx) {
       throw new Error("context couldn't be retrieved");

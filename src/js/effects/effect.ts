@@ -1,5 +1,6 @@
 import { Pose } from "@tensorflow-models/pose-detection";
 import Canvas from "../canvas";
+import { getShoulderWidth } from "../skeleton";
 
 /**
  * @param effects gets modified
@@ -23,12 +24,11 @@ export const sortEfects = (currentPose: Pose, effects: Effect[]) => {
 };
 
 export default abstract class Effect {
-  abstract sortVal(currentPose: Pose): number | null;
   abstract onAnimationFrame(pose: Pose, canvas: Canvas): Promise<void>;
 
-  // unable to make an abstract static method
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  static addTo(_effects: Effect[]) {
-    throw new Error("Not implemented");
+  sortVal(currentPose: Pose) {
+    return getShoulderWidth(currentPose.keypoints);
   }
+
+  // each Effect should probably implement a `static addTo()` method; the signature can be whatever is necessary
 }
