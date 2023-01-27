@@ -11,6 +11,13 @@ export default class LiveVideo extends Effect {
     this.video = video;
   }
 
+  /**
+   * @returns an arbitrary low value, so that this effect always appears in the back
+   */
+  sortVal(_currentPose: Pose) {
+    return -1000;
+  }
+
   async onAnimationFrame(_pose: Pose, canvas: Canvas) {
     const ctx = canvas.context();
     ctx.drawImage(this.video.el, 0, 0);

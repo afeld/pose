@@ -27,7 +27,7 @@ const hypotenuse = (a: Keypoint, b: Keypoint) => {
 };
 
 /**
- * @returns the shoulder width, expected to be in the 50-200 range
+ * @returns the shoulder width, expected to be in the 100-1000 range
  */
 export const getShoulderWidth = (keypoints: Keypoint[]) => {
   const leftShoulder = keypoints.find((kp) => kp.name === "left_shoulder");
