@@ -77,18 +77,18 @@ export default class Listener {
     switch (event.error) {
       case "not-allowed":
       case "service-not-allowed":
-        alert("Access not allowed; please restart.");
+        console.error("Access not allowed; please restart.");
         this.autoRestart = false;
         break;
       case "network":
         this.autoRestart = false;
-        alert("Must be online to use voice commands; please restart.");
+        console.error("Must be online to use voice commands; please restart.");
         break;
       case "no-speech":
         // Chrome automaticaly stops after ~7 seconds (as of 1/7/23); we will restart it below
         break;
       default:
-        alert("Unexpected error in speech recognition");
+        console.error("Unexpected error in speech recognition:");
         console.error(event.error);
     }
   };
