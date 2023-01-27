@@ -16,6 +16,7 @@
   "scripts": {
     "start": "parcel serve --open chrome src/*.html",
     "build": "parcel build src/index.html",
+    "clean": "rm -rf .parcel-cache dist",
     "lint": "eslint --ignore-path .gitignore .",
     "check": "tsc --noEmit --skipLibCheck"
   },
