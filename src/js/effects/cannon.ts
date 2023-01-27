@@ -16,7 +16,7 @@ const computeDelay = (effects: Effect[]) => {
     0
   );
   // the numbers are somewhat arbitrary; played around until it looked good
-  return 4 * Math.log(numExistingCannons + 1) + 6;
+  return 2 * Math.log(numExistingCannons + 1) + 6;
 };
 
 export default class Cannon extends Effect {
