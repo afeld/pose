@@ -1,6 +1,7 @@
 :root {
-  --canvas-width: 1024px;
-  --canvas-height: 768px;
+  /* match projector resolution */
+  --canvas-width: 1920px;
+  --canvas-height: 1080px;
 }
 
 body {
