@@ -22,7 +22,7 @@ export const createGrammarList = () => {
   speechRecognitionList.addFromString(primaryGrammar, 1);
 
   const secondaryGrammar = createGrammar(secondaryCommands());
-  speechRecognitionList.addFromString(secondaryGrammar, 0.2);
+  speechRecognitionList.addFromString(secondaryGrammar, 0.5);
 
   return speechRecognitionList;
 };
