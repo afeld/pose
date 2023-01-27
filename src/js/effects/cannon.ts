@@ -1,7 +1,6 @@
 import { Pose } from "@tensorflow-models/pose-detection";
 import { Color } from "@tensorflow-models/pose-detection/dist/shared/calculators/interfaces/common_interfaces";
 import Canvas from "../canvas";
-import { MaxSizeQueue } from "../queue";
 import { drawSkeleton } from "../segment_helpers";
 import { getShoulderWidth } from "../skeleton";
 import Effect from "./effect";
@@ -21,28 +20,31 @@ const computeDelay = (effects: Effect[]) => {
 
 export default class Cannon extends Effect {
   delay: number;
-  poses: MaxSizeQueue<Pose>;
+  poses: Pose[];
   color: Color;
 
-  // there isn't a way to retrieve from Stats, so hard code
-  // TODO calculate this based on the time since the last call to onAnimationFrame()
-  FRAMES_PER_SECOND = 30;
+  /**
+   * used if the value can't otherwise be calculated
+   */
+  DEFAULT_FRAMES_PER_SECOND = 30;
+  /**
+   * in milliseconds since the epoch
+   */
+  lastFrameTime?: number;
 
   /** @param delay - the amount of time to wait, in seconds */
   constructor({ delay = 1, color = colors.BLACK }) {
     super();
     this.delay = delay;
     this.color = color;
-
-    const framesToKeep = this.delay * this.FRAMES_PER_SECOND;
-    this.poses = new MaxSizeQueue<Pose>(framesToKeep);
+    this.poses = [];
   }
 
   /**
    * @returns the oldest saved frame
    */
   poseToDisplay() {
-    return this.poses.peek();
+    return this.poses[0];
   }
 
   sortVal(_currentPose: Pose) {
@@ -54,11 +56,36 @@ export default class Cannon extends Effect {
     return getShoulderWidth(oldPose.keypoints);
   }
 
+  computeFPS(now: number) {
+    if (this.lastFrameTime) {
+      const elapsed = now - this.lastFrameTime;
+      return Math.round(1000 / elapsed);
+    } else {
+      return this.DEFAULT_FRAMES_PER_SECOND;
+    }
+  }
+
+  trimPoses(now: number) {
+    const numPoses = this.poses.length;
+    const fps = this.computeFPS(now);
+    console.log(fps);
+    const framesToKeep = this.delay * fps;
+    if (numPoses > framesToKeep) {
+      // shorten to most recent frames
+      const numToShift = numPoses - framesToKeep;
+      this.poses = this.poses.slice(numToShift);
+    }
+  }
+
   async onAnimationFrame(pose: Pose, canvas: Canvas) {
     this.poses.push(pose);
 
     const oldPose = this.poseToDisplay();
     drawSkeleton(oldPose, canvas, this.color);
+
+    const now = Date.now();
+    this.trimPoses(now);
+    this.lastFrameTime = now;
   }
 
   /**
