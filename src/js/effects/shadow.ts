@@ -14,10 +14,6 @@ export default class Shadow extends Effect {
     this.color = colors.getNext();
   }
 
-  sortVal(currentPose: Pose) {
-    return getShoulderWidth(currentPose.keypoints);
-  }
-
   async onAnimationFrame(pose: Pose, canvas: Canvas) {
     if (pose?.segmentation) {
       await drawMask(pose.segmentation, canvas, this.color);
