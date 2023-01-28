@@ -4,8 +4,9 @@ import { Segmentation } from "@tensorflow-models/pose-detection/dist/shared/calc
 import { toBinaryMask } from "@tensorflow-models/pose-detection/dist/shared/calculators/render_util";
 import Canvas from "../display/canvas";
 import { BLACK, CLEAR } from "./colors";
+import Body from "../poses/body";
 
-const getMask = async (segmentation: Segmentation, color = BLACK) => {
+export const getMask = async (segmentation: Segmentation, color = BLACK) => {
   const backgroundColor = CLEAR;
   const drawContour = false;
 
@@ -47,12 +48,8 @@ const drawImageDataWithTransparency = (
   ctx.drawImage(canvas2, 0, 0);
 };
 
-export const drawMask = async (
-  segmentation: Segmentation,
-  canvas: Canvas,
-  color = BLACK
-) => {
-  const coloredPartImage = await getMask(segmentation, color);
+export const drawMask = async (body: Body, canvas: Canvas, color = BLACK) => {
+  const coloredPartImage = await body.getMask(color);
   drawImageDataWithTransparency(canvas, coloredPartImage);
 };
 

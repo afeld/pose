@@ -60,11 +60,7 @@ export default class Cannon extends Effect {
     this.bodies.push(body);
 
     const oldBody = this.bodyToDisplay();
-    const segmentation = oldBody.pose.segmentation;
-    if (!segmentation) {
-      return;
-    }
-    await drawMask(segmentation, canvas, this.color);
+    await drawMask(oldBody, canvas, this.color);
   }
 
   /**
