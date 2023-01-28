@@ -1,4 +1,3 @@
-import { Pose } from "@tensorflow-models/pose-detection";
 import { Color } from "@tensorflow-models/pose-detection/dist/shared/calculators/interfaces/common_interfaces";
 import Canvas from "../display/canvas";
 import { drawMask } from "../utils/segment_helpers";
@@ -14,8 +13,7 @@ export default class Shadow extends Effect {
     this.color = colors.getNext();
   }
 
-  async onAnimationFrame(pose: Pose, canvas: Canvas) {
-    const body = new Body(pose);
+  async onAnimationFrame(body: Body, canvas: Canvas) {
     await drawMask(body, canvas, this.color);
   }
 

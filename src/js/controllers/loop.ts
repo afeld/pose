@@ -2,6 +2,7 @@ import { Pose } from "@tensorflow-models/pose-detection";
 import Effect, { sortEfects } from "../effects/effect";
 import Canvas from "../display/canvas";
 import Detector from "../poses/detector";
+import Body from "../poses/body";
 
 let lastPose: Pose | undefined;
 
@@ -28,8 +29,11 @@ export const onAnimationFrame = async (
     canvas.clear();
     if (pose) {
       sortEfects(pose, effects);
+
+      // this ensures that the Body is only created once per frame, allowing the mask to be reused across Effects
+      const body = new Body(pose);
       for (const effect of effects) {
-        await effect.onAnimationFrame(pose, canvas);
+        await effect.onAnimationFrame(body, canvas);
       }
     }
 

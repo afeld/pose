@@ -2,6 +2,7 @@ import { Pose } from "@tensorflow-models/pose-detection";
 import Canvas from "../display/canvas";
 import Video from "../display/video";
 import Effect from "./effect";
+import Body from "../poses/body";
 
 export default class LiveVideo extends Effect {
   video: Video;
@@ -18,7 +19,7 @@ export default class LiveVideo extends Effect {
     return -1000;
   }
 
-  async onAnimationFrame(_pose: Pose, canvas: Canvas) {
+  async onAnimationFrame(_body: Body, canvas: Canvas) {
     const ctx = canvas.context();
     ctx.drawImage(this.video.el, 0, 0);
   }

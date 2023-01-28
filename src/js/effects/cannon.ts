@@ -55,8 +55,7 @@ export default class Cannon extends Effect {
     return getShoulderWidth(oldBody.pose.keypoints);
   }
 
-  async onAnimationFrame(pose: Pose, canvas: Canvas) {
-    const body = new Body(pose);
+  async onAnimationFrame(body: Body, canvas: Canvas) {
     this.bodies.push(body);
 
     const oldBody = this.bodyToDisplay();
