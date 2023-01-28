@@ -6,6 +6,7 @@ import { getShoulderWidth } from "../utils/math";
 import Effect from "./effect";
 import * as colors from "../utils/colors";
 import { drawMask } from "../utils/segment_helpers";
+import Body from "../poses/body";
 
 /**
  * increases the delay on a logarithmic scale, so that there's a greater delay up front and closer together the more Cannons are added
@@ -21,7 +22,7 @@ const computeDelay = (effects: Effect[]) => {
 
 export default class Cannon extends Effect {
   delay: number;
-  poses: MaxSizeQueue<Pose>;
+  bodies: MaxSizeQueue<Body>;
   color: Color;
 
   // there isn't a way to retrieve from Stats, so hard code
@@ -35,33 +36,35 @@ export default class Cannon extends Effect {
     this.color = color;
 
     const framesToKeep = this.delay * this.FRAMES_PER_SECOND;
-    this.poses = new MaxSizeQueue<Pose>(framesToKeep);
+    this.bodies = new MaxSizeQueue<Body>(framesToKeep);
   }
 
   /**
    * @returns the oldest saved frame
    */
-  poseToDisplay() {
-    return this.poses.peek();
+  bodyToDisplay() {
+    return this.bodies.peek();
   }
 
   sortVal(_currentPose: Pose) {
-    const oldPose = this.poseToDisplay();
+    const oldBody = this.bodyToDisplay();
     // TODO confirm whether this race condition still exists
-    if (!oldPose) {
+    if (!oldBody) {
       return null;
     }
-    return getShoulderWidth(oldPose.keypoints);
+    return getShoulderWidth(oldBody.pose.keypoints);
   }
 
   async onAnimationFrame(pose: Pose, canvas: Canvas) {
-    this.poses.push(pose);
+    const body = new Body(pose);
+    this.bodies.push(body);
 
-    const oldPose = this.poseToDisplay();
-    if (!oldPose.segmentation) {
+    const oldBody = this.bodyToDisplay();
+    const segmentation = oldBody.pose.segmentation;
+    if (!segmentation) {
       return;
     }
-    await drawMask(oldPose.segmentation, canvas, this.color);
+    await drawMask(segmentation, canvas, this.color);
   }
 
   /**
