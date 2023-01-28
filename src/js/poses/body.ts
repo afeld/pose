@@ -1,5 +1,4 @@
 import { Pose } from "@tensorflow-models/pose-detection";
-import { BLACK } from "../utils/colors";
 import { getMask } from "../utils/segment_helpers";
 
 /**
@@ -21,10 +20,13 @@ export default class Body {
     return segmentation;
   }
 
-  async getMask(color = BLACK) {
+  /**
+   * @returns a mask in the default color
+   */
+  async getMask() {
     if (!this.mask) {
       const segmentation = this.getSegmentation();
-      this.mask = await getMask(segmentation, color);
+      this.mask = await getMask(segmentation);
     }
     return this.mask;
   }
