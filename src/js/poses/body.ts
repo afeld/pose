@@ -7,6 +7,7 @@ import { getMask } from "../utils/segment_helpers";
  */
 export default class Body {
   pose: Pose;
+  mask?: ImageData;
 
   constructor(pose: Pose) {
     this.pose = pose;
@@ -21,7 +22,10 @@ export default class Body {
   }
 
   async getMask(color = BLACK) {
-    const segmentation = this.getSegmentation();
-    return await getMask(segmentation, color);
+    if (!this.mask) {
+      const segmentation = this.getSegmentation();
+      this.mask = await getMask(segmentation, color);
+    }
+    return this.mask;
   }
 }
