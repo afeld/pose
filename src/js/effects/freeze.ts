@@ -1,10 +1,10 @@
 import { Pose } from "@tensorflow-models/pose-detection";
 import { Color } from "@tensorflow-models/pose-detection/dist/shared/calculators/interfaces/common_interfaces";
-import Canvas from "../canvas";
-import { drawSkeleton } from "../segment_helpers";
-import { getShoulderWidth } from "../skeleton";
+import Canvas from "../display/canvas";
+import { drawSkeleton } from "../utils/segment_helpers";
+import { getShoulderWidth } from "../utils/math";
 import Effect from "./effect";
-import * as colors from "../colors";
+import * as colors from "../utils/colors";
 
 export default class Freeze extends Effect {
   color: Color;

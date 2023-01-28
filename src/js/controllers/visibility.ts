@@ -1,7 +1,7 @@
-import ListenerController from "./listener_controller";
-import Video from "./video";
-import Canvas from "./canvas";
-import Effect from "./effects/effect";
+import ListenerController from "../audio/listener_controller";
+import Video from "../display/video";
+import Canvas from "../display/canvas";
+import Effect from "../effects/effect";
 
 /**
  * avoid being creepy by only watching+listening when the window is visible

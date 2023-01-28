@@ -1,4 +1,4 @@
-import { getSize } from "./dom_helpers";
+import { getSize } from "../utils/dom_helpers";
 
 export default class Canvas {
   el: HTMLCanvasElement;

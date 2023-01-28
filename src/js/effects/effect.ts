@@ -1,6 +1,6 @@
 import { Pose } from "@tensorflow-models/pose-detection";
-import Canvas from "../canvas";
-import { getShoulderWidth } from "../skeleton";
+import Canvas from "../display/canvas";
+import { getShoulderWidth } from "../utils/math";
 
 /**
  * @param effects gets modified

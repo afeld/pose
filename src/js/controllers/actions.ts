@@ -1,7 +1,7 @@
-import Cannon from "./effects/cannon";
-import Effect from "./effects/effect";
-import Freeze from "./effects/freeze";
-import Shadow from "./effects/shadow";
+import Cannon from "../effects/cannon";
+import Effect from "../effects/effect";
+import Freeze from "../effects/freeze";
+import Shadow from "../effects/shadow";
 
 interface Action {
   description: string;

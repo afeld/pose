@@ -1,4 +1,4 @@
-import Listener from "./listener";
+import Listener from "./audio/listener";
 
 const run = async () => {
   const listener = new Listener();

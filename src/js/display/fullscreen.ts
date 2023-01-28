@@ -1,4 +1,4 @@
-import { config, fullscreenController } from "./controls";
+import { config, fullscreenController } from "../controllers/controls";
 import Canvas from "./canvas";
 
 const onFullscreenChange = async (canvas: Canvas) => {

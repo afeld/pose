@@ -1,7 +1,7 @@
 // https://github.com/tensorflow/tfjs-models/tree/master/pose-detection/src/blazepose_mediapipe#usage
 
 import * as poseDetection from "@tensorflow-models/pose-detection";
-import Video from "./video";
+import Video from "../display/video";
 
 export const MODEL = poseDetection.SupportedModels.BlazePose;
 

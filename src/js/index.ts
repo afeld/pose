@@ -1,15 +1,15 @@
 import * as tf from "@tensorflow/tfjs";
 import Stats from "stats.js";
-import Video from "./video";
-import Canvas from "./canvas";
-import Detector from "./detector";
-import { getElementById } from "./dom_helpers";
+import Video from "./display/video";
+import Canvas from "./display/canvas";
+import Detector from "./poses/detector";
+import { getElementById } from "./utils/dom_helpers";
 import Effect from "./effects/effect";
-import { actionForKeyCode } from "./actions";
-import "./controls";
-import { onAnimationFrame } from "./loop";
-import { handleVisibilityChanges } from "./visibility";
-import { setupFullscreen } from "./fullscreen";
+import { actionForKeyCode } from "./controllers/actions";
+import "./controllers/controls";
+import { onAnimationFrame } from "./controllers/loop";
+import { handleVisibilityChanges } from "./controllers/visibility";
+import { setupFullscreen } from "./display/fullscreen";
 import LiveVideo from "./effects/live_video";
 
 const showFPS = (stats: Stats) => {

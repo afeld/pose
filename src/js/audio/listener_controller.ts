@@ -1,7 +1,7 @@
-import { actionForCommand } from "./actions";
-import Effect from "./effects/effect";
-import { config, speechDetectionController } from "./controls";
-import { getElementById } from "./dom_helpers";
+import { actionForCommand } from "../controllers/actions";
+import Effect from "../effects/effect";
+import { config, speechDetectionController } from "../controllers/controls";
+import { getElementById } from "../utils/dom_helpers";
 
 export default class ListenerController {
   effects: Effect[];

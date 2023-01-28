@@ -1,7 +1,7 @@
 import { Pose } from "@tensorflow-models/pose-detection";
-import Effect, { sortEfects } from "./effects/effect";
-import Canvas from "./canvas";
-import Detector from "./detector";
+import Effect, { sortEfects } from "../effects/effect";
+import Canvas from "../display/canvas";
+import Detector from "../poses/detector";
 
 let lastPose: Pose | undefined;
 

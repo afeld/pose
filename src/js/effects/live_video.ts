@@ -1,6 +1,6 @@
 import { Pose } from "@tensorflow-models/pose-detection";
-import Canvas from "../canvas";
-import Video from "../video";
+import Canvas from "../display/canvas";
+import Video from "../display/video";
 import Effect from "./effect";
 
 export default class LiveVideo extends Effect {

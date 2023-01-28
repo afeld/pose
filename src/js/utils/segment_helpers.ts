@@ -1,8 +1,8 @@
-import Skeleton from "./skeleton";
+import Skeleton from "../poses/skeleton";
 import { Pose } from "@tensorflow-models/pose-detection";
 import { Segmentation } from "@tensorflow-models/pose-detection/dist/shared/calculators/interfaces/common_interfaces";
 import { toBinaryMask } from "@tensorflow-models/pose-detection/dist/shared/calculators/render_util";
-import Canvas from "./canvas";
+import Canvas from "../display/canvas";
 import { BLACK, CLEAR } from "./colors";
 
 const getMask = async (segmentation: Segmentation, color = BLACK) => {
