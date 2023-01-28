@@ -3,9 +3,11 @@ import { Pose } from "@tensorflow-models/pose-detection";
 import { Segmentation } from "@tensorflow-models/pose-detection/dist/shared/calculators/interfaces/common_interfaces";
 import { toBinaryMask } from "@tensorflow-models/pose-detection/dist/shared/calculators/render_util";
 import Canvas from "../display/canvas";
-import { BLACK, CLEAR } from "./colors";
+import { BLACK, CLEAR, toString } from "./colors";
+import { Color } from "@tensorflow-models/pose-detection/dist/shared/calculators/interfaces/common_interfaces";
+import Body from "../poses/body";
 
-const getMask = async (segmentation: Segmentation, color = BLACK) => {
+export const getMask = async (segmentation: Segmentation, color = BLACK) => {
   const backgroundColor = CLEAR;
   const drawContour = false;
 
@@ -20,11 +22,21 @@ const getMask = async (segmentation: Segmentation, color = BLACK) => {
   return coloredPartImage;
 };
 
+const replaceColor = (ctx: OffscreenCanvasRenderingContext2D, color: Color) => {
+  const colorStr = toString(color);
+  // replace the color
+  // https://stackoverflow.com/a/16228281/358804
+  ctx.fillStyle = colorStr;
+  ctx.globalCompositeOperation = "source-in";
+  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+};
+
 let canvas2: OffscreenCanvas | undefined;
 
 const drawImageDataWithTransparency = (
   canvas: Canvas,
-  imageData: ImageData
+  imageData: ImageData,
+  color = BLACK
 ) => {
   const ctx = canvas.context();
 
@@ -44,16 +56,14 @@ const drawImageDataWithTransparency = (
   }
 
   ctx2.putImageData(imageData, 0, 0);
+  replaceColor(ctx2, color);
+
   ctx.drawImage(canvas2, 0, 0);
 };
 
-export const drawMask = async (
-  segmentation: Segmentation,
-  canvas: Canvas,
-  color = BLACK
-) => {
-  const coloredPartImage = await getMask(segmentation, color);
-  drawImageDataWithTransparency(canvas, coloredPartImage);
+export const drawMask = async (body: Body, canvas: Canvas, color = BLACK) => {
+  const coloredPartImage = await body.getMask();
+  drawImageDataWithTransparency(canvas, coloredPartImage, color);
 };
 
 export const drawSkeleton = (pose: Pose, canvas: Canvas, color = BLACK) => {
