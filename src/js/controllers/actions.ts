@@ -1,3 +1,4 @@
+import Box from "../effects/box";
 import Cannon from "../effects/cannon";
 import Effect from "../effects/effect";
 import Freeze from "../effects/freeze";
@@ -64,6 +65,12 @@ const actions: Action[] = [
       "at canon",
     ],
     callback: (effects: Effect[]) => Cannon.addTo(effects),
+  },
+  {
+    description: "Box",
+    keycode: "KeyB",
+    commands: ["box"],
+    callback: (effects: Effect[]) => Box.addTo(effects),
   },
   {
     description: "Show/hide controls",
