@@ -1,24 +1,8 @@
 import Skeleton from "../poses/skeleton";
 import { Pose } from "@tensorflow-models/pose-detection";
 import { Segmentation } from "@tensorflow-models/pose-detection/dist/shared/calculators/interfaces/common_interfaces";
-import { toBinaryMask } from "@tensorflow-models/pose-detection/dist/shared/calculators/render_util";
 import Canvas from "../display/canvas";
-import { BLACK, CLEAR } from "./colors";
-
-const getMask = async (segmentation: Segmentation, color = BLACK) => {
-  const backgroundColor = CLEAR;
-  const drawContour = false;
-
-  // https://github.com/tensorflow/tfjs-models/blob/master/body-segmentation/README.md#bodysegmentationtobinarymask
-  const coloredPartImage = await toBinaryMask(
-    segmentation,
-    color,
-    backgroundColor,
-    drawContour
-  );
-
-  return coloredPartImage;
-};
+import { BLACK } from "./colors";
 
 let canvas2: OffscreenCanvas | undefined;
 
@@ -52,7 +36,7 @@ export const drawMask = async (
   canvas: Canvas,
   color = BLACK
 ) => {
-  const coloredPartImage = await getMask(segmentation, color);
+  const coloredPartImage = await segmentation.mask.toImageData();
   drawImageDataWithTransparency(canvas, coloredPartImage);
 };
 
