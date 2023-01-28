@@ -5,6 +5,7 @@ import { drawSkeleton } from "../utils/segment_helpers";
 import { getShoulderWidth } from "../utils/math";
 import Effect from "./effect";
 import * as colors from "../utils/colors";
+import Body from "../poses/body";
 
 export default class Freeze extends Effect {
   color: Color;
@@ -22,9 +23,9 @@ export default class Freeze extends Effect {
     return getShoulderWidth(this.frame.keypoints);
   }
 
-  async onAnimationFrame(pose: Pose, canvas: Canvas) {
+  async onAnimationFrame(body: Body, canvas: Canvas) {
     if (!this.frame) {
-      this.frame = pose;
+      this.frame = body.pose;
     }
 
     drawSkeleton(this.frame, canvas, this.color);

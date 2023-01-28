@@ -1,9 +1,9 @@
-import { Pose } from "@tensorflow-models/pose-detection";
 import { Color } from "@tensorflow-models/pose-detection/dist/shared/calculators/interfaces/common_interfaces";
 import Canvas from "../display/canvas";
 import { drawMask } from "../utils/segment_helpers";
 import Effect from "./effect";
 import * as colors from "../utils/colors";
+import Body from "../poses/body";
 
 export default class Shadow extends Effect {
   color: Color;
@@ -13,10 +13,8 @@ export default class Shadow extends Effect {
     this.color = colors.getNext();
   }
 
-  async onAnimationFrame(pose: Pose, canvas: Canvas) {
-    if (pose?.segmentation) {
-      await drawMask(pose.segmentation, canvas, this.color);
-    }
+  async onAnimationFrame(body: Body, canvas: Canvas) {
+    await drawMask(body, canvas, this.color);
   }
 
   /**

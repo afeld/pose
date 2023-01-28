@@ -1,6 +1,7 @@
 import { Pose } from "@tensorflow-models/pose-detection";
 import Canvas from "../display/canvas";
 import { getShoulderWidth } from "../utils/math";
+import Body from "../poses/body";
 
 /**
  * @param effects gets modified
@@ -24,7 +25,7 @@ export const sortEfects = (currentPose: Pose, effects: Effect[]) => {
 };
 
 export default abstract class Effect {
-  abstract onAnimationFrame(pose: Pose, canvas: Canvas): Promise<void>;
+  abstract onAnimationFrame(body: Body, canvas: Canvas): Promise<void>;
 
   sortVal(currentPose: Pose) {
     return getShoulderWidth(currentPose.keypoints);
