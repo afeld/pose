@@ -15,11 +15,21 @@ export default class Box extends Effect {
 
   async onAnimationFrame(pose: Pose, canvas: Canvas) {
     const bb = getBoundingBox(pose.keypoints);
-    const ctx = canvas.context();
 
+    // give some padding around the sides and top to avoid cutting off the hands and head
+
+    const xAdjust = bb.width * 0.2;
+    const adjustedMinX = bb.minX - xAdjust;
+    const adjustedMaxX = bb.maxX + xAdjust;
+    const adjustedWidth = adjustedMaxX - adjustedMinX;
+
+    const adjustedMinY = bb.minY - bb.height * 0.1;
+    const adjustedHeight = bb.maxY - adjustedMinY;
+
+    const ctx = canvas.context();
     ctx.strokeStyle = colors.toString(this.color);
-    ctx.lineWidth = 5;
-    ctx.strokeRect(bb.minX, bb.minY, bb.width, bb.height);
+    ctx.lineWidth = 15;
+    ctx.strokeRect(adjustedMinX, adjustedMinY, adjustedWidth, adjustedHeight);
   }
 
   /**
