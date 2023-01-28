@@ -26,6 +26,15 @@ The site is written in Typescript, and the site is built by [Parcel](https://par
    npm start
    ```
 
+## Relevant TensorFlow codebases/docs
+
+- [TensorFlow.js docs](https://www.tensorflow.org/js)
+- [Pose Detection](https://github.com/tensorflow/tfjs-models/tree/master/pose-detection)
+  - [BlazePose-Mediapipe](https://github.com/tensorflow/tfjs-models/tree/master/pose-detection/src/blazepose_mediapipe)
+- MediaPipe
+  - [Pose Classification docs](https://google.github.io/mediapipe/solutions/pose_classification.html)
+  - [Source code](https://github.com/google/mediapipe)
+
 ## Sandbox
 
 The sandbox can be used for testing pieces in isolation.
