@@ -2,6 +2,8 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "lib": ["ES2019", "DOM"],
+    "target": "ES6",
+    "moduleResolution": "node",
     "strict": true,
     "strictNullChecks": true
   }
