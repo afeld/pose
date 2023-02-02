@@ -1,4 +1,4 @@
-import throttle from "lodash.throttle";
+import { throttle } from "lodash";
 import { allCommands } from "../controllers/actions";
 import { createGrammarList } from "./grammar";
 import { getCommands } from "./util";

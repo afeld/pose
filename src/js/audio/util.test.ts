@@ -38,6 +38,38 @@ describe("getCommands()", () => {
     expect(commands).toEqual(["hello", "world"]);
   });
 
+  test("single digits", () => {
+    const result = new MockSpeechRecognitionResult(
+      [
+        {
+          confidence: 1,
+          transcript: "2  ",
+        },
+      ],
+      true
+    );
+    const results = new MockSpeechRecognitionResultList(result);
+
+    const commands = getCommands(results);
+    expect(commands).toEqual(["2"]);
+  });
+
+  test("multiple digits", () => {
+    const result = new MockSpeechRecognitionResult(
+      [
+        {
+          confidence: 1,
+          transcript: "01",
+        },
+      ],
+      true
+    );
+    const results = new MockSpeechRecognitionResultList(result);
+
+    const commands = getCommands(results);
+    expect(commands).toEqual(["0", "1"]);
+  });
+
   test("multiple results should just give the last", () => {
     const result1 = new MockSpeechRecognitionResult(
       [
