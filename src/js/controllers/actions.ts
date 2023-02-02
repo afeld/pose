@@ -6,7 +6,7 @@ import Shadow from "../effects/shadow";
 interface Action {
   description: string;
   keycode: string;
-  // list of variants, with the first being the primary
+  // list of variants/homophones/synophones, with the first being the primary
   commands: string[];
   callback: (effects: Effect[]) => void;
 }
@@ -16,7 +16,7 @@ const actions: Action[] = [
   {
     description: "Reset",
     keycode: "Digit0",
-    commands: ["zero", "reset", "clear", "start over", "restart"],
+    commands: ["zero", "0", "reset", "clear", "start over", "restart"],
     // TODO detach handlers?
     callback: (effects: Effect[]) => effects.splice(0),
   },
@@ -25,6 +25,8 @@ const actions: Action[] = [
     keycode: "Digit1",
     commands: [
       "one",
+      "1",
+      "won",
       "freeze",
       "free",
       "fries",
@@ -40,6 +42,9 @@ const actions: Action[] = [
     keycode: "Digit2",
     commands: [
       "two",
+      "2",
+      "to",
+      "too",
       "shadow",
       "start shadow",
       "shout out",
@@ -54,6 +59,7 @@ const actions: Action[] = [
     keycode: "Digit3",
     commands: [
       "three",
+      "3",
       "cannon",
       "start cannon",
       "start canon",
