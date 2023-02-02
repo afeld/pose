@@ -26,7 +26,9 @@ export const onAnimationFrame = async (
 
     canvas.loaded();
 
-    const bluetoothConnected = await isDefaultDeviceBluetooth();
+    const bluetoothConnected = await isDefaultDeviceBluetooth(
+      navigator.mediaDevices
+    );
     console.log(bluetoothConnected);
 
     canvas.clear();

@@ -1,27 +1,15 @@
-/**
- * @jest-environment jsdom
- */
-
-import { describe, test, expect, afterEach, jest } from "@jest/globals";
+import { describe, test, expect } from "@jest/globals";
 import { isDefaultDeviceBluetooth } from "./bluetooth";
 
-// https://jestjs.io/docs/jest-object#jestreplacepropertyobject-propertykey-value
-afterEach(() => {
-  jest.restoreAllMocks();
-});
-
 const mockDevices = (devices: MediaDeviceInfo[]) => {
-  const mockNavigator = {
-    mediaDevices: {
-      enumerateDevices: async () => devices,
-    },
-  } as Navigator;
-  jest.spyOn(global, "navigator", "get").mockReturnValue(mockNavigator);
+  return {
+    enumerateDevices: async () => devices,
+  } as MediaDevices;
 };
 
 describe("isDefaultDeviceBluetooth()", () => {
   test("without bluetooth", async () => {
-    mockDevices([
+    const md = mockDevices([
       {
         deviceId: "default",
         groupId: "123",
@@ -30,12 +18,12 @@ describe("isDefaultDeviceBluetooth()", () => {
       } as MediaDeviceInfo,
     ]);
 
-    const bluetooth = await isDefaultDeviceBluetooth();
+    const bluetooth = await isDefaultDeviceBluetooth(md);
     expect(bluetooth).toBe(false);
   });
 
   test("with bluetooth", async () => {
-    mockDevices([
+    const md = mockDevices([
       {
         deviceId: "default",
         groupId: "123",
@@ -50,7 +38,7 @@ describe("isDefaultDeviceBluetooth()", () => {
       } as MediaDeviceInfo,
     ]);
 
-    const bluetooth = await isDefaultDeviceBluetooth();
+    const bluetooth = await isDefaultDeviceBluetooth(md);
     expect(bluetooth).toBe(true);
   });
 });

@@ -6,8 +6,8 @@ const isDefaultInput = (device: MediaDeviceInfo) =>
 /**
  * @returns the default audio input device, if available
  */
-const getDefaultInput = async () => {
-  const devices = await navigator.mediaDevices.enumerateDevices();
+const getDefaultInput = async (md: MediaDevices) => {
+  const devices = await md.enumerateDevices();
   const device = devices.find(isDefaultInput);
   if (device) {
     return device;
@@ -15,8 +15,11 @@ const getDefaultInput = async () => {
   return null;
 };
 
-export const isDefaultDeviceBluetooth = async () => {
-  const device = await getDefaultInput();
+/**
+ * @param md accepts the navigator.mediaDevices as dependency injection for easier testing
+ */
+export const isDefaultDeviceBluetooth = async (md: MediaDevices) => {
+  const device = await getDefaultInput(md);
   if (!device) {
     return false;
   }
