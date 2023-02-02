@@ -16,7 +16,7 @@ describe("getCommands()", () => {
       ],
       true
     );
-    const results = new MockSpeechRecognitionResultList([result]);
+    const results = new MockSpeechRecognitionResultList(result);
 
     const commands = getCommands(results);
     expect(commands).toEqual(["hello"]);
@@ -32,7 +32,7 @@ describe("getCommands()", () => {
       ],
       true
     );
-    const results = new MockSpeechRecognitionResultList([result]);
+    const results = new MockSpeechRecognitionResultList(result);
 
     const commands = getCommands(results);
     expect(commands).toEqual(["hello", "world"]);
@@ -57,7 +57,7 @@ describe("getCommands()", () => {
       ],
       true
     );
-    const results = new MockSpeechRecognitionResultList([result1, result2]);
+    const results = new MockSpeechRecognitionResultList(result1, result2);
 
     const commands = getCommands(results);
     expect(commands).toEqual(["see", "ya"]);
