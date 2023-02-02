@@ -6,7 +6,7 @@ import Shadow from "../effects/shadow";
 interface Action {
   description: string;
   keycode: string;
-  // list of variants, with the first being the primary
+  // list of variants/homophones/synophones, with the first being the primary
   commands: string[];
   callback: (effects: Effect[]) => void;
 }
@@ -26,6 +26,7 @@ const actions: Action[] = [
     commands: [
       "one",
       "1",
+      "won",
       "freeze",
       "free",
       "fries",
@@ -42,6 +43,8 @@ const actions: Action[] = [
     commands: [
       "two",
       "2",
+      "to",
+      "too",
       "shadow",
       "start shadow",
       "shout out",
