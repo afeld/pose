@@ -12,17 +12,11 @@ describe("getting command", () => {
       0: alt,
       length: 1,
       item: (_index: number) => alt,
-      [Symbol.iterator]: function* () {
-        yield alt;
-      },
     };
     const results: SpeechRecognitionResultList = {
       0: result,
       length: 1,
       item: (_index: number) => result,
-      [Symbol.iterator]: function* () {
-        yield result;
-      },
     };
 
     const command = getCommand(results);
