@@ -1,7 +1,7 @@
 const DEFAULT_DEVICE_ID = "default";
 
 const isDefaultInput = (device: MediaDeviceInfo) =>
-  device.kind === "audioinput" && device.deviceId !== DEFAULT_DEVICE_ID;
+  device.kind === "audioinput" && device.deviceId === DEFAULT_DEVICE_ID;
 
 /**
  * @returns the default audio input device, if available
