@@ -19,8 +19,7 @@ export default class LiveVideo extends Effect {
   }
 
   async onAnimationFrame(_pose: Pose, canvas: Canvas) {
-    const ctx = canvas.context();
-    ctx.drawImage(this.video.el, 0, 0);
+    canvas.context.drawImage(this.video.el, 0, 0);
   }
 
   static addTo(effects: Effect[], video: Video) {

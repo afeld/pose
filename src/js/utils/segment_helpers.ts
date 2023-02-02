@@ -26,8 +26,6 @@ const drawImageDataWithTransparency = (
   canvas: Canvas,
   imageData: ImageData
 ) => {
-  const ctx = canvas.context();
-
   // Render to offscreen canvas to convert the ImageData to something that can be used by drawImage(), which supports transparency. putImageData() overwrites with transparent pixels.
   // https://stackoverflow.com/a/53239232/358804
 
@@ -44,7 +42,7 @@ const drawImageDataWithTransparency = (
   }
 
   ctx2.putImageData(imageData, 0, 0);
-  ctx.drawImage(canvas2, 0, 0);
+  canvas.context.drawImage(canvas2, 0, 0);
 };
 
 export const drawMask = async (

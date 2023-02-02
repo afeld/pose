@@ -3,12 +3,19 @@ import { getSize } from "../utils/dom_helpers";
 export default class Canvas {
   el: HTMLCanvasElement;
   loadingIndicator: HTMLElement;
+  context: CanvasRenderingContext2D;
 
   constructor(el: HTMLCanvasElement, loadingIndicator: HTMLElement) {
     this.el = el;
     this.loadingIndicator = loadingIndicator;
 
     this.setSize();
+
+    const ctx = this.el.getContext("2d");
+    if (!ctx) {
+      throw new Error("context couldn't be retrieved");
+    }
+    this.context = ctx;
   }
 
   // canvas needs the width and height set explicitly
@@ -31,18 +38,8 @@ export default class Canvas {
     this.loadingIndicator.remove();
   }
 
-  context() {
-    // TODO cache
-    const ctx = this.el.getContext("2d");
-    if (!ctx) {
-      throw new Error("context couldn't be retrieved");
-    }
-    return ctx;
-  }
-
   clear() {
     // https://stackoverflow.com/a/2142549/358804
-    const ctx = this.context();
-    ctx.clearRect(0, 0, this.width(), this.height());
+    this.context.clearRect(0, 0, this.width(), this.height());
   }
 }
