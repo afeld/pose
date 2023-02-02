@@ -18,5 +18,7 @@ jobs:
       # actual work
       - name: Run type checking
         run: npm run check
+      - name: Run tests
+        run: npm test
       - name: Run linting
         run: npm run lint
