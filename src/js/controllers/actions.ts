@@ -15,14 +15,14 @@ const actions: Action[] = [
   // not bothering to include LiveVideo, since it's only meant to be used at the beginning
   {
     description: "Reset",
-    keycode: "KeyR",
+    keycode: "Digit0",
     commands: ["zero", "reset", "clear", "start over", "restart"],
     // TODO detach handlers?
     callback: (effects: Effect[]) => effects.splice(0),
   },
   {
     description: "Freeze",
-    keycode: "KeyF",
+    keycode: "Digit1",
     commands: [
       "one",
       "freeze",
@@ -37,7 +37,7 @@ const actions: Action[] = [
   },
   {
     description: "Shadow",
-    keycode: "KeyS",
+    keycode: "Digit2",
     commands: [
       "two",
       "shadow",
@@ -51,7 +51,7 @@ const actions: Action[] = [
   },
   {
     description: "Cannon",
-    keycode: "KeyC",
+    keycode: "Digit3",
     commands: [
       "three",
       "cannon",
