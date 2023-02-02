@@ -2,6 +2,7 @@ import { Pose } from "@tensorflow-models/pose-detection";
 import Effect, { sortEfects } from "../effects/effect";
 import Canvas from "../display/canvas";
 import Detector from "../poses/detector";
+import { isDefaultDeviceBluetooth } from "../audio/bluetooth";
 
 let lastPose: Pose | undefined;
 
@@ -24,6 +25,9 @@ export const onAnimationFrame = async (
     }
 
     canvas.loaded();
+
+    const bluetoothConnected = await isDefaultDeviceBluetooth();
+    console.log(bluetoothConnected);
 
     canvas.clear();
     if (pose) {
