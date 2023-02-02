@@ -1,7 +1,7 @@
 import throttle from "lodash.throttle";
 import { allCommands } from "../controllers/actions";
 import { createGrammarList } from "./grammar";
-import { getCommand } from "./util";
+import { getCommands } from "./util";
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API#chrome_support
 const iSpeechRecognition = window.SpeechRecognition || webkitSpeechRecognition;
@@ -87,11 +87,14 @@ export default class Listener {
    */
   onCommand(callback: (command: string) => void) {
     this.recognition.addEventListener("result", (event) => {
-      const command = getCommand(event.results);
-      if (this.commands.includes(command)) {
-        callback(command);
-      } else {
-        console.warn("unknown command:", command);
+      // TODO only do this once
+      const commands = getCommands(event.results);
+      for (const command of commands) {
+        if (this.commands.includes(command)) {
+          callback(command);
+        } else {
+          console.warn("unknown command:", command);
+        }
       }
     });
   }

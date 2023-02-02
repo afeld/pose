@@ -3,9 +3,9 @@ import {
   MockSpeechRecognitionResult,
   MockSpeechRecognitionResultList,
 } from "./mocks";
-import { getCommand } from "./util";
+import { getCommands } from "./util";
 
-describe("getting command", () => {
+describe("getCommands()", () => {
   test("single word", () => {
     const result = new MockSpeechRecognitionResult(
       [
@@ -18,7 +18,23 @@ describe("getting command", () => {
     );
     const results = new MockSpeechRecognitionResultList([result]);
 
-    const command = getCommand(results);
-    expect(command).toEqual("hello");
+    const commands = getCommands(results);
+    expect(commands).toEqual(["hello"]);
+  });
+
+  test("multiple words", () => {
+    const result = new MockSpeechRecognitionResult(
+      [
+        {
+          confidence: 1,
+          transcript: "   hello world ",
+        },
+      ],
+      true
+    );
+    const results = new MockSpeechRecognitionResultList([result]);
+
+    const commands = getCommands(results);
+    expect(commands).toEqual(["hello", "world"]);
   });
 });
