@@ -3,7 +3,7 @@ import { Color } from "@tensorflow-models/pose-detection/dist/shared/calculators
 import Canvas from "../display/canvas";
 import { MaxSizeQueue } from "../utils/queue";
 import { drawSkeleton } from "../utils/segment_helpers";
-import { getShoulderWidth } from "../utils/math";
+import { getAverageDepth } from "../utils/math";
 import Effect from "./effect";
 import * as colors from "../utils/colors";
 
@@ -51,7 +51,7 @@ export default class Cannon extends Effect {
     if (!oldPose) {
       return null;
     }
-    return getShoulderWidth(oldPose.keypoints);
+    return getAverageDepth(oldPose.keypoints);
   }
 
   async onAnimationFrame(pose: Pose, canvas: Canvas) {

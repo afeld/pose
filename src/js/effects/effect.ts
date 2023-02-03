@@ -1,6 +1,6 @@
 import { Pose } from "@tensorflow-models/pose-detection";
 import Canvas from "../display/canvas";
-import { getShoulderWidth } from "../utils/math";
+import { getAverageDepth } from "../utils/math";
 
 /**
  * @param effects gets modified
@@ -27,7 +27,7 @@ export default abstract class Effect {
   abstract onAnimationFrame(pose: Pose, canvas: Canvas): Promise<void>;
 
   sortVal(currentPose: Pose) {
-    return getShoulderWidth(currentPose.keypoints);
+    return getAverageDepth(currentPose.keypoints);
   }
 
   // each Effect should probably implement a `static addTo()` method; the signature can be whatever is necessary

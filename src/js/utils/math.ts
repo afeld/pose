@@ -1,28 +1,20 @@
 import { Keypoint } from "@tensorflow-models/pose-detection";
+import { mean } from "lodash";
 
 /**
- * uses the Pythagorean theorem to calculate the distance between keypoints in 2D, or 3D (if available)
+ * @returns the average keypoint depth, expected to be in the 0.05 (far from camera) to 1.2 (close to camera) range
  */
-const hypotenuse = (a: Keypoint, b: Keypoint) => {
-  let sides = Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2);
-  if (a.z && b.z) {
-    // 3D
-    sides += Math.pow(a.z - b.z, 2);
-  }
-  return Math.sqrt(sides);
-};
-
-/**
- * @returns the shoulder width, expected to be in the 100-1000 range
- */
-export const getShoulderWidth = (keypoints: Keypoint[]) => {
-  const leftShoulder = keypoints.find((kp) => kp.name === "left_shoulder");
-  const rightShoulder = keypoints.find((kp) => kp.name === "right_shoulder");
-  if (leftShoulder && rightShoulder) {
-    return hypotenuse(leftShoulder, rightShoulder);
-  } else {
+export const getAverageDepth = (keypoints: Keypoint[]) => {
+  // the mean() type signature is wrong
+  const avg = mean(keypoints.filter((kp) => kp.z).map((kp) => kp.z)) as
+    | number
+    | null;
+  if (!avg) {
     return null;
   }
+
+  // console.log(avg);
+  return Math.abs(avg);
 };
 
 // https://stats.stackexchange.com/a/281164
@@ -40,24 +32,18 @@ const scale = (
  * scale the line width to give appearance of depth
  */
 export const calculateLineWidth = (keypoints: Keypoint[]) => {
-  const shoulderWidth = getShoulderWidth(keypoints);
+  const depth = getAverageDepth(keypoints);
 
   // somewhat arbitrary values
 
-  if (!shoulderWidth) {
+  if (!depth) {
     return 6;
   }
 
+  const DEPTH_MIN = 0.05;
+  const DEPTH_MAX = 1.2;
   const LINE_WIDTH_MIN = 1;
-  const LINE_WIDTH_MAX = 15;
-  const SHOULDER_WIDTH_MIN = 50;
-  const SHOULDER_WIDTH_MAX = 200;
+  const LINE_WIDTH_MAX = 100;
 
-  return scale(
-    shoulderWidth,
-    SHOULDER_WIDTH_MIN,
-    SHOULDER_WIDTH_MAX,
-    LINE_WIDTH_MIN,
-    LINE_WIDTH_MAX
-  );
+  return scale(depth, DEPTH_MIN, DEPTH_MAX, LINE_WIDTH_MIN, LINE_WIDTH_MAX);
 };
