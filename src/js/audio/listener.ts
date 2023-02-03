@@ -60,8 +60,9 @@ export default class Listener {
         this.autoRestart = false;
         break;
       case "network":
-        this.autoRestart = false;
-        console.error("Must be online to use voice commands; please restart.");
+        console.error(
+          "Offline; network connection required for speech recognition"
+        );
         break;
       case "no-speech":
         // Chrome automaticaly stops after ~7 seconds (as of 1/7/23); we will restart it below
