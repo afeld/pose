@@ -1,64 +1,44 @@
-// based on
-// https://stackoverflow.com/a/62732195/358804
+// https://github.com/GoogleChromeLabs/web-audio-samples/blob/main/src/audio-worklet/basic/volume-meter/volume-meter-processor.js
 
 const SMOOTHING_FACTOR = 0.8;
-const MINIMUM_VALUE = 0.00001;
+const FRAME_PER_SECOND = 60;
+const FRAME_INTERVAL = 1 / FRAME_PER_SECOND;
 
-// This is the way to register an AudioWorkletProcessor
-// it's necessary to declare a name, in this case
-// the name is "vumeter"
-registerProcessor(
-  "vumeter",
-  class extends AudioWorkletProcessor {
-    _volume;
-    _updateIntervalInMS;
-    _nextUpdateFrame;
+class VolumeMeter extends AudioWorkletProcessor {
+  _lastUpdate: number;
+  _volume: number;
 
-    constructor() {
-      super();
-      this._volume = 0;
-      this._updateIntervalInMS = 25;
-      this._nextUpdateFrame = this._updateIntervalInMS;
-      this.port.onmessage = (event) => {
-        if (event.data.updateIntervalInMS)
-          this._updateIntervalInMS = event.data.updateIntervalInMS;
-      };
-    }
-
-    get intervalInFrames() {
-      return (this._updateIntervalInMS / 1000) * sampleRate;
-    }
-
-    process(
-      inputs: Float32Array[][],
-      outputs: Float32Array[][],
-      parameters: Record<string, Float32Array>
-    ) {
-      const input = inputs[0];
-
-      // Note that the input will be down-mixed to mono; however, if no inputs are
-      // connected then zero channels will be passed in.
-      if (input.length > 0) {
-        const samples = input[0];
-        let sum = 0;
-        let rms = 0;
-
-        // Calculated the squared-sum.
-        for (let i = 0; i < samples.length; ++i) sum += samples[i] * samples[i];
-
-        // Calculate the RMS level and update the volume.
-        rms = Math.sqrt(sum / samples.length);
-        this._volume = Math.max(rms, this._volume * SMOOTHING_FACTOR);
-
-        // Update and sync the volume property with the main thread.
-        this._nextUpdateFrame -= samples.length;
-        if (this._nextUpdateFrame < 0) {
-          this._nextUpdateFrame += this.intervalInFrames;
-          this.port.postMessage({ volume: this._volume });
-        }
-      }
-
-      return true;
-    }
+  constructor() {
+    super();
+    this._lastUpdate = currentTime;
+    this._volume = 0;
   }
-);
+
+  calculateRMS(inputChannelData: Float32Array) {
+    // Calculate the squared-sum.
+    let sum = 0;
+    for (let i = 0; i < inputChannelData.length; i++) {
+      sum += inputChannelData[i] * inputChannelData[i];
+    }
+
+    // Calculate the RMS level and update the volume.
+    const rms = Math.sqrt(sum / inputChannelData.length);
+    this._volume = Math.max(rms, this._volume * SMOOTHING_FACTOR);
+  }
+
+  process(inputs: Float32Array[][]) {
+    // This example only handles mono channel.
+    const inputChannelData = inputs[0][0];
+
+    // Post a message to the node every 16ms.
+    if (currentTime - this._lastUpdate > FRAME_INTERVAL) {
+      this.calculateRMS(inputChannelData);
+      this.port.postMessage(this._volume);
+      this._lastUpdate = currentTime;
+    }
+
+    return true;
+  }
+}
+
+registerProcessor("volume-meter", VolumeMeter);

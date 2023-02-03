@@ -1,4 +1,5 @@
 // https://parceljs.org/languages/javascript/#worklets
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import workletUrl from "worklet:./audio/volume.ts";
 
@@ -11,32 +12,16 @@ const run = async () => {
   // https://stackoverflow.com/a/62732195/358804
 
   const audioContext = new AudioContext();
-
-  // Adding an AudioWorkletProcessor
-  // from another script with addModule method
   await audioContext.audioWorklet.addModule(workletUrl);
 
-  // Creating a MediaStreamSource object
-  // and sending a MediaStream object granted by
-  // the user
-  const microphone = audioContext.createMediaStreamSource(stream);
-
-  // Creating AudioWorkletNode sending
-  // context and name of processor registered
-  // in vumeter-processor.js
-  const node = new AudioWorkletNode(audioContext, "vumeter");
-
-  // Listing any message from AudioWorkletProcessor in its
-  // process method here where you can know
-  // the volume level
+  const node = new AudioWorkletNode(audioContext, "volume-meter");
   node.port.onmessage = (event) => {
-    const volume = event.data.volume;
-    console.log(volume * 100);
+    const volume = event.data;
+    // https://github.com/GoogleChromeLabs/web-audio-samples/blob/eed2a8613af551f2b1d166a01c834e8431fdf3c6/src/audio-worklet/basic/volume-meter/main.js#L13
+    console.log(volume * 500);
   };
 
-  // Now this is the way to
-  // connect our microphone to
-  // the AudioWorkletNode and output from audioContext
+  const microphone = audioContext.createMediaStreamSource(stream);
   microphone.connect(node).connect(audioContext.destination);
 };
 
