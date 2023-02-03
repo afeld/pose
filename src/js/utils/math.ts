@@ -1,28 +1,32 @@
 import { Keypoint } from "@tensorflow-models/pose-detection";
+import { mean } from "lodash";
+
+// https://google.github.io/mediapipe/solutions/pose.html#pose-landmark-model-blazepose-ghum-3d
+const useForDepth = (keypoint: Keypoint) =>
+  keypoint.z && keypoint.name && /_(hip|shoulder)$/.test(keypoint.name);
 
 /**
- * uses the Pythagorean theorem to calculate the distance between keypoints in 2D, or 3D (if available)
+ * far from the camera
  */
-const hypotenuse = (a: Keypoint, b: Keypoint) => {
-  let sides = Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2);
-  if (a.z && b.z) {
-    // 3D
-    sides += Math.pow(a.z - b.z, 2);
-  }
-  return Math.sqrt(sides);
-};
+const DEPTH_MIN = 0.05;
+/**
+ * close to the camera
+ */
+const DEPTH_MAX = 0.8;
 
 /**
- * @returns the shoulder width, expected to be in the 100-1000 range
+ * @returns the average keypoint depth, expected to be in the range defined by DEPTH_MIN and DEPTH_MAX
  */
-export const getShoulderWidth = (keypoints: Keypoint[]) => {
-  const leftShoulder = keypoints.find((kp) => kp.name === "left_shoulder");
-  const rightShoulder = keypoints.find((kp) => kp.name === "right_shoulder");
-  if (leftShoulder && rightShoulder) {
-    return hypotenuse(leftShoulder, rightShoulder);
-  } else {
+export const getAverageDepth = (keypoints: Keypoint[]) => {
+  const keypointsToUse = keypoints.filter(useForDepth);
+  // the mean() type signature is wrong
+  const avg = mean(keypointsToUse.map((kp) => kp.z)) as number | null;
+  if (!avg) {
     return null;
   }
+
+  // console.log(avg);
+  return Math.abs(avg);
 };
 
 // https://stats.stackexchange.com/a/281164
@@ -40,24 +44,25 @@ const scale = (
  * scale the line width to give appearance of depth
  */
 export const calculateLineWidth = (keypoints: Keypoint[]) => {
-  const shoulderWidth = getShoulderWidth(keypoints);
+  const depth = getAverageDepth(keypoints);
+  console.log(depth);
 
   // somewhat arbitrary values
 
-  if (!shoulderWidth) {
+  if (!depth) {
     return 6;
   }
 
-  const LINE_WIDTH_MIN = 1;
-  const LINE_WIDTH_MAX = 15;
-  const SHOULDER_WIDTH_MIN = 50;
-  const SHOULDER_WIDTH_MAX = 200;
+  const LINE_WIDTH_MIN = 3;
+  const LINE_WIDTH_MAX = 150;
 
-  return scale(
-    shoulderWidth,
-    SHOULDER_WIDTH_MIN,
-    SHOULDER_WIDTH_MAX,
+  const width = scale(
+    depth,
+    DEPTH_MIN,
+    DEPTH_MAX,
     LINE_WIDTH_MIN,
     LINE_WIDTH_MAX
   );
+  // don't go below the minimum line width
+  return Math.max(width, LINE_WIDTH_MIN);
 };

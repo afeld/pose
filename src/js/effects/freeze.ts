@@ -2,7 +2,7 @@ import { Pose } from "@tensorflow-models/pose-detection";
 import { Color } from "@tensorflow-models/pose-detection/dist/shared/calculators/interfaces/common_interfaces";
 import Canvas from "../display/canvas";
 import { drawSkeleton } from "../utils/segment_helpers";
-import { getShoulderWidth } from "../utils/math";
+import { getAverageDepth } from "../utils/math";
 import Effect from "./effect";
 import * as colors from "../utils/colors";
 
@@ -19,7 +19,7 @@ export default class Freeze extends Effect {
     if (!this.frame) {
       return null;
     }
-    return getShoulderWidth(this.frame.keypoints);
+    return getAverageDepth(this.frame.keypoints);
   }
 
   async onAnimationFrame(pose: Pose, canvas: Canvas) {
