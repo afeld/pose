@@ -44,10 +44,10 @@ export const drawNoBluetoothWarning = (canvas: Canvas) => {
     const ctx = canvas.context;
 
     const baseColor = colors.RED;
-    const redMax = Object.assign({}, baseColor, { a: 0.6 });
+    const redMax = Object.assign({}, baseColor, { a: 0.5 });
     const redMin = Object.assign({}, baseColor, { a: 0 });
 
-    const pctOfHeight = 0.1;
+    const pctOfHeight = 0.08;
 
     // bottom
 
