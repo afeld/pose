@@ -6,7 +6,16 @@ const useForDepth = (keypoint: Keypoint) =>
   keypoint.z && keypoint.name && /_(hip|shoulder)$/.test(keypoint.name);
 
 /**
- * @returns the average keypoint depth, expected to be in the 0.05 (far from camera) to 1.2 (close to camera) range
+ * far from the camera
+ */
+const DEPTH_MIN = 0.05;
+/**
+ * close to the camera
+ */
+const DEPTH_MAX = 0.8;
+
+/**
+ * @returns the average keypoint depth, expected to be in the range defined by DEPTH_MIN and DEPTH_MAX
  */
 export const getAverageDepth = (keypoints: Keypoint[]) => {
   const keypointsToUse = keypoints.filter(useForDepth);
@@ -36,6 +45,7 @@ const scale = (
  */
 export const calculateLineWidth = (keypoints: Keypoint[]) => {
   const depth = getAverageDepth(keypoints);
+  console.log(depth);
 
   // somewhat arbitrary values
 
@@ -43,10 +53,16 @@ export const calculateLineWidth = (keypoints: Keypoint[]) => {
     return 6;
   }
 
-  const DEPTH_MIN = 0.05;
-  const DEPTH_MAX = 1.2;
-  const LINE_WIDTH_MIN = 1;
-  const LINE_WIDTH_MAX = 100;
+  const LINE_WIDTH_MIN = 3;
+  const LINE_WIDTH_MAX = 150;
 
-  return scale(depth, DEPTH_MIN, DEPTH_MAX, LINE_WIDTH_MIN, LINE_WIDTH_MAX);
+  const width = scale(
+    depth,
+    DEPTH_MIN,
+    DEPTH_MAX,
+    LINE_WIDTH_MIN,
+    LINE_WIDTH_MAX
+  );
+  // don't go below the minimum line width
+  return Math.max(width, LINE_WIDTH_MIN);
 };
