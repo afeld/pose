@@ -5,7 +5,7 @@ import Detector from "../poses/detector";
 import {
   drawNoBluetoothWarning,
   updateBluetoothStatus,
-} from "../audio/bluetooth";
+} from "../display/bluetooth";
 
 let lastPose: Pose | undefined;
 
