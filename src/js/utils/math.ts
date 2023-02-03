@@ -1,14 +1,17 @@
 import { Keypoint } from "@tensorflow-models/pose-detection";
 import { mean } from "lodash";
 
+// https://google.github.io/mediapipe/solutions/pose.html#pose-landmark-model-blazepose-ghum-3d
+const useForDepth = (keypoint: Keypoint) =>
+  keypoint.z && keypoint.name && /_(hip|shoulder)$/.test(keypoint.name);
+
 /**
  * @returns the average keypoint depth, expected to be in the 0.05 (far from camera) to 1.2 (close to camera) range
  */
 export const getAverageDepth = (keypoints: Keypoint[]) => {
+  const keypointsToUse = keypoints.filter(useForDepth);
   // the mean() type signature is wrong
-  const avg = mean(keypoints.filter((kp) => kp.z).map((kp) => kp.z)) as
-    | number
-    | null;
+  const avg = mean(keypointsToUse.map((kp) => kp.z)) as number | null;
   if (!avg) {
     return null;
   }
