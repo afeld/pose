@@ -25,7 +25,7 @@ class Camera {
   }
 
   drawSkeleton(keypoints: Keypoint[], { color = colors.BLACK, lineWidth = 6 }) {
-    const colorStr = colors.toString(color);
+    const colorStr = colors.toRGBA(color);
 
     this.ctx.fillStyle = colorStr;
     this.ctx.strokeStyle = colorStr;
