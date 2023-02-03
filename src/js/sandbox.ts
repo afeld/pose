@@ -30,10 +30,8 @@ const run = async () => {
   // process method here where you can know
   // the volume level
   node.port.onmessage = (event) => {
-    let _volume = 0;
-    let _sensibility = 5; // Just to add any sensibility to our ecuation
-    if (event.data.volume) _volume = event.data.volume;
-    console.log((_volume * 100) / _sensibility);
+    const volume = event.data.volume;
+    console.log(volume * 100);
   };
 
   // Now this is the way to

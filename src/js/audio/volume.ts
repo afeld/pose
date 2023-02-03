@@ -1,3 +1,4 @@
+// based on
 // https://stackoverflow.com/a/62732195/358804
 
 const SMOOTHING_FACTOR = 0.8;
