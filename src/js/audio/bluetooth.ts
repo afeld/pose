@@ -47,13 +47,33 @@ export const drawNoBluetoothWarning = (canvas: Canvas) => {
     const redMax = Object.assign({}, baseColor, { a: 0.6 });
     const redMin = Object.assign({}, baseColor, { a: 0 });
 
-    const rectY = canvas.height() * 0.9;
+    const pctOfHeight = 0.1;
 
-    const gradient = ctx.createLinearGradient(0, canvas.height(), 0, rectY);
-    gradient.addColorStop(0, colors.toRGBA(redMax));
-    gradient.addColorStop(1, colors.toRGBA(redMin));
-    ctx.fillStyle = gradient;
+    // bottom
 
-    ctx.fillRect(0, rectY, canvas.width(), canvas.height());
+    const rect1YStart = canvas.height() * (1 - pctOfHeight);
+
+    const gradient1 = ctx.createLinearGradient(
+      0,
+      canvas.height(),
+      0,
+      rect1YStart
+    );
+    gradient1.addColorStop(0, colors.toRGBA(redMax));
+    gradient1.addColorStop(1, colors.toRGBA(redMin));
+    ctx.fillStyle = gradient1;
+
+    ctx.fillRect(0, rect1YStart, canvas.width(), canvas.height());
+
+    // top
+
+    const rect2YStop = canvas.height() * pctOfHeight;
+
+    const gradient2 = ctx.createLinearGradient(0, 0, 0, rect2YStop);
+    gradient2.addColorStop(0, colors.toRGBA(redMax));
+    gradient2.addColorStop(1, colors.toRGBA(redMin));
+    ctx.fillStyle = gradient2;
+
+    ctx.fillRect(0, 0, canvas.width(), rect2YStop);
   }
 };
