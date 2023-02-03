@@ -1,12 +1,11 @@
-import { createMonitor, setUpVolumePanel } from "./display/monitor";
+import createMonitor from "./display/monitor";
 // https://parceljs.org/languages/javascript/#worklets
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import workletUrl from "worklet:./audio/volume.ts";
 
 const run = async () => {
-  const stats = createMonitor();
-  const volumePanel = setUpVolumePanel(stats);
+  const monitor = createMonitor();
 
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: true,
@@ -24,7 +23,7 @@ const run = async () => {
     const volume = event.data * 500;
     console.log(volume);
 
-    volumePanel.update(volume, 70);
+    monitor.volumePanel.update(volume, 70);
   };
 
   const microphone = audioContext.createMediaStreamSource(stream);
