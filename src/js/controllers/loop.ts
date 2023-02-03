@@ -6,6 +6,7 @@ import {
   drawNoBluetoothWarning,
   updateBluetoothStatus,
 } from "../display/bluetooth";
+import { Monitor } from "../display/monitor";
 
 let lastPose: Pose | undefined;
 
@@ -13,12 +14,12 @@ let lastPose: Pose | undefined;
  * the "game loop"
  */
 export const onAnimationFrame = async (
-  stats: Stats,
+  monitor: Monitor,
   detector: Detector,
   canvas: Canvas,
   effects: Effect[]
 ) => {
-  stats.begin();
+  monitor.stats.begin();
 
   if (detector.isReady()) {
     let pose = await detector.detect();
@@ -47,11 +48,11 @@ export const onAnimationFrame = async (
 
   drawNoBluetoothWarning(canvas);
 
-  stats.end();
+  monitor.stats.end();
 
   // loop
   requestAnimationFrame(() =>
-    onAnimationFrame(stats, detector, canvas, effects)
+    onAnimationFrame(monitor, detector, canvas, effects)
   );
 };
 
