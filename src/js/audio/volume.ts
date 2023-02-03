@@ -28,7 +28,11 @@ registerProcessor(
       return (this._updateIntervalInMS / 1000) * sampleRate;
     }
 
-    process(inputs, outputs, parameters) {
+    process(
+      inputs: Float32Array[][],
+      outputs: Float32Array[][],
+      parameters: Record<string, Float32Array>
+    ) {
       const input = inputs[0];
 
       // Note that the input will be down-mixed to mono; however, if no inputs are

@@ -1,3 +1,7 @@
+// https://parceljs.org/languages/javascript/#worklets
+// @ts-ignore
+import workletUrl from "worklet:./audio/volume.ts";
+
 const run = async () => {
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: true,
@@ -10,8 +14,7 @@ const run = async () => {
 
   // Adding an AudioWorkletProcessor
   // from another script with addModule method
-  const moduleUrl = new URL("audio/volume.ts", import.meta.url);
-  await audioContext.audioWorklet.addModule(moduleUrl);
+  await audioContext.audioWorklet.addModule(workletUrl);
 
   // Creating a MediaStreamSource object
   // and sending a MediaStream object granted by
