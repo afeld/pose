@@ -1,4 +1,5 @@
 import Canvas from "../display/canvas";
+import * as colors from "../utils/colors";
 
 const DEFAULT_DEVICE_ID = "default";
 
@@ -42,16 +43,16 @@ export const drawNoBluetoothWarning = (canvas: Canvas) => {
   if (showBluetoothWarning) {
     const ctx = canvas.context;
 
-    const rectY = canvas.height() * 0.75;
+    const purpleMax = Object.assign({}, colors.PURPLE);
+    purpleMax.a = 0.6;
+    const purpleMin = Object.assign({}, colors.PURPLE);
+    purpleMin.a = 0;
 
-    const gradient = ctx.createLinearGradient(
-      canvas.width() / 2,
-      canvas.height(),
-      canvas.width() / 2,
-      rectY
-    );
-    gradient.addColorStop(0, "red");
-    gradient.addColorStop(1, "rgba(255, 0, 0, 0)");
+    const rectY = canvas.height() * 0.9;
+
+    const gradient = ctx.createLinearGradient(0, canvas.height(), 0, rectY);
+    gradient.addColorStop(0, colors.toRGBA(purpleMax));
+    gradient.addColorStop(1, colors.toRGBA(purpleMin));
     ctx.fillStyle = gradient;
 
     ctx.fillRect(0, rectY, canvas.width(), canvas.height());
