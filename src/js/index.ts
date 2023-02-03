@@ -10,7 +10,7 @@ import { onAnimationFrame } from "./controllers/loop";
 import { handleVisibilityChanges } from "./controllers/visibility";
 import { setupFullscreen } from "./display/fullscreen";
 import LiveVideo from "./effects/live_video";
-import monitor from "./display/monitor";
+import { createMonitor } from "./display/monitor";
 
 const onPageError = (event: ErrorEvent, detector: Detector) => {
   const error = event.error as Error;
@@ -45,7 +45,7 @@ const setup = async () => {
 
   const canvas = createCanvas();
   const video = Video.matchCanvas(canvas);
-  const stats = monitor();
+  const stats = createMonitor();
   const detector = new Detector(video);
   const effects: Effect[] = [];
   // start with live video

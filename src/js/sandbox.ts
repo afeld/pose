@@ -1,15 +1,12 @@
-import monitor from "./display/monitor";
-import Stats from "stats.js";
+import { createMonitor, setUpVolumePanel } from "./display/monitor";
 // https://parceljs.org/languages/javascript/#worklets
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import workletUrl from "worklet:./audio/volume.ts";
 
 const run = async () => {
-  const stats = monitor();
-  // https://github.com/mrdoob/stats.js/blob/master/examples/custom.html
-  const volumePanel = stats.addPanel(new Stats.Panel("volume", "#f8f", "#212"));
-  stats.showPanel(3);
+  const stats = createMonitor();
+  const volumePanel = setUpVolumePanel(stats);
 
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: true,
@@ -27,7 +24,7 @@ const run = async () => {
     const volume = event.data * 500;
     console.log(volume);
 
-    volumePanel.update(volume, 100);
+    volumePanel.update(volume, 70);
   };
 
   const microphone = audioContext.createMediaStreamSource(stream);
