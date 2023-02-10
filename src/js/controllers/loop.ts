@@ -22,7 +22,16 @@ export const onAnimationFrame = async (
   monitor.stats.begin();
 
   if (detector.isReady()) {
-    let pose = await detector.detect();
+    let pose: Pose | undefined;
+    try {
+      pose = await detector.detect();
+    } catch (error) {
+      // For some reason, a WASM error happens in the pose detection sometimes, which stops it. Restart it.
+      console.warn("WASM error, restarting pose detection");
+      console.warn(error);
+      detector.reset();
+    }
+
     // if no current pose is detected, use the last one to avoid flickering
     if (!pose) {
       pose = lastPose;

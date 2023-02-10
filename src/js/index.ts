@@ -12,15 +12,6 @@ import { setupFullscreen } from "./display/fullscreen";
 import LiveVideo from "./effects/live_video";
 import createMonitor from "./display/monitor";
 
-const onPageError = (event: ErrorEvent, detector: Detector) => {
-  const error = event.error as Error;
-  if (event.filename.includes("wasm") && error.name === "RuntimeError") {
-    // For some reason, a WASM error happens in the pose detection sometimes, which stops it. Restart it.
-    console.warn("WASM error, restarting pose detection");
-    detector.reset();
-  }
-};
-
 const onKeyPress = (event: KeyboardEvent, effects: Effect[]) => {
   const action = actionForKeyCode(event.code);
   if (!action) {
@@ -50,8 +41,6 @@ const setup = async () => {
   const effects: Effect[] = [];
   // start with live video
   LiveVideo.addTo(effects, video);
-
-  window.addEventListener("error", (event) => onPageError(event, detector));
 
   // kick off the video display
   onAnimationFrame(monitor, detector, canvas, effects);
