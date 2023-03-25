@@ -1,6 +1,7 @@
 import { Pose } from "@tensorflow-models/pose-detection";
 import Canvas from "../display/canvas";
 import Effect from "./effect";
+import * as liveVideo from "./live_video";
 
 export default class Static extends Effect {
   idata: ImageData | undefined;
@@ -9,7 +10,8 @@ export default class Static extends Effect {
    * @returns an arbitrary low value, so that this effect always appears in the back
    */
   sortVal(_currentPose: Pose) {
-    return -2000;
+    // ensure the live video appears above this
+    return liveVideo.SORT_VAL - 1000;
   }
 
   async onAnimationFrame(_pose: Pose, canvas: Canvas) {

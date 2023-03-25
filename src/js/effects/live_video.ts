@@ -3,6 +3,8 @@ import Canvas from "../display/canvas";
 import Video from "../display/video";
 import Effect from "./effect";
 
+export const SORT_VAL = -1000;
+
 export default class LiveVideo extends Effect {
   video: Video;
 
@@ -15,7 +17,7 @@ export default class LiveVideo extends Effect {
    * @returns an arbitrary low value, so that this effect always appears in the back
    */
   sortVal(_currentPose: Pose) {
-    return -1000;
+    return SORT_VAL;
   }
 
   async onAnimationFrame(_pose: Pose, canvas: Canvas) {
