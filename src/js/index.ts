@@ -9,17 +9,17 @@ import "./controllers/controls";
 import { onAnimationFrame } from "./controllers/loop";
 import { handleVisibilityChanges } from "./controllers/visibility";
 import { setupFullscreen } from "./display/fullscreen";
-import LiveVideo from "./effects/live_video";
 import createMonitor from "./display/monitor";
+import Static from "./effects/static";
 
-const onKeyPress = (event: KeyboardEvent, effects: Effect[]) => {
+const onKeyPress = (event: KeyboardEvent, effects: Effect[], video: Video) => {
   const action = actionForKeyCode(event.code);
   if (!action) {
     console.warn(`no action for key "${event.code}"`);
     return;
   }
 
-  action.callback(effects);
+  action.callback(effects, video);
 };
 
 const createCanvas = () => {
@@ -39,13 +39,15 @@ const setup = async () => {
   const monitor = createMonitor();
   const detector = new Detector(video);
   const effects: Effect[] = [];
-  // start with live video
-  LiveVideo.addTo(effects, video);
+  // start with static
+  Static.addTo(effects);
 
   // kick off the video display
   onAnimationFrame(monitor, detector, canvas, effects);
 
-  document.addEventListener("keypress", (event) => onKeyPress(event, effects));
+  document.addEventListener("keypress", (event) =>
+    onKeyPress(event, effects, video)
+  );
   handleVisibilityChanges(video, canvas, effects);
   setupFullscreen(canvas);
 };

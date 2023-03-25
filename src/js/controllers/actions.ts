@@ -1,6 +1,8 @@
+import Video from "../display/video";
 import Cannon from "../effects/cannon";
 import Effect from "../effects/effect";
 import Freeze from "../effects/freeze";
+import LiveVideo from "../effects/live_video";
 import Shadow from "../effects/shadow";
 
 interface Action {
@@ -8,11 +10,18 @@ interface Action {
   keycode: string;
   // list of variants/homophones/synophones, with the first being the primary
   commands: string[];
-  callback: (effects: Effect[]) => void;
+  callback: (effects: Effect[], video: Video) => void;
 }
 
 const actions: Action[] = [
-  // not bothering to include LiveVideo, since it's only meant to be used at the beginning
+  // not bothering to include Static, since it's only meant to be used at the beginning
+  {
+    description: "LiveVideo",
+    keycode: "Digit9",
+    commands: ["nine", "9", "live", "video"],
+    callback: (effects: Effect[], video: Video) =>
+      LiveVideo.addTo(effects, video),
+  },
   {
     description: "Reset",
     keycode: "Digit0",
