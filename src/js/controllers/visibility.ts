@@ -30,7 +30,7 @@ export const handleVisibilityChanges = (
   canvas: Canvas,
   effects: Effect[]
 ) => {
-  const listenerController = new ListenerController(effects);
+  const listenerController = new ListenerController(effects, video);
 
   onVisibilityChange(video, canvas, listenerController);
   document.addEventListener(

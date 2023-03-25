@@ -2,13 +2,16 @@ import { actionForCommand } from "../controllers/actions";
 import Effect from "../effects/effect";
 import { config, speechDetectionController } from "../controllers/controls";
 import { getElementById } from "../utils/dom_helpers";
+import Video from "../display/video";
 
 export default class ListenerController {
   effects: Effect[];
+  video: Video;
   speechWindow: Window;
 
-  constructor(effects: Effect[]) {
+  constructor(effects: Effect[], video: Video) {
     this.effects = effects;
+    this.video = video;
 
     const iframe = getElementById("speech") as HTMLIFrameElement;
     this.speechWindow = iframe.contentWindow as Window;
@@ -31,7 +34,7 @@ export default class ListenerController {
       console.warn(`command "${command}" not found`);
       return;
     }
-    action.callback(this.effects);
+    action.callback(this.effects, this.video);
   };
 
   onCheckboxChange = (value: boolean) => {
