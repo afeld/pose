@@ -1,17 +1,17 @@
 {
   "devDependencies": {
-    "@jest/globals": "^29.4.1",
+    "@jest/globals": "^29.5.0",
     "@parcel/transformer-worklet": "^2.8.3",
-    "@types/audioworklet": "^0.0.36",
-    "@types/dat.gui": "^0.7.7",
+    "@types/audioworklet": "^0.0.40",
+    "@types/dat.gui": "^0.7.9",
     "@types/dom-speech-recognition": "^0.0.1",
     "@types/lodash.throttle": "^4.1.7",
     "@types/stats.js": "^0.17.0",
-    "@typescript-eslint/eslint-plugin": "^5.49.0",
-    "@typescript-eslint/parser": "^5.49.0",
+    "@typescript-eslint/eslint-plugin": "^5.56.0",
+    "@typescript-eslint/parser": "^5.56.0",
     "buffer": "^5.5.0",
-    "eslint": "^8.31.0",
-    "parcel": "^2.8.2",
+    "eslint": "^8.36.0",
+    "parcel": "^2.8.3",
     "parcel-reporter-static-files-copy": "^1.5.0",
     "process": "^0.11.10",
     "ts-jest": "^29.0.5",
@@ -26,11 +26,11 @@
     "check": "tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
-    "@tensorflow-models/pose-detection": "^2.0.0",
+    "@tensorflow-models/pose-detection": "^2.1.0",
     "@tensorflow/tfjs": "^4.2.0",
     "color-scales": "^3.0.2",
     "dat.gui": "^0.7.9",
-    "lodash": "^4.1.1",
+    "lodash": "^4.17.21",
     "stats.js": "^0.17.0"
   },
   "staticFiles": {
