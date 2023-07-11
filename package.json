@@ -1,21 +1,21 @@
 {
   "devDependencies": {
-    "@jest/globals": "^29.5.0",
-    "@parcel/transformer-worklet": "^2.8.3",
-    "@types/audioworklet": "^0.0.40",
-    "@types/dat.gui": "^0.7.9",
+    "@jest/globals": "^29.6.1",
+    "@parcel/transformer-worklet": "^2.9.3",
+    "@types/audioworklet": "^0.0.48",
+    "@types/dat.gui": "^0.7.10",
     "@types/dom-speech-recognition": "^0.0.1",
     "@types/lodash.throttle": "^4.1.7",
     "@types/stats.js": "^0.17.0",
-    "@typescript-eslint/eslint-plugin": "^5.56.0",
-    "@typescript-eslint/parser": "^5.56.0",
-    "buffer": "^5.5.0",
-    "eslint": "^8.36.0",
-    "parcel": "^2.8.3",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "buffer": "^6.0.3",
+    "eslint": "^8.44.0",
+    "parcel": "^2.9.3",
     "parcel-reporter-static-files-copy": "^1.5.0",
     "process": "^0.11.10",
-    "ts-jest": "^29.0.5",
-    "typescript": "^4.9.4"
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.1.6"
   },
   "scripts": {
     "start": "parcel serve --open chrome src/*.html",
@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@tensorflow-models/pose-detection": "^2.1.0",
-    "@tensorflow/tfjs": "^4.2.0",
+    "@tensorflow/tfjs": "^4.8.0",
     "color-scales": "^3.0.2",
     "dat.gui": "^0.7.9",
     "lodash": "^4.17.21",
