@@ -4,6 +4,7 @@ import Effect from "../effects/effect";
 import Freeze from "../effects/freeze";
 import LiveVideo from "../effects/live_video";
 import Shadow from "../effects/shadow";
+import Static from "../effects/static";
 
 interface Action {
   description: string;
@@ -14,7 +15,12 @@ interface Action {
 }
 
 const actions: Action[] = [
-  // not bothering to include Static, since it's only meant to be used at the beginning
+  {
+    description: "Static",
+    keycode: "Digit8",
+    commands: ["eight"],
+    callback: (effects: Effect[]) => Static.addTo(effects),
+  },
   {
     description: "LiveVideo",
     keycode: "Digit9",

@@ -39,6 +39,9 @@ export default class Static extends Effect {
   }
 
   static addTo(effects: Effect[]) {
+    // remove other Effects
+    effects.splice(0);
+
     const effect = new Static();
     effects.unshift(effect);
   }
