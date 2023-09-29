@@ -18,7 +18,7 @@ const actions: Action[] = [
   {
     description: "Static",
     keycode: "Digit8",
-    commands: ["eight"],
+    commands: ["eight", "8", "ate", "static"],
     callback: (effects: Effect[]) => Static.addTo(effects),
   },
   {
