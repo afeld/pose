@@ -53,7 +53,8 @@ const createMonitor = () => {
 
   const volumePanel = setUpVolumePanel(stats);
 
-  document.body.appendChild(stats.dom);
+  // don't display
+  // document.body.appendChild(stats.dom);
 
   const monitor: Monitor = { stats, volumePanel };
   return monitor;

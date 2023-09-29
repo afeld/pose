@@ -24,3 +24,6 @@ for (const action of actions) {
   commandEl.innerText = `${action.description}: ${command} | ${action.keycode}`;
   commandList.appendChild(commandEl);
 }
+
+// hide by default
+gui.hide();
