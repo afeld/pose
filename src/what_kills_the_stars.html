@@ -8,19 +8,20 @@
       html {
         overflow: hidden;
       }
+
       img {
         position: absolute;
         top: 0;
         right: 0;
         height: 100vh;
-      }
-      img.visible {
+
         animation-name: scroll;
         animation-duration: calc(22 * 60s);
         animation-timing-function: ease-out;
         /* stop on last frame */
         animation-fill-mode: forwards;
       }
+
       @keyframes scroll {
         from {
           transform: translateX(0);

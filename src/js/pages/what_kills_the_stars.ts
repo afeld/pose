@@ -1,14 +1,13 @@
 // restart animation when tab becomes visible
+// https://css-tricks.com/restart-css-animation/
 (() => {
   const img = document.getElementsByTagName("img")[0] as HTMLImageElement;
 
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
-      img.classList.remove("visible");
+      img.remove();
     } else {
-      img.classList.add("visible");
+      document.body.prepend(img);
     }
   });
-
-  img.classList.add("visible");
 })();
