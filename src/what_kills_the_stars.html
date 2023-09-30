@@ -15,7 +15,10 @@
         height: 100vh;
       }
       img.visible {
-        animation: scroll calc(22 * 60s) forwards;
+        animation-name: scroll;
+        animation-duration: calc(22 * 60s);
+        /* stop on last frame */
+        animation-fill-mode: forwards;
       }
       @keyframes scroll {
         from {
