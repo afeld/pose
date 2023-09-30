@@ -16,7 +16,7 @@ const onVisibilityChange = (
     listenerController.stop();
   } else {
     // try to match output resolution
-    video.setUpWebcam(canvas.width(), canvas.height());
+    video.setUpCamera(canvas.width(), canvas.height());
 
     listenerController.startIfAllowed();
   }

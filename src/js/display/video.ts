@@ -26,14 +26,30 @@ export default class Video {
     });
   }
 
-  async setUpWebcam(targetWidth: number, targetHeight: number) {
-    const stream = await navigator.mediaDevices.getUserMedia({
+  async getWebCam() {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+
+    return devices.find(
+      (device) =>
+        device.kind === "videoinput" &&
+        device.label.toLowerCase().includes("webcam")
+    );
+  }
+
+  async setUpCamera(targetWidth: number, targetHeight: number) {
+    // favor the webcam, if available
+    const webcam = await this.getWebCam();
+
+    const constraints = {
       audio: false,
       video: {
         width: targetWidth,
         height: targetHeight,
+        deviceId: webcam?.deviceId,
       },
-    });
+    } as MediaStreamConstraints;
+
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
     this.el.srcObject = stream;
   }
 
