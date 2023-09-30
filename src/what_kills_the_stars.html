@@ -19,10 +19,11 @@
       }
       @keyframes scroll {
         from {
-          right: 0;
+          transform: translateX(0);
         }
         to {
-          right: -200px;
+          /* left edge of image */
+          transform: translateX(calc(100% - 100vw));
         }
       }
     </style>
