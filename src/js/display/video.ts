@@ -26,13 +26,15 @@ export default class Video {
     });
   }
 
+  /**
+   * Get the non-Mac camera, if available
+   */
   async getWebCam() {
     const devices = await navigator.mediaDevices.enumerateDevices();
 
     return devices.find(
       (device) =>
-        device.kind === "videoinput" &&
-        device.label.toLowerCase().includes("webcam")
+        device.kind === "videoinput" && !device.label.includes("FaceTime")
     );
   }
 
