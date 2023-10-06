@@ -20,6 +20,7 @@ export default class Detector {
         runtime: "mediapipe",
         enableSegmentation: true,
         enableSmoothing: true,
+        smoothSegmentation: true,
         modelType: "lite",
 
         // model is copied with the site build via a Parcel plugin so it can be loaded locally
