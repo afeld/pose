@@ -20,9 +20,15 @@ export default class ListenerController {
     this.speechWindow.addEventListener("load", () => {
       this.startIfAllowed();
     });
-    window.addEventListener("message", (event) =>
-      this.onVoiceCommand(event.data)
-    );
+    window.addEventListener("message", (event) => {
+      // ignore messages from React DevTools
+      // https://github.com/facebook/react-devtools/issues/812
+      if (event.data.source?.toString().startsWith("react-devtools-")) {
+        return;
+      }
+
+      this.onVoiceCommand(event.data);
+    });
     speechDetectionController.onChange(this.onCheckboxChange);
   }
 
