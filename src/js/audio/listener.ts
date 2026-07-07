@@ -1,6 +1,5 @@
 import { throttle } from "lodash";
 import { allCommands } from "../controllers/actions";
-import { createGrammarList } from "./grammar";
 import { getCommands } from "./util";
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API#chrome_support
@@ -12,10 +11,6 @@ const createRecognizer = () => {
   recognition.lang = "en-US";
   recognition.interimResults = false;
   recognition.maxAlternatives = 1;
-
-  const speechRecognitionList = createGrammarList();
-  recognition.grammars = speechRecognitionList;
-
   return recognition;
 };
 
