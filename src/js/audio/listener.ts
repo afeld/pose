@@ -3,7 +3,8 @@ import { allCommands } from "../controllers/actions";
 import { getCommands } from "./util";
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API#chrome_support
-const iSpeechRecognition = window.SpeechRecognition || webkitSpeechRecognition;
+const iSpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
 
 const createRecognizer = () => {
   const recognition = new iSpeechRecognition();
@@ -56,7 +57,7 @@ export default class Listener {
         break;
       case "network":
         console.error(
-          "Offline; network connection required for speech recognition"
+          "Offline; network connection required for speech recognition",
         );
         break;
       case "no-speech":

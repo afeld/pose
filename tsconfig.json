@@ -2,8 +2,10 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "lib": ["ES2019", "DOM"],
+    "types": ["dom-speech-recognition", "audioworklet"],
     "target": "ES6",
-    "moduleResolution": "node",
+    "module": "node16",
+    "moduleResolution": "node16",
     "strict": true,
     "strictNullChecks": true
   }
