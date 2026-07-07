@@ -45,7 +45,7 @@ const scale = (
  */
 export const calculateLineWidth = (keypoints: Keypoint[]) => {
   const depth = getAverageDepth(keypoints);
-  console.log(depth);
+  // console.log(depth);
 
   // somewhat arbitrary values
 
