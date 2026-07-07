@@ -17,7 +17,7 @@ export const onAnimationFrame = async (
   monitor: Monitor,
   detector: Detector,
   canvas: Canvas,
-  effects: Effect[]
+  effects: Effect[],
 ) => {
   monitor.stats.begin();
 
@@ -61,7 +61,7 @@ export const onAnimationFrame = async (
 
   // loop
   requestAnimationFrame(() =>
-    onAnimationFrame(monitor, detector, canvas, effects)
+    onAnimationFrame(monitor, detector, canvas, effects),
   );
 };
 

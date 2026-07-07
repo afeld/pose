@@ -14,7 +14,7 @@ const getMask = async (segmentation: Segmentation, color = BLACK) => {
     segmentation,
     color,
     backgroundColor,
-    drawContour
+    drawContour,
   );
 
   return coloredPartImage;
@@ -24,7 +24,7 @@ let canvas2: OffscreenCanvas | undefined;
 
 const drawImageDataWithTransparency = (
   canvas: Canvas,
-  imageData: ImageData
+  imageData: ImageData,
 ) => {
   // Render to offscreen canvas to convert the ImageData to something that can be used by drawImage(), which supports transparency. putImageData() overwrites with transparent pixels.
   // https://stackoverflow.com/a/53239232/358804
@@ -48,7 +48,7 @@ const drawImageDataWithTransparency = (
 export const drawMask = async (
   segmentation: Segmentation,
   canvas: Canvas,
-  color = BLACK
+  color = BLACK,
 ) => {
   const coloredPartImage = await getMask(segmentation, color);
   drawImageDataWithTransparency(canvas, coloredPartImage);

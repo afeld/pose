@@ -29,7 +29,7 @@ export const drawNoBluetoothWarning = (canvas: Canvas) => {
       0,
       canvas.height(),
       0,
-      rect1YStart
+      rect1YStart,
     );
     gradient1.addColorStop(0, redMax);
     gradient1.addColorStop(1, redMin);

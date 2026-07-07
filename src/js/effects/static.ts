@@ -24,7 +24,7 @@ export default class Static extends Effect {
     ) {
       this.idata = canvas.context.createImageData(
         canvas.width(),
-        canvas.height()
+        canvas.height(),
       );
     }
 

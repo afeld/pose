@@ -35,7 +35,7 @@ const scale = (
   r_min: number,
   r_max: number,
   t_min: number,
-  t_max: number
+  t_max: number,
 ) => {
   return ((value - r_min) * (t_max - t_min)) / (r_max - r_min) + t_min;
 };
@@ -61,7 +61,7 @@ export const calculateLineWidth = (keypoints: Keypoint[]) => {
     DEPTH_MIN,
     DEPTH_MAX,
     LINE_WIDTH_MIN,
-    LINE_WIDTH_MAX
+    LINE_WIDTH_MAX,
   );
   // don't go below the minimum line width
   return Math.max(width, LINE_WIDTH_MIN);

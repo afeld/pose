@@ -34,7 +34,7 @@ export default class Video {
 
     return devices.find(
       (device) =>
-        device.kind === "videoinput" && !device.label.includes("FaceTime")
+        device.kind === "videoinput" && !device.label.includes("FaceTime"),
     );
   }
 

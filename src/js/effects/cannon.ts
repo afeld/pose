@@ -13,7 +13,7 @@ import * as colors from "../utils/colors";
 const computeDelay = (effects: Effect[]) => {
   const numExistingCannons = effects.reduce(
     (prev, effect) => (effect instanceof Cannon ? prev + 1 : prev),
-    0
+    0,
   );
   // the numbers are somewhat arbitrary; played around until it looked good
   return 2 * Math.log(numExistingCannons + 1) + 6;

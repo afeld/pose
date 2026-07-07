@@ -14,7 +14,7 @@ describe("getCommands()", () => {
           transcript: "hello",
         },
       ],
-      true
+      true,
     );
     const results = new MockSpeechRecognitionResultList(result);
 
@@ -30,7 +30,7 @@ describe("getCommands()", () => {
           transcript: "   hello world ",
         },
       ],
-      true
+      true,
     );
     const results = new MockSpeechRecognitionResultList(result);
 
@@ -46,7 +46,7 @@ describe("getCommands()", () => {
           transcript: "2  ",
         },
       ],
-      true
+      true,
     );
     const results = new MockSpeechRecognitionResultList(result);
 
@@ -62,7 +62,7 @@ describe("getCommands()", () => {
           transcript: "01",
         },
       ],
-      true
+      true,
     );
     const results = new MockSpeechRecognitionResultList(result);
 
@@ -78,7 +78,7 @@ describe("getCommands()", () => {
           transcript: "   hello world ",
         },
       ],
-      true
+      true,
     );
     const result2 = new MockSpeechRecognitionResult(
       [
@@ -87,7 +87,7 @@ describe("getCommands()", () => {
           transcript: "see ya ",
         },
       ],
-      true
+      true,
     );
     const results = new MockSpeechRecognitionResultList(result1, result2);
 

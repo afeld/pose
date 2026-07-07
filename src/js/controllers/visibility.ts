@@ -9,7 +9,7 @@ import Effect from "../effects/effect";
 const onVisibilityChange = (
   video: Video,
   canvas: Canvas,
-  listenerController: ListenerController
+  listenerController: ListenerController,
 ) => {
   if (document.hidden) {
     video.turnOffWebcam();
@@ -28,7 +28,7 @@ const onVisibilityChange = (
 export const handleVisibilityChanges = (
   video: Video,
   canvas: Canvas,
-  effects: Effect[]
+  effects: Effect[],
 ) => {
   const listenerController = new ListenerController(effects, video);
 
@@ -36,6 +36,6 @@ export const handleVisibilityChanges = (
   document.addEventListener(
     "visibilitychange",
     () => onVisibilityChange(video, canvas, listenerController),
-    false
+    false,
   );
 };

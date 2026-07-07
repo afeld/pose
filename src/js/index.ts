@@ -46,7 +46,7 @@ const setup = async () => {
   onAnimationFrame(monitor, detector, canvas, effects);
 
   document.addEventListener("keypress", (event) =>
-    onKeyPress(event, effects, video)
+    onKeyPress(event, effects, video),
   );
   handleVisibilityChanges(video, canvas, effects);
   setupFullscreen(canvas);
